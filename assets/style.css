@@ -1,7 +1,7 @@
 /* freenetsave.com tools — shared style. No outside fonts, no tracking. */
 :root{
-  --bg:#f6f8fb; --card:#fff; --ink:#1c2533; --muted:#5d6b7e; --line:#dfe5ee;
-  --brand:#0b7a5c; --brand2:#0a5f8a; --soft:#eef6f3; --warn:#9b2c22; --good:#1e6b35;
+  --bg:#f6f8fb; --card:#fff; --ink:#172033; --muted:#5b6b85; --line:#dfe5ee;
+  --brand:#2563eb; --brand2:#1d4ed8; --soft:#eaf1ff; --accent:#f97316; --warn:#9b2c22; --good:#1e6b35;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
