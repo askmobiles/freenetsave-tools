@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Password Generator — strong &amp; random (free) — freenetsave.com</title>
+<meta name="description" content="Free strong password generator. Pick the length and characters. Passwords are made on your own device and never sent or saved.">
+<link rel="canonical" href="https://freenetsave.com/password-generator/">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  #pw{font-family:ui-monospace,Consolas,monospace;font-size:22px;text-align:center;letter-spacing:1px}
+  .meter{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:10px}
+  .meter i{display:block;height:100%;width:0;transition:width .2s}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+  .opts label{font-weight:500}
+  .opts input{width:auto;margin-right:6px}
+  input[type=range]{padding:0;border:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Password Generator</h1>
+    <p class="sub">Make a strong, random password in one tap.</p>
+  </div>
+  <div class="card">
+    <input id="pw" readonly aria-label="Your new password">
+    <div class="meter"><i id="bar"></i></div>
+    <p class="calc" id="strength" style="text-align:center;margin:6px 0 0;font-weight:600"></p>
+    <div class="actions">
+      <button class="btn" type="button" id="make" style="flex:1">🔄 New password</button>
+      <button class="btn ghost" type="button" id="copy">📋 Copy</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="field">
+      <label for="len">Length: <b id="lenVal">16</b> characters</label>
+      <input id="len" type="range" min="6" max="64" value="16">
+    </div>
+    <div class="opts">
+      <label><input type="checkbox" id="upper" checked>Capital letters (A–Z)</label>
+      <label><input type="checkbox" id="lower" checked>Small letters (a–z)</label>
+      <label><input type="checkbox" id="digits" checked>Numbers (0–9)</label>
+      <label><input type="checkbox" id="symbols" checked>Symbols (!@#$…)</label>
+      <label style="grid-column:1/-1"><input type="checkbox" id="similar">Leave out look-alike characters (0 O o 1 l I)</label>
+    </div>
+  </div>
+  <p class="note">🔒 Your password is made on your own device using its secure random generator. It is never sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script>
+const SETS = { upper:"ABCDEFGHIJKLMNOPQRSTUVWXYZ", lower:"abcdefghijklmnopqrstuvwxyz", digits:"0123456789", symbols:"!@#$%^&*()-_=+[]{};:,.?/~" };
+const SIMILAR = /[0Oo1lI]/g;
+function randInt(max){ // unbiased secure random 0..max-1
+  const lim = Math.floor(0x100000000/max)*max, a = new Uint32Array(1);
+  do { crypto.getRandomValues(a); } while(a[0] >= lim);
+  return a[0] % max;
+}
+function make(){
+  const len = +$("len").value;
+  let sets = Object.keys(SETS).filter(k=>$(k).checked).map(k=>$("similar").checked ? SETS[k].replace(SIMILAR,"") : SETS[k]);
+  if(!sets.length){ $("upper").checked = true; return make(); }
+  // one from each chosen set, then fill, then shuffle
+  const chars = sets.map(s=>s[randInt(s.length)]);
+  const all = sets.join("");
+  while(chars.length < len) chars.push(all[randInt(all.length)]);
+  for(let i=chars.length-1;i>0;i--){ const j=randInt(i+1); [chars[i],chars[j]]=[chars[j],chars[i]]; }
+  $("pw").value = chars.slice(0,len).join("");
+  const bits = len*Math.log2(all.length);
+  const [label,color,w] = bits<40?["Weak","#c62828",25]:bits<60?["OK","#e8a10c",50]:bits<90?["Strong","#2e9d4f",78]:["Very strong","#0b7a5c",100];
+  $("bar").style.width = w+"%"; $("bar").style.background = color;
+  $("strength").textContent = label; $("strength").style.color = color;
+}
+$("len").addEventListener("input", ()=>{ $("lenVal").textContent = $("len").value; make(); });
+["upper","lower","digits","symbols","similar"].forEach(i=>$(i).addEventListener("change", make));
+$("make").addEventListener("click", make);
+$("copy").addEventListener("click", ()=> copyText($("pw").value));
+make();
+</script>
+</body>
+</html>

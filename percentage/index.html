@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Percentage &amp; Discount Calculator (free) — freenetsave.com</title>
+<meta name="description" content="Free percentage and discount calculator: sale price after a discount, what percent one number is of another, and percent increase or decrease.">
+<link rel="canonical" href="https://freenetsave.com/percentage-calculator/">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Percentage &amp; Discount Calculator</h1>
+    <p class="sub">Three quick answers. Fill in any box — the answer shows straight away.</p>
+  </div>
+
+  <div class="card">
+    <label style="font-size:17px">🏷️ Sale price after a discount</label>
+    <div class="row">
+      <div class="field"><label for="p1">Original price ($)</label><input id="p1" type="number" inputmode="decimal" placeholder="e.g. 250"></div>
+      <div class="field"><label for="d1">Discount (%)</label><input id="d1" type="number" inputmode="decimal" placeholder="e.g. 30"></div>
+    </div>
+    <div class="result">
+      <div class="box"><span>You save</span><b id="save1">–</b></div>
+      <div class="box main"><span>Sale price</span><b id="sale1">–</b></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label style="font-size:17px">➗ What percent is it?</label>
+    <div class="row">
+      <div class="field"><label for="a2">This number</label><input id="a2" type="number" inputmode="decimal" placeholder="e.g. 45"></div>
+      <div class="field"><label for="b2">is what % of</label><input id="b2" type="number" inputmode="decimal" placeholder="e.g. 60"></div>
+    </div>
+    <div class="result"><div class="box main"><span>Answer</span><b id="ans2">–</b></div></div>
+  </div>
+
+  <div class="card">
+    <label style="font-size:17px">📈 Percent increase or decrease</label>
+    <div class="row">
+      <div class="field"><label for="a3">From</label><input id="a3" type="number" inputmode="decimal" placeholder="e.g. 80"></div>
+      <div class="field"><label for="b3">To</label><input id="b3" type="number" inputmode="decimal" placeholder="e.g. 100"></div>
+    </div>
+    <div class="result"><div class="box main"><span>Change</span><b id="ans3">–</b></div></div>
+  </div>
+
+  <div class="card">
+    <label style="font-size:17px">🔢 X% of a number</label>
+    <div class="row">
+      <div class="field"><label for="a4">Percent (%)</label><input id="a4" type="number" inputmode="decimal" placeholder="e.g. 15"></div>
+      <div class="field"><label for="b4">of</label><input id="b4" type="number" inputmode="decimal" placeholder="e.g. 200"></div>
+    </div>
+    <div class="result"><div class="box main"><span>Answer</span><b id="ans4">–</b></div></div>
+  </div>
+
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script>
+const n = id => parseFloat($(id).value);
+const nice = x => (Math.round(x*100)/100).toLocaleString("en-CA");
+function calc(){
+  const p1=n("p1"), d1=n("d1");
+  if(isFinite(p1)&&isFinite(d1)){ const s=Math.round(p1*d1)/100; $("save1").textContent=money(s); $("sale1").textContent=money(p1-s); }
+  else { $("save1").textContent=$("sale1").textContent="–"; }
+  const a2=n("a2"), b2=n("b2");
+  $("ans2").textContent = isFinite(a2)&&isFinite(b2)&&b2!==0 ? nice(a2/b2*100)+"%" : "–";
+  const a3=n("a3"), b3=n("b3");
+  if(isFinite(a3)&&isFinite(b3)&&a3!==0){ const c=(b3-a3)/Math.abs(a3)*100; $("ans3").innerHTML = (c>=0?"▲ +":"▼ ")+nice(c)+"%"; $("ans3").style.color = c>=0?"var(--good)":"var(--warn)"; }
+  else { $("ans3").textContent="–"; $("ans3").style.color=""; }
+  const a4=n("a4"), b4=n("b4");
+  $("ans4").textContent = isFinite(a4)&&isFinite(b4) ? nice(a4*b4/100) : "–";
+}
+document.querySelectorAll("input").forEach(i=>i.addEventListener("input", calc));
+</script>
+</body>
+</html>

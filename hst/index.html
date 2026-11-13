@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HST Calculator Ontario 13% (free) — freenetsave.com</title>
+<meta name="description" content="Free Ontario HST calculator. Add 13% HST to a price, or take HST out of a total. Works on any phone. Nothing is saved.">
+<link rel="canonical" href="https://freenetsave.com/hst-calculator/">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>HST Calculator</h1>
+    <p class="sub">Add HST to a price, or take HST out of a total.</p>
+  </div>
+  <div class="card">
+    <div class="field">
+      <label>What do you want to do?</label>
+      <div class="seg" id="mode">
+        <button type="button" data-m="add" class="on">Add HST to a price</button>
+        <button type="button" data-m="remove">Take HST out of a total</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="amt" id="amtLabel">Price before tax ($)</label>
+        <input id="amt" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 100">
+      </div>
+      <div class="field">
+        <label for="rate">Tax rate</label>
+        <select id="rate">
+          <option value="13" selected>13% — Ontario HST</option>
+          <option value="15">15% — NS, NB, NL, PEI HST</option>
+          <option value="5">5% — GST only</option>
+          <option value="custom">Other rate…</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" id="customBox" style="display:none">
+      <label for="custom">Your rate (%)</label>
+      <input id="custom" type="number" inputmode="decimal" min="0" max="100" step="0.001" placeholder="e.g. 14.975">
+    </div>
+    <div class="result">
+      <div class="box"><span>Before tax</span><b id="before">–</b></div>
+      <div class="box"><span id="taxLabel">HST</span><b id="tax">–</b></div>
+      <div class="box main"><span>Total with tax</span><b id="total">–</b></div>
+    </div>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">📋 Copy</button></div>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script>
+let mode = "add";
+const r2 = n => Math.round(n*100)/100;
+function rate(){ const v = $("rate").value; return v==="custom" ? parseFloat($("custom").value) : parseFloat(v); }
+function calc(){
+  const a = parseFloat($("amt").value), r = rate();
+  $("taxLabel").textContent = "Tax (" + (isFinite(r) ? r : "?") + "%)";
+  if(!(a>=0) || !(r>=0)){ ["before","tax","total"].forEach(i=>$(i).textContent="–"); return; }
+  let before, tax, total;
+  if(mode==="add"){ before = a; tax = r2(a*r/100); total = r2(a+tax); }
+  else { total = a; before = r2(a/(1+r/100)); tax = r2(total-before); }
+  $("before").textContent = money(before); $("tax").textContent = money(tax); $("total").textContent = money(total);
+}
+$("mode").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  mode = b.dataset.m;
+  document.querySelectorAll("#mode button").forEach(x=>x.classList.toggle("on", x===b));
+  $("amtLabel").textContent = mode==="add" ? "Price before tax ($)" : "Total with tax ($)";
+  calc();
+});
+$("rate").addEventListener("change", ()=>{ $("customBox").style.display = $("rate").value==="custom" ? "" : "none"; calc(); });
+["amt","custom"].forEach(i=>$(i).addEventListener("input", calc));
+$("copy").addEventListener("click", ()=> copyText(`Before tax: ${$("before").textContent}\n${$("taxLabel").textContent}: ${$("tax").textContent}\nTotal: ${$("total").textContent}`));
+calc();
+</script>
+</body>
+</html>

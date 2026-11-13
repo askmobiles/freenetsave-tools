@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loan &amp; Car Payment Calculator (free) — freenetsave.com</title>
+<meta name="description" content="Free loan and car payment calculator. See your monthly, bi-weekly or weekly payment, total interest and total cost. Nothing is saved.">
+<link rel="canonical" href="https://freenetsave.com/loan-calculator/">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Loan &amp; Car Payment Calculator</h1>
+    <p class="sub">See what your payment will be and how much interest you pay.</p>
+  </div>
+  <div class="card">
+    <div class="row">
+      <div class="field"><label for="price">Price or loan amount ($)</label><input id="price" type="number" inputmode="decimal" min="0" placeholder="e.g. 35000"></div>
+      <div class="field"><label for="down">Down payment / trade-in ($) <small>(optional)</small></label><input id="down" type="number" inputmode="decimal" min="0" placeholder="e.g. 5000"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="rate">Interest rate (% per year)</label><input id="rate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 6.99"></div>
+      <div class="field"><label for="years">Length</label>
+        <select id="years">
+          <option value="12">1 year (12 months)</option><option value="24">2 years (24 months)</option>
+          <option value="36">3 years (36 months)</option><option value="48">4 years (48 months)</option>
+          <option value="60" selected>5 years (60 months)</option><option value="72">6 years (72 months)</option>
+          <option value="84">7 years (84 months)</option><option value="96">8 years (96 months)</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>How often do you pay?</label>
+      <div class="seg" id="freq">
+        <button type="button" data-f="12" class="on">Monthly</button>
+        <button type="button" data-f="26">Every 2 weeks</button>
+        <button type="button" data-f="52">Weekly</button>
+      </div>
+    </div>
+    <div class="result">
+      <div class="box main"><span id="payLabel">Monthly payment</span><b id="pay">–</b></div>
+      <div class="box"><span>Total interest</span><b id="interest">–</b></div>
+      <div class="box"><span>Total you pay</span><b id="total">–</b></div>
+    </div>
+    <p class="note" style="text-align:left;margin-top:10px">Tax, fees and insurance are not included. Your lender's numbers may differ a little.</p>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">📋 Copy</button></div>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script>
+let perYear = 12;
+const names = {12:"Monthly payment", 26:"Payment every 2 weeks", 52:"Weekly payment"};
+function payment(P, annual, n, k){ // P principal, annual %, n payments, k payments per year
+  const i = annual/100/k;
+  return i===0 ? P/n : P*i/(1-Math.pow(1+i,-n));
+}
+function calc(){
+  const P = (parseFloat($("price").value)||0) - (parseFloat($("down").value)||0);
+  const r = parseFloat($("rate").value), months = +$("years").value;
+  $("payLabel").textContent = names[perYear];
+  if(!(P>0) || !(r>=0)){ ["pay","interest","total"].forEach(i=>$(i).textContent="–"); return; }
+  const n = Math.round(months/12*perYear);
+  const pay = payment(P, r, n, perYear), total = pay*n;
+  $("pay").textContent = money(pay);
+  $("interest").textContent = money(total-P);
+  $("total").textContent = money(total);
+}
+$("freq").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  perYear = +b.dataset.f;
+  document.querySelectorAll("#freq button").forEach(x=>x.classList.toggle("on", x===b));
+  calc();
+});
+["price","down","rate","years"].forEach(i=>$(i).addEventListener("input", calc));
+$("copy").addEventListener("click", ()=> copyText(`${$("payLabel").textContent}: ${$("pay").textContent}\nTotal interest: ${$("interest").textContent}\nTotal you pay: ${$("total").textContent}`));
+calc();
+</script>
+</body>
+</html>

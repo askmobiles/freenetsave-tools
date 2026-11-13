@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IMEI Number Checker — is it valid? (free) — freenetsave.com</title>
+<meta name="description" content="Free IMEI checker. Find out if a phone's 15-digit IMEI number is correctly formed, using the check digit. Runs in your browser.">
+<link rel="canonical" href="https://freenetsave.com/imei-checker/">
+<link rel="stylesheet" href="../assets/style.css">
+<style>#imei{font-family:ui-monospace,Consolas,monospace;font-size:22px;letter-spacing:2px;text-align:center}</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>IMEI Number Checker</h1>
+    <p class="sub">Check if a phone's IMEI number is a real, correctly formed number.</p>
+  </div>
+  <div class="card">
+    <div class="field">
+      <label for="imei">IMEI number (15 digits)</label>
+      <input id="imei" inputmode="numeric" maxlength="20" placeholder="e.g. 490154203237518" autocomplete="off">
+    </div>
+    <div class="box" id="out" style="font-size:18px;padding:16px">Type the 15 digits to check.</div>
+    <div class="result" id="parts" style="margin-top:10px;display:none">
+      <div class="box"><span>Type code (TAC)</span><b id="tac" style="font-size:20px"></b></div>
+      <div class="box"><span>Serial number</span><b id="sn" style="font-size:20px"></b></div>
+      <div class="box"><span>Check digit</span><b id="cd" style="font-size:20px"></b></div>
+    </div>
+  </div>
+  <div class="card">
+    <label>📱 How to find your IMEI</label>
+    <p style="margin:0">Dial <b>*#06#</b> on the phone. Or look in <b>Settings → About phone</b> (Android) or <b>Settings → General → About</b> (iPhone). It's also printed on the box and the SIM tray on many phones.</p>
+    <p class="calc" style="margin:10px 0 0">⚠️ This checker only tells you if the number is correctly formed. It <b>cannot</b> tell you if a phone is stolen, blocked, locked to a carrier or under warranty — ask your carrier for that.</p>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script>
+function luhnCheckDigit(d14){ // check digit for the first 14 digits
+  let sum = 0;
+  for(let i=0;i<14;i++){ let n = +d14[i]; if(i%2===1){ n*=2; if(n>9) n-=9; } sum += n; }
+  return (10 - sum%10) % 10;
+}
+function check(){
+  const raw = $("imei").value, d = raw.replace(/\D/g,"");
+  const out = $("out");
+  $("parts").style.display = "none";
+  if(!d){ out.className="box"; out.textContent="Type the 15 digits to check."; return; }
+  if(d.length<15){ out.className="box"; out.textContent=`${d.length} of 15 digits…`; return; }
+  if(d.length>15){ out.className="box"; out.innerHTML=`<span class="bad">❌ Too many digits (${d.length}).</span> An IMEI has 15 digits. (16 digits is an IMEI-SV, which has no check digit.)`; return; }
+  const want = luhnCheckDigit(d.slice(0,14)), got = +d[14];
+  $("tac").textContent = d.slice(0,8); $("sn").textContent = d.slice(8,14); $("cd").textContent = d[14];
+  $("parts").style.display = "";
+  if(want===got){ out.className="box"; out.innerHTML=`<span class="ok">✅ Valid IMEI format.</span> The check digit is correct.`; }
+  else { out.className="box"; out.innerHTML=`<span class="bad">❌ Not a valid IMEI.</span> The last digit should be <b>${want}</b>, not ${got}. Check for a typing mistake.`; }
+}
+$("imei").addEventListener("input", check);
+</script>
+</body>
+</html>

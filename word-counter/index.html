@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word &amp; Character Counter (free) — freenetsave.com</title>
+<meta name="description" content="Free word and character counter. Paste your text to count words, characters, sentences and reading time. Nothing is sent or saved.">
+<link rel="canonical" href="https://freenetsave.com/word-counter/">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Word &amp; Character Counter</h1>
+    <p class="sub">Type or paste your text below.</p>
+  </div>
+  <div class="card">
+    <textarea id="txt" placeholder="Start typing or paste your text here…" aria-label="Your text"></textarea>
+    <div class="result" style="margin-top:12px">
+      <div class="box main"><span>Words</span><b id="words">0</b></div>
+      <div class="box"><span>Characters</span><b id="chars">0</b></div>
+      <div class="box"><span>Without spaces</span><b id="nospace">0</b></div>
+      <div class="box"><span>Sentences</span><b id="sentences">0</b></div>
+      <div class="box"><span>Paragraphs</span><b id="paras">0</b></div>
+      <div class="box"><span>Reading time</span><b id="read">0 min</b></div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" type="button" id="up">ABC Upper case</button>
+      <button class="btn ghost" type="button" id="low">abc lower case</button>
+      <button class="btn ghost" type="button" id="cap">Abc Title Case</button>
+      <button class="btn ghost" type="button" id="copy">📋 Copy text</button>
+      <button class="btn ghost" type="button" id="clear">✖ Clear</button>
+    </div>
+  </div>
+  <p class="note">🔒 Your text stays on your device. Nothing is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script>
+function count(){
+  const t = $("txt").value;
+  const words = (t.match(/[^\s]+/g)||[]).length;
+  $("words").textContent = words.toLocaleString();
+  $("chars").textContent = [...t].length.toLocaleString();
+  $("nospace").textContent = [...t.replace(/\s/g,"")].length.toLocaleString();
+  $("sentences").textContent = (t.match(/[^.!?]+[.!?]+(\s|$)/g)||[]).length || (t.trim()?1:0);
+  $("paras").textContent = t.split(/\n\s*\n/).filter(p=>p.trim()).length;
+  const mins = words/200;
+  $("read").textContent = mins<1 ? (words? "< 1 min":"0 min") : Math.round(mins)+" min";
+}
+function setText(s){ $("txt").value = s; count(); }
+$("txt").addEventListener("input", count);
+$("up").addEventListener("click", ()=> setText($("txt").value.toUpperCase()));
+$("low").addEventListener("click", ()=> setText($("txt").value.toLowerCase()));
+$("cap").addEventListener("click", ()=> setText($("txt").value.toLowerCase().replace(/(^|\s)(\S)/g,(m,a,b)=>a+b.toUpperCase())));
+$("copy").addEventListener("click", ()=> copyText($("txt").value));
+$("clear").addEventListener("click", ()=> setText(""));
+count();
+</script>
+</body>
+</html>

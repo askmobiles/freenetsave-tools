@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Numerology Calculator (free) — freenetsave.com</title>
+<meta name="description" content="Free numerology calculator: birth number, destiny number, name number, lucky numbers, business name and phone number match. Runs in your browser — nothing is saved.">
+<link rel="canonical" href="https://freenetsave.com/numerology-calculator/">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .big3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .big{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .big .t{font-weight:700;font-size:15px;color:var(--brand)}
+  .num{font-size:52px;font-weight:800;line-height:1.1;color:var(--brand2);margin:6px 0}
+  .calc{font-size:13px;color:var(--muted);word-break:break-word}
+  h2{font-size:20px;margin:0 0 12px;color:var(--ink)}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .tot{border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
+  .tot b{display:block;font-size:26px}
+  .tot span{font-size:13px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  td:first-child{font-weight:600;width:40%}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-weight:600}
+  .chip.good{background:#e9f6ec;border-color:#bfe3c7;color:#1e6b35}
+  .chip.bad{background:#fdecea;border-color:#f5c6c1;color:#9b2c22}
+  .sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+  .verdict{border-radius:12px;padding:14px 16px;font-weight:600}
+  .verdict.ok{background:#e9f6ec;color:#1e6b35}
+  .verdict.mid{background:#fff4dc;color:#7a5200}
+  .verdict.no{background:#fdecea;color:#9b2c22}
+  .verdict .plain{font-weight:400}
+  .trait{background:var(--soft);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+  .trait .role{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:2px 0 4px}
+  .pct{min-width:120px;margin-left:auto}
+  .pct .num{font-size:40px}
+  .pct.ok{background:#e9f6ec}.pct.ok .num{color:#1e6b35}
+  .pct.mid{background:#fff4dc}.pct.mid .num{color:#9a6a00}
+  .pct.no{background:#fdecea}.pct.no .num{color:#9b2c22}
+  .flex{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .stars{font-size:20px;letter-spacing:2px}
+  .chart{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;font-size:12px;text-align:center}
+  .chart div{background:var(--soft);border-radius:6px;padding:4px 0}
+  .chart b{display:block;font-size:15px;color:var(--brand)}
+  #results{display:none}
+  @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1 data-t="title"></h1>
+    <p class="sub" data-t="subtitle"></p>
+  </div>
+
+  <form class="card" id="form" autocomplete="off">
+    <div class="field">
+      <label for="name"><span data-t="nameLabel"></span> <small data-t="optional"></small></label>
+      <input id="name" placeholder="e.g. John Smith">
+    </div>
+    <label data-t="dobLabel"></label>
+    <div class="row3 field">
+      <select id="d" aria-label="Day"></select>
+      <select id="m" aria-label="Month"></select>
+      <input id="y" type="number" inputmode="numeric" min="1900" max="2100" aria-label="Year">
+    </div>
+    <div class="field">
+      <label for="biz"><span data-t="bizLabel"></span> <small data-t="optional"></small></label>
+      <input id="biz" placeholder="e.g. Sunrise Bakery">
+    </div>
+    <div class="field">
+      <label for="phone"><span data-t="phoneLabel"></span> <small data-t="optional"></small></label>
+      <input id="phone" inputmode="tel" placeholder="e.g. 647-555-1234 or ABCD 123">
+    </div>
+    <button class="btn" type="submit" data-t="calculate"></button>
+    <div class="err" id="err"></div>
+  </form>
+
+  <section id="results">
+    <div class="card">
+      <h2 data-t="coreTitle"></h2>
+      <div class="big3">
+        <div class="big"><div class="t" data-t="birthNumber"></div><div class="num" id="birthNum">–</div><div class="calc" id="birthCalc"></div></div>
+        <div class="big"><div class="t" data-t="destinyNumber"></div><div class="num" id="destNum">–</div><div class="calc" id="destCalc"></div></div>
+        <div class="big" id="nameBox"><div class="t" data-t="nameNumber"></div><div class="num" id="nameNum">–</div><div class="calc" id="nameCalc"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 data-t="totalsTitle"></h2>
+      <div class="totals">
+        <div class="tot"><span data-t="date"></span><b id="tD">–</b><span id="tDc"></span></div>
+        <div class="tot"><span data-t="month"></span><b id="tM">–</b><span id="tMc"></span></div>
+        <div class="tot"><span data-t="year"></span><b id="tY">–</b><span id="tYc"></span></div>
+      </div>
+      <p class="calc" style="margin:12px 0 0;text-align:center" id="weekday"></p>
+    </div>
+
+    <div class="card">
+      <h2 data-t="luckyTitle"></h2>
+      <p class="calc" style="margin:-6px 0 10px" id="lkBase"></p>
+      <table>
+        <tr><td data-t="planet"></td><td id="lkPlanet"></td></tr>
+        <tr><td data-t="luckyNumbers"></td><td><div class="chips" id="lkNums"></div></td></tr>
+        <tr><td data-t="avoidNumbers"></td><td><div class="chips" id="lkAvoid"></div></td></tr>
+        <tr><td data-t="luckyDays"></td><td id="lkDays"></td></tr>
+        <tr><td data-t="luckyColours"></td><td id="lkColors"></td></tr>
+        <tr><td data-t="luckyGem"></td><td id="lkGem"></td></tr>
+        <tr><td data-t="luckyDates"></td><td id="lkDates"></td></tr>
+      </table>
+    </div>
+
+    <div class="card" id="nameCard">
+      <h2 data-t="nameMatchTitle"></h2>
+      <div class="flex">
+        <div class="verdict" id="verdict" style="flex:1;min-width:240px"></div>
+        <div class="big pct" id="nmBox"><div class="t" data-t="match"></div><div class="num" id="nmPct">–</div><div class="stars" id="nmStars"></div></div>
+      </div>
+    </div>
+
+    <div class="card" id="bizCard">
+      <h2 data-t="bizMatchTitle"></h2>
+      <div class="flex" style="margin-bottom:12px">
+        <div class="big" style="min-width:130px"><div class="t" data-t="bizNumber"></div><div class="num" id="bzNum">–</div></div>
+        <div style="flex:1;min-width:200px">
+          <div class="calc" id="bzCalc"></div>
+          <div style="margin-top:6px" id="bzCompound"></div>
+          <div class="stars" style="margin-top:6px" id="bzStars"></div>
+        </div>
+        <div class="big pct" id="bzBox"><div class="t" data-t="match"></div><div class="num" id="bzPct">–</div></div>
+      </div>
+      <div class="verdict" id="bzVerdict"></div>
+      <div class="calc" style="margin-top:10px" id="bzTip"></div>
+    </div>
+
+    <div class="card" id="phoneCard">
+      <h2 data-t="phoneMatchTitle"></h2>
+      <div class="flex" style="margin-bottom:12px">
+        <div class="big" style="min-width:130px"><div class="t" data-t="numberValue"></div><div class="num" id="phNum">–</div></div>
+        <div style="flex:1;min-width:200px">
+          <div class="calc" id="phCalc"></div>
+          <div class="stars" style="margin-top:8px" id="phStars"></div>
+        </div>
+        <div class="big pct" id="phBox"><div class="t" data-t="match"></div><div class="num" id="phPct">–</div></div>
+      </div>
+      <div class="verdict" id="phVerdict"></div>
+    </div>
+
+    <div class="card">
+      <h2 data-t="natureTitle"></h2>
+      <div id="traits"></div>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="copyBtn" data-t="copy"></button>
+        <a class="btn ghost" id="waBtn" href="#" target="_blank" rel="noopener" style="text-decoration:none" data-t="whatsapp"></a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 data-t="chartTitle"></h2>
+      <div class="chart" id="chart"></div>
+    </div>
+  </section>
+
+  <p class="note"><span data-t="disclaimer"></span><br><span data-t="privacy"></span><br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · <span data-t="freeTools"></span></p>
+</div>
+
+<script src="../assets/embed.js"></script>
+<script>
+/* ---------- All words on this page. To add a language later, copy "en" and translate. ---------- */
+const LANG = {
+ en:{
+  title:"Numerology Calculator", subtitle:"Find your birth number, destiny number, name number and lucky numbers.",
+  nameLabel:"Your name", optional:"(optional)", dobLabel:"Date of birth", day:"Day", monthPh:"Month", yearPh:"Year",
+  bizLabel:"Business or shop name", phoneLabel:"Phone, car or house number", calculate:"✨ Calculate",
+  errDate:"Please enter your full date of birth.", errYear:"Please enter a year between 1900 and 2100.", errNoDate:"That date doesn't exist.",
+  coreTitle:"Your core numbers", birthNumber:"Birth number", destinyNumber:"Destiny number", nameNumber:"Name number",
+  enterName:"Enter a name to see this", totalsTitle:"Date, month & year totals", date:"Date", month:"Month", year:"Year",
+  bornOn:"Day you were born:", luckyTitle:"Your lucky details", basedOn:"Based on your birth number",
+  planet:"Ruling planet", luckyNumbers:"Lucky numbers", avoidNumbers:"Numbers to avoid", luckyDays:"Lucky days",
+  luckyColours:"Lucky colours", luckyGem:"Lucky gemstone", luckyDates:"Lucky dates each month",
+  nameMatchTitle:"Name match", match:"Match", bizMatchTitle:"Business name match", bizNumber:"Business number",
+  phoneMatchTitle:"Phone / vehicle number match", numberValue:"Number value",
+  natureTitle:"Your nature", copy:"📋 Copy result", whatsapp:"💬 Share on WhatsApp", chartTitle:"Letter chart used",
+  innerNature:"Your inner nature", lifePath:"Life path & suitable work", howOthers:"How others see you",
+  together:"How your birth and destiny numbers work together",
+  compGood:"Lucky compound", compBad:"Caution compound", compNeutral:"Neutral compound",
+  disclaimer:"Based on traditional Chaldean (Cheiro) numerology. For fun and cultural interest only — not advice.",
+  privacy:"🔒 Nothing you type leaves your device. We don't save or keep any information.",
+  freeTools:"free online tools", copied:"Copied!"
+ }
+};
+let L = LANG.en;   // current language
+function applyText(){
+  document.querySelectorAll("[data-t]").forEach(el=>{ if(L[el.dataset.t]!=null) el.textContent = L[el.dataset.t]; });
+  $("y").placeholder = L.yearPh;
+}
+
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+// Chaldean (Cheiro) letter values
+const CHALDEAN = {A:1,I:1,J:1,Q:1,Y:1, B:2,K:2,R:2, C:3,G:3,L:3,S:3, D:4,M:4,T:4,
+  E:5,H:5,N:5,X:5, U:6,V:6,W:6, O:7,Z:7, F:8,P:8};
+
+const DATA = {
+ 1:{planet:"Sun", lucky:[1,2,3,4,9], avoid:[8], days:[0,1], colors:[["Gold","#d4a017"],["Yellow","#f2c40f"],["Orange","#ef7d1a"]], gem:"Ruby"},
+ 2:{planet:"Moon", lucky:[1,2,7], avoid:[8,9], days:[1,0,5], colors:[["White","#ffffff"],["Cream","#f3e7c9"],["Light green","#9fd89f"]], gem:"Pearl"},
+ 3:{planet:"Jupiter", lucky:[3,6,9], avoid:[5], days:[4,2,5], colors:[["Yellow","#f2c40f"],["Purple","#7b3fa0"],["Pink","#f29bb5"]], gem:"Yellow Sapphire"},
+ 4:{planet:"Rahu (North Node)", lucky:[1,5,6], avoid:[4,8], days:[0,6,1], colors:[["Blue","#2f6fb3"],["Grey","#9a9a9a"],["Khaki","#bfae7a"]], gem:"Hessonite (Gomedh)"},
+ 5:{planet:"Mercury", lucky:[1,5,6], avoid:[3], days:[3,5], colors:[["Green","#2e9d4f"],["Light grey","#cfcfcf"],["White","#ffffff"]], gem:"Emerald"},
+ 6:{planet:"Venus", lucky:[3,5,6,9], avoid:[4], days:[5,2,4], colors:[["Light blue","#8cc4ec"],["Pink","#f29bb5"],["White","#ffffff"]], gem:"Diamond"},
+ 7:{planet:"Ketu (South Node)", lucky:[1,2,7], avoid:[8,9], days:[1,0], colors:[["Green","#2e9d4f"],["White","#ffffff"],["Light yellow","#f7e78a"]], gem:"Cat's Eye"},
+ 8:{planet:"Saturn", lucky:[1,4,5,6], avoid:[8], days:[6,5,3], colors:[["Dark blue","#1d2f6f"],["Black","#222222"],["Purple","#5a2e7a"]], gem:"Blue Sapphire"},
+ 9:{planet:"Mars", lucky:[1,3,6,9], avoid:[5], days:[2,4,5], colors:[["Red","#c62828"],["Pink","#f29bb5"],["Maroon","#7a1f1f"]], gem:"Red Coral"}
+};
+
+const ROLE_TEXT = {
+ birth:{
+  1:"You like to act independently and would rather lead than follow. Strong self-respect and willpower.",
+  2:"Soft-hearted and emotional, deeply attached to family and friends; your mood can change quickly.",
+  3:"Disciplined and principled, always learning, and good at advising others.",
+  4:"You think differently from others and work very hard, though people don't always understand you at first.",
+  5:"Quick mind and fast decisions; you enjoy new things, travel and meeting people.",
+  6:"You love beauty, comfort and a well-kept home; warm and naturally attractive to others.",
+  7:"Calm and thoughtful with strong intuition; you need quiet time alone to think things through.",
+  8:"Patient and responsible; you may look serious from outside but are soft inside.",
+  9:"Brave and energetic; you can't stand injustice. Quick to anger, quick to forgive."
+ },
+ dest:{
+  1:"Life pushes you toward leadership. Good results in your own business, government or management roles.",
+  2:"Success comes through partnerships and teamwork. Art, service, food and liquid-related trades suit you.",
+  3:"Respect comes through knowledge. Teaching, consulting, law, finance and spiritual work suit you.",
+  4:"A life with sudden turns. Technology, electronics and new or unusual businesses bring success.",
+  5:"Fast growth in trade, sales and communication; money tends to flow well.",
+  6:"Life brings comfort. Arts, beauty, fashion, hospitality and luxury goods suit you; family is central.",
+  7:"Progress through research, spirituality or foreign connections; expect ups and downs along the way.",
+  8:"Success comes slowly but lasts. Land, construction, industry and law-related work suit you.",
+  9:"You win through effort and courage. Police, defence, medicine, engineering and sports suit you."
+ },
+ name:{
+  1:"Your name gives an image of authority — people see you as a leader.",
+  2:"Your name feels friendly and trustworthy — people find you easy to approach.",
+  3:"Your name suggests wisdom and honesty — people come to you for advice.",
+  4:"Your name stands out as different; tradition says it can bring delays, so many people adjust the spelling.",
+  5:"Your name is believed to attract fame and money — one of the best for business.",
+  6:"Your name brings charm and comfort — people warm to you easily.",
+  7:"Your name gives a deep, private image — good for spiritual or research work, less so for sales.",
+  8:"Your name gives a serious, determined image; traditionally treated with caution.",
+  9:"Your name projects courage and drive — suits competitive fields."
+ }
+};
+const COMBO = {
+  same:"Same number — your nature and your life path pull the same way, so both the strengths and weaknesses are doubled.",
+  friend:"Friendly numbers — your nature supports your life path, so effort pays off more easily.",
+  neutral:"Neutral — the two can pull in different directions; a well-matched name number is believed to bring balance.",
+  enemy:"Opposing numbers — inner wishes and life events can clash at times; many people balance this with their name number."
+};
+
+const COMPOUND_GOOD = [1,3,5,6,10,14,15,19,23,24,27,32,33,37,41,42,45,46,50,51,55,60,64,65,69,73,77,78,82,87,91,96,100];
+const COMPOUND_BAD  = [12,16,18,26,29,35,43,44,48,53,62,71,80,89,98];
+function compoundTag(t){
+  if(COMPOUND_GOOD.includes(t)) return `<span class="chip good">${t} · ${L.compGood}</span>`;
+  if(COMPOUND_BAD.includes(t))  return `<span class="chip bad">${t} · ${L.compBad}</span>`;
+  return `<span class="chip">${t} · ${L.compNeutral}</span>`;
+}
+const digitSum = n => String(n).split("").reduce((a,c)=>a+(+c||0),0);
+function reduceSteps(n){ const s=[n]; while(n>9){ n=digitSum(n); s.push(n); } return s; }
+function stepText(digits, steps){
+  let t = digits.join(" + ") + " = " + steps[0];
+  for(let i=1;i<steps.length;i++) t += " → " + String(steps[i-1]).split("").join("+") + " = " + steps[i];
+  return t;
+}
+function valueOf(str){
+  const vals = str.toUpperCase().split("").map(c=>/[0-9]/.test(c)?+c:(CHALDEAN[c]||null)).filter(v=>v!==null);
+  const total = vals.reduce((a,b)=>a+b,0);
+  return {vals,total,single: total ? reduceSteps(total).at(-1) : null};
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function rel(n, base){
+  if(n===base) return 1;
+  if(DATA[base].avoid.includes(n)) return 0;
+  if(DATA[base].lucky.includes(n)) return 0.8;
+  return 0.35;
+}
+function matchPct(n, birth, dest, opt={}){
+  let pts = 50*rel(n,birth) + 30*rel(n,dest), max = 80;
+  if(opt.nameN!=null){ pts += 20*rel(n,opt.nameN); max += 20; }
+  let pct = pts/max*100;
+  if(opt.business && [1,5,6].includes(n)) pct += 8;
+  if(opt.total!=null){ if(COMPOUND_GOOD.includes(opt.total)) pct += 7; if(COMPOUND_BAD.includes(opt.total)) pct -= 12; }
+  return Math.max(5, Math.min(100, Math.round(pct)));
+}
+function bestTotalsHTML(birth, dest, opt, current, title){
+  const list=[];
+  for(let t=14;t<=70;t++){ if(!COMPOUND_GOOD.includes(t)) continue; const s=reduceSteps(t).at(-1); list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
+  const digits=[...new Set(list.sort((a,b)=>b.p-a.p).map(x=>x.s))].slice(0,3);
+  const top=digits.flatMap(s=>list.filter(x=>x.s===s).sort((a,b)=>a.t-b.t).slice(0,3)).filter(x=>x.p>=50);
+  const curP = matchPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
+  const inList = top.some(x=>x.t===current) || (COMPOUND_GOOD.includes(current) && top.length && curP>=Math.min(...top.map(x=>x.p)));
+  const cur = inList
+    ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ Your total <b>${current}</b> is already one of the best.</div>`
+    : `<div class="plain" style="font-size:13px;margin-top:6px">Now: <b>${current}</b>. Change the spelling slightly (add or change a letter) so the total becomes one of these.</div>`;
+  return `<div style="margin-top:12px;font-weight:600;color:var(--ink)">⭐ ${title}</div>
+    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.p}%</span>`).join("")}</div>${cur}`;
+}
+const stars = p => { const s=Math.max(1,Math.round(p/20)); return "★".repeat(s)+"☆".repeat(5-s); };
+const level = p => p>=75 ? "ok" : p>=50 ? "mid" : "no";
+
+// Fill the form
+applyText();
+$("d").innerHTML = `<option value="">${L.day}</option>` + Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+$("m").innerHTML = `<option value="">${L.monthPh}</option>` + MONTHS.map((m,i)=>`<option value="${i+1}">${i+1} · ${m}</option>`).join("");
+$("chart").innerHTML = Array.from({length:9},(_,i)=>{ const n=i+1; return `<div><b>${n}</b>${Object.keys(CHALDEAN).filter(k=>CHALDEAN[k]===n).join(" ")||"—"}</div>`; }).join("");
+
+let lastText = "";
+
+$("form").addEventListener("submit", e=>{
+  e.preventDefault();
+  $("err").textContent = "";
+  const d=+$("d").value, m=+$("m").value, y=+$("y").value;
+  if(!d||!m||!y){ $("err").textContent=L.errDate; return; }
+  if(y<1900||y>2100){ $("err").textContent=L.errYear; return; }
+  const dt = new Date(y, m-1, d);
+  if(dt.getMonth()!==m-1){ $("err").textContent=L.errNoDate; return; }
+
+  const dS=reduceSteps(d), mS=reduceSteps(m), yS=reduceSteps(digitSum(y));
+  $("tD").textContent=dS.at(-1); $("tDc").textContent = d>9 ? stepText(String(d).split(""), reduceSteps(digitSum(d))) : d;
+  $("tM").textContent=mS.at(-1); $("tMc").textContent = m>9 ? stepText(String(m).split(""), reduceSteps(digitSum(m))) : m;
+  $("tY").textContent=yS.at(-1); $("tYc").textContent = stepText(String(y).split(""), yS);
+
+  const birth = dS.at(-1);
+  $("birthNum").textContent = birth;
+  $("birthCalc").textContent = d>9 ? `${d} → ${String(d).split("").join("+")} = ${digitSum(d)}${digitSum(d)>9?" → "+birth:""}` : `${d}`;
+
+  const allDigits = (String(d).padStart(2,"0")+String(m).padStart(2,"0")+String(y)).split("").filter(c=>c!=="0");
+  const destS = reduceSteps(allDigits.reduce((a,c)=>a+ +c,0)), dest = destS.at(-1);
+  $("destNum").textContent = dest;
+  $("destCalc").textContent = stepText(allDigits, destS);
+  $("weekday").innerHTML = `${L.bornOn} <b>${DAYS[dt.getDay()]}</b>`;
+
+  // Name number
+  const rawName = $("name").value.trim();
+  const nm = valueOf(rawName.replace(/[^A-Za-z]/g,""));
+  const nameN = nm.single, nameTotal = nm.total;
+  if(nameN!==null){
+    const nS = reduceSteps(nameTotal);
+    $("nameNum").textContent = nameN;
+    $("nameCalc").textContent = `${nameTotal}${nS.length>1?" → "+nS.slice(1).join(" → "):""}`;
+    $("nameBox").style.opacity = 1;
+  } else {
+    $("nameNum").textContent="–"; $("nameCalc").textContent=L.enterName; $("nameBox").style.opacity=.6;
+  }
+
+  // Lucky details
+  const D = DATA[birth];
+  $("lkBase").textContent = `${L.basedOn}: ${birth}`;
+  $("lkPlanet").textContent = D.planet;
+  $("lkNums").innerHTML = D.lucky.map(n=>`<span class="chip good">${n}</span>`).join("");
+  $("lkAvoid").innerHTML = D.avoid.map(n=>`<span class="chip bad">${n}</span>`).join("");
+  $("lkDays").textContent = D.days.map(i=>DAYS[i]).join(", ");
+  $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ");
+  $("lkGem").textContent = D.gem;
+  const luckyDates=[]; for(let i=1;i<=31;i++) if(D.lucky.includes(reduceSteps(i).at(-1))) luckyDates.push(i);
+  $("lkDates").textContent = luckyDates.join(", ");
+
+  // Name match
+  const v = $("verdict");
+  if(nameN===null){ $("nameCard").style.display="none"; }
+  else {
+    $("nameCard").style.display="";
+    const p = matchPct(nameN, birth, dest, {total:nameTotal});
+    $("nmPct").textContent = p+"%"; $("nmStars").textContent = stars(p); $("nmBox").className = "big pct "+level(p);
+    const withBirth = rel(nameN,birth)>=0.8;
+    if(level(p)==="ok"){ v.className="verdict ok"; v.innerHTML=`✅ Excellent match — name number ${nameN} suits both your birth number (${birth}) and destiny number (${dest}).`; }
+    else if(level(p)==="mid"){ v.className="verdict mid"; v.innerHTML=`🙂 Good match — name number ${nameN} suits your ${withBirth?"birth":"destiny"} number.<br><span class="plain">Lucky name totals for you: ${D.lucky.join(", ")}.</span>`; }
+    else { v.className="verdict no"; v.innerHTML=`⚠️ Name number ${nameN} is not a strong match.<br><span class="plain">Traditionally, a small spelling change to reach ${D.lucky.join(", ")} is suggested.</span>`; }
+    v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + bestTotalsHTML(birth, dest, {}, nameTotal, "Best name totals for you");
+  }
+
+  // Business name match
+  const rawBiz = $("biz").value.trim();
+  const bz = rawBiz ? valueOf(rawBiz) : {single:null};
+  let bzScore = 0;
+  if(bz.single!==null){
+    const b = bz.single, bS = reduceSteps(bz.total);
+    $("bzNum").textContent = b;
+    $("bzCalc").textContent = `${rawBiz} → ${bz.vals.filter(x=>x).join(" + ")} = ${bz.total}${bS.length>1?" → "+bS.slice(1).join(" → "):""}`;
+    $("bzCompound").innerHTML = compoundTag(bz.total);
+    bzScore = matchPct(b, birth, dest, {business:true, total:bz.total});
+    $("bzStars").textContent = stars(bzScore); $("bzPct").textContent = bzScore+"%"; $("bzBox").className = "big pct "+level(bzScore);
+    const bestBiz = [1,5,6,3,9].filter(n=>(D.lucky.includes(n)||n===birth||n===dest) && !D.avoid.includes(n) && !DATA[dest].avoid.includes(n));
+    const bv = $("bzVerdict");
+    if(level(bzScore)==="ok"){ bv.className="verdict ok"; bv.innerHTML=`✅ Strong business name — number ${b} works well with the owner's birth (${birth}) and destiny (${dest}) numbers.`; }
+    else if(level(bzScore)==="mid"){ bv.className="verdict mid"; bv.innerHTML=`🙂 Good name.<br><span class="plain">Business number ${b} is fine. It could be stronger with a total of <b>${bestBiz.join(", ")||birth}</b>.</span>`; }
+    else { bv.className="verdict no"; bv.innerHTML=`⚠️ Weak match for the owner.<br><span class="plain">Try a small spelling change, or add a word like "Inc", "Store" or "&amp; Co", so the total becomes <b>${bestBiz.join(", ")||birth}</b>.</span>`; }
+    const extras = ["Inc","Ltd","Store","Shop","Services","& Co","Group","Plus","Pro","Centre","Solutions"];
+    const tweaks = extras.map(x=>({x, r:valueOf(rawBiz+" "+x)}))
+      .map(t=>({...t, p:matchPct(t.r.single, birth, dest, {business:true, total:t.r.total})}))
+      .filter(t=>t.p>bzScore).sort((a,b)=>b.p-a.p).slice(0,4);
+    $("bzTip").innerHTML = (tweaks.length && bzScore<90 ? `💡 Suggestions: ` + tweaks.map(t=>`<b>${esc(rawBiz)} ${esc(t.x)}</b> (${t.r.total} → ${t.r.single}, ${t.p}%)`).join(" · ") : "")
+      + bestTotalsHTML(birth, dest, {business:true}, bz.total, "Best business name totals");
+  }
+  $("bizCard").style.display = bz.single===null ? "none" : "";
+
+  // Phone / vehicle / house number
+  const rawPhone = $("phone").value.trim();
+  const ph = rawPhone ? valueOf(rawPhone) : {single:null};
+  let phScore = 0;
+  if(ph.single!==null){
+    const phN = ph.single, pS = reduceSteps(ph.total);
+    $("phNum").textContent = phN;
+    $("phCalc").textContent = `${ph.vals.filter(v=>v!==0).join(" + ")} = ${ph.total}${pS.length>1?" → "+pS.slice(1).join(" → "):""}`;
+    phScore = matchPct(phN, birth, dest, {nameN});
+    $("phStars").textContent = stars(phScore); $("phPct").textContent = phScore+"%"; $("phBox").className = "big pct "+level(phScore);
+    const best = [1,2,3,4,5,6,7,8,9].map(n=>({n,p:matchPct(n,birth,dest,{nameN})})).sort((a,b)=>b.p-a.p).filter(x=>x.n!==phN).slice(0,3).map(x=>`${x.n} (${x.p}%)`);
+    const pv = $("phVerdict");
+    if(level(phScore)==="ok"){ pv.className="verdict ok"; pv.innerHTML=`✅ Very lucky for you — this number (${phN}) works well with your birth (${birth}) and destiny (${dest}) numbers.${phScore<100?`<br><span class="plain">Other strong totals: <b>${best.join(", ")}</b>.</span>`:""}`; }
+    else if(level(phScore)==="mid"){ pv.className="verdict mid"; pv.innerHTML=`🙂 Good number.<br><span class="plain">Number ${phN} is good for you${phN===birth?" — it is the same as your birth number":""}. Other strong totals: <b>${best.join(", ")}</b>.</span>`; }
+    else { pv.className="verdict no"; pv.innerHTML=`⚠️ Number ${phN} is a weak match.<br><span class="plain">When choosing a new phone or plate number, look for a total of <b>${best.join(", ")}</b>.</span>`; }
+  }
+  $("phoneCard").style.display = ph.single===null ? "none" : "";
+
+  // Nature
+  const tr = [["birth",birth,L.birthNumber,L.innerNature],["dest",dest,L.destinyNumber,L.lifePath]];
+  if(nameN!==null) tr.push(["name",nameN,L.nameNumber,L.howOthers]);
+  let html = tr.map(([role,n,label,what],idx)=>{
+    const same = tr.slice(0,idx).filter(t=>t[1]===n).map(t=>t[2].toLowerCase());
+    return `<div class="trait"><b>${label} ${n} — ${DATA[n].planet}</b><div class="role">${what}</div>${ROLE_TEXT[role][n]}`
+      + (same.length ? `<div style="margin-top:6px;font-size:13px;color:var(--brand);font-weight:600">↺ Same as your ${same.join(", ")}, so these qualities are stronger.</div>` : "") + `</div>`;
+  }).join("");
+  const r = rel(dest, birth);
+  const combo = r===1 ? COMBO.same : r>=0.8 ? COMBO.friend : r===0 ? COMBO.enemy : COMBO.neutral;
+  html += `<div class="trait" style="background:#fff;border:1px dashed var(--line)"><b>${L.together}: ${birth} + ${dest}</b><br>${combo}</div>`;
+  $("traits").innerHTML = html;
+
+  lastText =
+`🔢 Numerology result
+${rawName?"Name: "+rawName+"\n":""}Date of birth: ${d} ${MONTHS[m-1]} ${y} (${DAYS[dt.getDay()]})
+Birth number: ${birth}
+Destiny number: ${dest}
+${nameN!==null?"Name number: "+nameN+" ("+nameTotal+")\n":""}Planet: ${D.planet}
+Lucky numbers: ${D.lucky.join(", ")}
+Lucky days: ${D.days.map(i=>DAYS[i]).join(", ")}
+Gemstone: ${D.gem}${bz.single!==null?"\nBusiness name: "+rawBiz+" = "+bz.single+" ("+bzScore+"% match)":""}${ph.single!==null?"\nPhone/vehicle number: "+ph.single+" ("+phScore+"% match)":""}
+Free at freenetsave.com`;
+  $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(lastText);
+  $("results").style.display = "block";
+  $("results").scrollIntoView({behavior:"smooth", block:"start"});
+});
+$("copyBtn").addEventListener("click", ()=> copyText(lastText));
+</script>
+</body>
+</html>
