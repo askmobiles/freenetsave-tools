@@ -49,6 +49,27 @@
   .agenote:empty{display:none}
   .big.strong{outline:3px solid var(--accent,#f97316);outline-offset:-1px;background:#fff7ed}
   .big.strong .t:after{content:" · stronger now";color:#c2410c;font-weight:700}
+  .tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:0 0 4px}
+  .tabs button{font:inherit;font-weight:700;font-size:14px;border:1.5px solid var(--line);background:#fff;color:var(--brand2);border-radius:12px;padding:10px 4px;cursor:pointer;line-height:1.25}
+  .tabs button .ic{display:block;font-size:18px}
+  .tabs button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .tabs button:focus-visible{outline:3px solid var(--accent,#f97316);outline-offset:2px}
+  .tabintro{margin:0 0 12px;color:var(--muted);font-size:14px}
+  .hidetab{display:none !important}
+  .explain p{margin:0;font-size:15px;color:var(--muted)}
+  .htable{width:100%;border-collapse:collapse;font-size:14px;text-align:center}
+  .htable th,.htable td{padding:8px 6px;border-bottom:1px solid var(--line);width:auto}
+  .htable th{color:var(--brand2);font-size:13px;vertical-align:bottom}
+  .htable td:first-child,.htable th:first-child{text-align:left;font-weight:700;color:var(--ink);width:auto}
+  .htable td.ok{background:#e9f6ec;color:#1e6b35;font-weight:700}
+  .htable td.mid{background:#fff4dc;color:#9a6a00;font-weight:700}
+  .htable td.no{background:#fdecea;color:#9b2c22;font-weight:700}
+  .htable tr.best td{box-shadow:inset 0 -3px 0 var(--accent,#f97316)}
+  .htable .sm{font-weight:400;font-size:12px;color:var(--muted)}
+  .famrow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px}
+  .famrow button{border:0;background:#fdecea;color:#9b2c22;border-radius:10px;padding:0 14px;cursor:pointer;font-size:16px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:700px){ .tabs{grid-template-columns:repeat(3,1fr)} }
   @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
 </style>
 </head>
@@ -59,31 +80,63 @@
     <p class="sub" data-t="subtitle"></p>
   </div>
 
+  <nav class="tabs" id="tabs" role="tablist" aria-label="What to check">
+    <button type="button" role="tab" data-tab="my" class="on"><span class="ic">🔢</span>My numbers</button>
+    <button type="button" role="tab" data-tab="name"><span class="ic">✍️</span>Name</button>
+    <button type="button" role="tab" data-tab="biz"><span class="ic">🏪</span>Business</button>
+    <button type="button" role="tab" data-tab="house"><span class="ic">🏠</span>House &amp; shop</button>
+    <button type="button" role="tab" data-tab="vehicle"><span class="ic">🚗</span>Vehicle</button>
+    <button type="button" role="tab" data-tab="phone"><span class="ic">📱</span>Phone</button>
+  </nav>
+
   <form class="card" id="form" autocomplete="off">
-    <div class="field">
-      <label for="name"><span data-t="nameLabel"></span> <small data-t="optional"></small></label>
-      <input id="name" placeholder="Your full name">
+    <p class="tabintro" id="tabIntro"></p>
+    <div class="field" data-tab="my name">
+      <label for="name"><span id="nameLbl">Your name</span> <small id="nameOpt">(optional)</small></label>
+      <input id="name" placeholder="Name in English letters">
     </div>
-    <label data-t="dobLabel"></label>
+    <label id="dobLbl">Date of birth</label>
     <div class="row3 field">
       <select id="d" aria-label="Day"></select>
       <select id="m" aria-label="Month"></select>
       <input id="y" type="number" inputmode="numeric" min="1900" max="2100" aria-label="Year">
     </div>
-    <div class="field">
-      <label for="biz"><span data-t="bizLabel"></span> <small data-t="optional"></small></label>
-      <input id="biz" placeholder="Your shop or business name">
+    <div class="field" data-tab="biz">
+      <label for="biz">Business or shop name</label>
+      <input id="biz" placeholder="Business name, as on the sign">
     </div>
-    <div class="field">
-      <label for="phone"><span data-t="phoneLabel"></span> <small data-t="optional"></small></label>
-      <input id="phone" inputmode="tel" placeholder="Phone, car plate or house number">
+    <div data-tab="house">
+      <div class="field">
+        <label for="hType">What is it?</label>
+        <select id="hType">
+          <option value="house">🏠 House (whole family)</option>
+          <option value="shop">🏪 Shop or office (owner only)</option>
+        </select>
+      </div>
+      <div class="row2 field">
+        <div><label for="hNum">House or unit number</label><input id="hNum" placeholder="Number on the door"></div>
+        <div><label for="hStreet">Street number <small>(optional, for a unit)</small></label><input id="hStreet" inputmode="numeric" placeholder="Building number"></div>
+      </div>
+      <div class="field" id="famWrap">
+        <label>Other family members <small>(optional, up to 6)</small></label>
+        <div id="famList"></div>
+        <button type="button" class="btn ghost" id="addFam" style="margin-top:6px">➕ Add family member</button>
+      </div>
+    </div>
+    <div class="field" data-tab="vehicle">
+      <label for="plate">Vehicle plate number</label>
+      <input id="plate" placeholder="Letters and numbers on the plate">
+    </div>
+    <div class="field" data-tab="phone">
+      <label for="phone">Phone number</label>
+      <input id="phone" inputmode="tel" placeholder="Phone number with area code">
     </div>
     <button class="btn" type="submit" data-t="calculate"></button>
     <div class="err" id="err"></div>
   </form>
 
   <section id="results">
-    <div class="card">
+    <div class="card" data-tab="my name biz house vehicle phone">
       <h2 data-t="coreTitle"></h2>
       <div class="big3">
         <div class="big"><div class="t" data-t="birthNumber"></div><div class="num" id="birthNum">–</div><div class="calc" id="birthCalc"></div></div>
@@ -93,7 +146,7 @@
       <div class="agenote" id="ageNote"></div>
     </div>
 
-    <div class="card">
+    <div class="card" data-tab="my">
       <h2 data-t="totalsTitle"></h2>
       <div class="totals">
         <div class="tot"><span data-t="date"></span><b id="tD">–</b><span id="tDc"></span></div>
@@ -103,7 +156,7 @@
       <p class="calc" style="margin:12px 0 0;text-align:center" id="weekday"></p>
     </div>
 
-    <div class="card">
+    <div class="card" data-tab="my">
       <h2 data-t="luckyTitle"></h2>
       <p class="calc" style="margin:-6px 0 10px" id="lkBase"></p>
       <table>
@@ -117,7 +170,7 @@
       </table>
     </div>
 
-    <div class="card" id="nameCard">
+    <div class="card" data-tab="name" id="nameCard">
       <h2 data-t="nameMatchTitle"></h2>
       <div class="flex">
         <div class="verdict" id="verdict" style="flex:1;min-width:240px"></div>
@@ -125,7 +178,7 @@
       </div>
     </div>
 
-    <div class="card" id="bizCard">
+    <div class="card" data-tab="biz" id="bizCard">
       <h2 data-t="bizMatchTitle"></h2>
       <div class="flex" style="margin-bottom:12px">
         <div class="big" style="min-width:130px"><div class="t" data-t="bizNumber"></div><div class="num" id="bzNum">–</div></div>
@@ -140,8 +193,8 @@
       <div class="calc" style="margin-top:10px" id="bzTip"></div>
     </div>
 
-    <div class="card" id="phoneCard">
-      <h2 data-t="phoneMatchTitle"></h2>
+    <div class="card" data-tab="vehicle phone" id="phoneCard">
+      <h2 id="phTitle">Phone number match</h2>
       <div class="flex" style="margin-bottom:12px">
         <div class="big" style="min-width:130px"><div class="t" data-t="numberValue"></div><div class="num" id="phNum">–</div></div>
         <div style="flex:1;min-width:200px">
@@ -153,7 +206,7 @@
       <div class="verdict" id="phVerdict"></div>
     </div>
 
-    <div class="card">
+    <div class="card" data-tab="my">
       <h2 data-t="natureTitle"></h2>
       <div id="traits"></div>
       <div class="actions">
@@ -162,9 +215,41 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" data-tab="name biz vehicle">
       <h2 data-t="chartTitle"></h2>
       <div class="chart" id="chart"></div>
+    </div>
+
+    <div class="card" data-tab="house" id="houseCard">
+      <h2 id="hTitle">House number match</h2>
+      <div class="calc" id="hCalc"></div>
+      <div style="overflow-x:auto;margin-top:10px"><table class="htable" id="hTable"></table></div>
+      <div class="verdict" id="hVerdict" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card explain" data-tab="my">
+      <h2>📖 How your numbers work</h2>
+      <p><b>Birth number</b> = the digits of your birth day added up (27 → 2+7 = 9). <b>Destiny number</b> = every digit of your full date of birth added up. Until age 30 the birth number is stronger; from 30 the destiny number leads. Lucky numbers, days and colours come from the planet that rules your birth number.</p>
+    </div>
+    <div class="card explain" data-tab="name">
+      <h2>📖 How the name check works</h2>
+      <p>Every English letter has a value (see the chart). The name is checked two ways: the <b>full total</b> (e.g. 37) and the single digit it reduces to (3+7 = 10 → 1). Best is when the single digit is friendly to your numbers and the full total is a lucky one. If not, adding or changing one letter can move it to one of your best totals.</p>
+    </div>
+    <div class="card explain" data-tab="biz">
+      <h2>📖 How the business check works</h2>
+      <p>A business name is matched to the <b>owner’s</b> numbers only. Totals of 1, 5 and 6 are traditionally strong for business. Use the <b>same full name everywhere</b> (sign, receipts, Google, phone greeting), because a shortened name has a different number.</p>
+    </div>
+    <div class="card explain" data-tab="house">
+      <h2>📖 How the house &amp; shop check works</h2>
+      <p><b>House:</b> it should suit the head of the family and not be bad for anyone else. <b>Shop:</b> only the owner counts. If the number doesn’t suit, a letter can be added on the door or nameplate (e.g. 23 → 23E). Your official address stays the same.</p>
+    </div>
+    <div class="card explain" data-tab="vehicle">
+      <h2>📖 How the vehicle check works</h2>
+      <p>The plate’s digits and letters (using the letter chart) are added up. Enter the date of birth of the main driver or the owner. When choosing a new or personalised plate, aim for one of the strong totals shown.</p>
+    </div>
+    <div class="card explain" data-tab="phone">
+      <h2>📖 How the phone check works</h2>
+      <p>All digits of the phone number are added up. Enter the date of birth of the person who uses the number. When getting a new number, pick one whose total is one of your strong totals shown.</p>
     </div>
   </section>
 
@@ -334,6 +419,12 @@ $("form").addEventListener("submit", e=>{
   if(y<1900||y>2100){ $("err").textContent=L.errYear; return; }
   const dt = new Date(y, m-1, d);
   if(dt.getMonth()!==m-1){ $("err").textContent=L.errNoDate; return; }
+  const NEED = {name:["name","Please enter a name."],
+                biz:["biz","Please enter the business name."],
+                house:["hNum","Please enter the house or unit number."],
+                vehicle:["plate","Please enter the plate number."],
+                phone:["phone","Please enter the phone number."]}[TAB];
+  if(NEED && !$(NEED[0]).value.trim()){ $("err").textContent=NEED[1]; $("results").style.display="none"; return; }
 
   const dS=reduceSteps(d), mS=reduceSteps(m), yS=reduceSteps(digitSum(y));
   $("tD").textContent=dS.at(-1); $("tDc").textContent = d>9 ? stepText(String(d).split(""), reduceSteps(digitSum(d))) : d;
@@ -426,8 +517,8 @@ $("form").addEventListener("submit", e=>{
   }
   $("bizCard").style.display = bz.single===null ? "none" : "";
 
-  // Phone / vehicle / house number
-  const rawPhone = $("phone").value.trim();
+  // Phone / vehicle number
+  const rawPhone = (TAB==="vehicle" ? $("plate").value : TAB==="phone" ? $("phone").value : "").trim();
   const ph = rawPhone ? valueOf(rawPhone) : {single:null};
   let phScore = 0;
   if(ph.single!==null){
@@ -465,13 +556,110 @@ Destiny number: ${dest}${destLeads?" (stronger now, age "+age+")":""}
 ${nameN!==null?"Name number: "+nameN+" ("+nameTotal+")\n":""}Planet: ${D.planet}
 Lucky numbers: ${D.lucky.join(", ")}
 Lucky days: ${D.days.map(i=>DAYS[i]).join(", ")}
-Gemstone: ${D.gem}${bz.single!==null?"\nBusiness name: "+rawBiz+" = "+bz.single+" ("+bzScore+"% match)":""}${ph.single!==null?"\nPhone/vehicle number: "+ph.single+" ("+phScore+"% match)":""}
+Gemstone: ${D.gem}${bz.single!==null?"\nBusiness name: "+rawBiz+" = "+bz.single+" ("+bzScore+"% match)":""}${ph.single!==null?"\n"+(TAB==="vehicle"?"Vehicle":"Phone")+" number: "+ph.single+" ("+phScore+"% match)":""}
 Free at freenetsave.com`;
   $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(lastText);
+  if(TAB==="house") houseCheck({d,m,y,birth,dest,label:""});
+  applyTab();
   $("results").style.display = "block";
   $("results").scrollIntoView({behavior:"smooth", block:"start"});
 });
 $("copyBtn").addEventListener("click", ()=> copyText(lastText));
+
+/* ---------- Tabs ---------- */
+let TAB = "my";
+const TAB_INFO = {
+  my:"Enter your date of birth to see your birth and destiny numbers, lucky details and nature.",
+  name:"Enter a name and that person’s date of birth to see how well the name suits them.",
+  biz:"Enter the business name and the owner’s date of birth.",
+  house:"Enter the house or unit number and the date of birth of the head of the family (or the shop owner). For a house you can add other family members.",
+  vehicle:"Enter the plate number and the date of birth of the main driver or owner.",
+  phone:"Enter the phone number and the date of birth of the person who uses it."
+};
+function applyTab(){
+  document.querySelectorAll("#tabs button").forEach(b=>{ const on=b.dataset.tab===TAB; b.classList.toggle("on",on); b.setAttribute("aria-selected",on); });
+  document.querySelectorAll("[data-tab]").forEach(el=>{ if(el.closest("#tabs")) return; el.classList.toggle("hidetab", !el.dataset.tab.split(" ").includes(TAB)); });
+  $("tabIntro").textContent = TAB_INFO[TAB];
+  const shop = $("hType").value==="shop";
+  $("dobLbl").textContent = TAB==="house" ? (shop ? "Owner – date of birth" : "Head of family – date of birth")
+    : TAB==="biz" ? "Owner – date of birth"
+    : TAB==="vehicle" ? "Driver or owner – date of birth"
+    : "Date of birth";
+  $("nameLbl").textContent = TAB==="name" ? "Name to check" : "Your name";
+  $("nameOpt").textContent = TAB==="name" ? "(English letters)" : "(optional)";
+  $("famWrap").style.display = shop ? "none" : "";
+  $("phTitle").textContent = TAB==="vehicle" ? "Vehicle number match" : "Phone number match";
+}
+document.querySelectorAll("#tabs button").forEach(b=>b.addEventListener("click",()=>{
+  TAB=b.dataset.tab; $("err").textContent=""; $("results").style.display="none"; applyTab();
+}));
+$("hType").addEventListener("change",()=>{ $("results").style.display="none"; applyTab(); });
+$("addFam").addEventListener("click",()=>{
+  if($("famList").children.length>=6) return;
+  const n=$("famList").children.length+1;
+  const r=document.createElement("div"); r.className="famrow";
+  r.innerHTML=`<input placeholder="Name or relation" aria-label="Family member ${n} name"><input type="date" min="1900-01-01" max="2100-12-31" aria-label="Family member ${n} date of birth"><button type="button" title="Remove" aria-label="Remove">✕</button>`;
+  r.querySelector("button").onclick=()=>r.remove();
+  $("famList").appendChild(r);
+});
+
+/* ---------- House & shop ---------- */
+function personFrom(d,m,y,label){
+  const birth = reduceSteps(d).at(-1);
+  const all = (String(d).padStart(2,"0")+String(m).padStart(2,"0")+String(y)).split("").filter(c=>c!=="0");
+  const dest = reduceSteps(all.reduce((a,c)=>a+ +c,0)).at(-1);
+  const now=new Date(); let age=now.getFullYear()-y;
+  if(now.getMonth()<m-1 || (now.getMonth()===m-1 && now.getDate()<d)) age--;
+  return {label, birth, dest, age, W: age>=SWITCH_AGE ? {b:30,d:50} : {b:50,d:30}};
+}
+function pctFor(p, n){ const keep=W; W=p.W; const r=matchPct(n,p.birth,p.dest); W=keep; return r; }
+function houseCheck(head){
+  const shop = $("hType").value==="shop";
+  const people = [personFrom(head.d,head.m,head.y, head.label || (shop?"Owner":"Head"))];
+  if(!shop) [...$("famList").children].forEach((r,i)=>{
+    const [lab,dt]=r.querySelectorAll("input");
+    if(!dt.value) return;
+    const [yy,mm,dd]=dt.value.split("-").map(Number);
+    people.push(personFrom(dd,mm,yy, lab.value.trim() || ("Member "+(i+1))));
+  });
+  const base = $("hNum").value.trim().toUpperCase();
+  const street = $("hStreet").value.trim();
+  const opts = [{door:base, note:"Now"}];
+  if(street) opts.push({door:street+" / "+base, note:"Full address", full:true});
+  [["A",1],["B",2],["C",3],["D",4],["E",5],["U",6],["O",7],["F",8]].forEach(([Lt])=>opts.push({door:base+Lt, note:"On the door"}));
+  opts.forEach(o=>{
+    const v=valueOf(o.door.replace(/\//g,""));
+    o.total=v.total; o.n=v.single;
+    o.pcts=people.map(p=>pctFor(p,o.n));
+    const others=o.pcts.slice(1);
+    o.score = shop || !others.length ? o.pcts[0] : 0.6*o.pcts[0] + 0.4*Math.min(...others);
+    o.bad = o.pcts.some(x=>x<35);
+  });
+  const ranked = opts.slice(1).filter(o=>!o.bad).sort((a,b)=>b.score-a.score);
+  const cur = opts[0];
+  const curGood = !cur.bad && cur.pcts[0]>=50;
+  const best = (ranked[0] && (!curGood || ranked[0].score > cur.score+10)) ? ranked[0] : cur;
+  $("hTitle").textContent = shop ? "Shop / office number match (owner only)" : "House number match (family)";
+  $("hCalc").textContent = `${base} → ${valueOf(base).vals.filter(x=>x).join(" + ")} = ${cur.total}${cur.total>9?" → "+cur.n:""}` + (people.length>1?` · ${people.length} people checked`:"") + " · ★ = destiny number is the stronger one (age 30+)";
+  const thRow = people.map(p=>`<th>${esc(p.label)}<br><span class="sm">Birth ${p.birth} · Destiny ${p.dest}${p.age>=SWITCH_AGE?"★":""}</span></th>`).join("");
+  $("hTable").innerHTML = `<tr><th>Door</th><th>Total</th>${thRow}</tr>` +
+    opts.map(o=>`<tr class="${o===best?"best":""}"><td>${esc(o.door)}<br><span class="sm">${o===best?"⭐ Best":o.note}</span></td><td>${o.total}${o.total>9?" → "+o.n:""}</td>${o.pcts.map(x=>`<td class="${level(x)}">${x}%</td>`).join("")}</tr>`).join("");
+  const v=$("hVerdict");
+  const full = opts.find(o=>o.full);
+  const fullNote = full && !full.bad && full.pcts[0]>=75
+    ? `<div class="plain" style="margin-top:8px">🏢 Counting the full address (${esc(full.door)}) it is already ${full.pcts[0]}% — many readers use the full address for a unit.</div>` : "";
+  if(best!==cur){
+    v.className="verdict "+(curGood?"mid":"no");
+    v.innerHTML = (curGood ? `🙂 ${esc(cur.door)} is fine, but writing` : `⚠️ ${esc(cur.door)} is a weak match. Writing`) +
+      ` <b>${esc(best.door)}</b> on the door or nameplate gives a total of ${best.n}` +
+      (shop||people.length===1 ? ` and ${best.pcts[0]}% for the owner.` : `: ${best.pcts[0]}% for the head and at least ${Math.min(...best.pcts.slice(1))}% for everyone else.`) +
+      `<br><span class="plain">Your official address does not change.</span>` + fullNote;
+  } else {
+    v.className="verdict ok";
+    v.innerHTML = `✅ ${esc(cur.door)} already works well${shop||people.length===1?" for the owner":" for the family"} — no change needed.`;
+  }
+}
+applyTab();
 </script>
 </body>
 </html>
