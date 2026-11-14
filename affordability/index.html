@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home Affordability Calculator — how much house can I afford? (free)</title>
+<meta name="description" content="How much house can you afford? Free home affordability calculator using your income, debts, down payment and rate. Standard 28/36 rule or Canada's 39/44 rule with the stress test. Nothing is saved.">
+<link rel="canonical" href="https://freenetsave.com/affordability-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=5">
+<style>
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .why{background:var(--soft);border-radius:12px;padding:12px 14px;margin-top:12px;font-size:15px}
+  .why ul{margin:6px 0 0;padding-left:20px}
+  .warn{background:#fff4dc;color:#7a5200;border-radius:12px;padding:10px 12px;margin-top:10px;font-size:15px}
+  .chk{display:flex;align-items:flex-start;gap:10px;font-weight:600;font-size:15px;cursor:pointer}
+  .chk input{width:22px;height:22px;flex:none;margin-top:1px}
+  .chk small{display:block;font-weight:400;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>How Much House Can I Afford?</h1>
+    <p class="sub">See the home price and mortgage your income can carry.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label for="rule">Which rule should we use?</label>
+      <select id="rule">
+        <option value="std">Standard rule: housing up to 28%, all debts up to 36% of income</option>
+        <option value="ca">Canada: housing up to 39%, all debts up to 44% + stress test</option>
+      </select>
+    </div>
+    <div class="row">
+      <div class="field"><label for="inc">Household income per year <small>(before tax)</small></label><input id="inc" type="number" inputmode="decimal" min="0" placeholder="All earners together"></div>
+      <div class="field"><label for="debt">Other debt payments per month</label><input id="debt" type="number" inputmode="decimal" min="0" placeholder="Car, cards, loans (0 if none)"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="down">Down payment you have</label><input id="down" type="number" inputmode="decimal" min="0" placeholder="Savings for the down payment"></div>
+      <div class="field"><label for="rate">Mortgage rate (% per year)</label><input id="rate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Rate you expect, e.g. 4.5"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="years">Pay it off over</label>
+        <select id="years"><option value="15">15 years</option><option value="20">20 years</option><option value="25" selected>25 years</option><option value="30">30 years</option></select>
+      </div>
+      <div class="field"><label for="costs">Home costs per month <small>(tax, heating, condo fees)</small></label><input id="costs" type="number" inputmode="decimal" min="0" placeholder="Best guess, e.g. 450"></div>
+    </div>
+    <div class="field" id="stressWrap">
+      <label class="chk"><input type="checkbox" id="stress" checked><span>Use a higher test rate<small>Checks you could still pay if rates rise: your rate + 2%, never under 5.25%.</small></span></label>
+    </div>
+    <div class="field"><label for="cur">Money sign</label>
+      <select id="cur"><option value="$">$</option><option value="€">€</option><option value="£">£</option><option value="₹">₹</option><option value="">none</option></select>
+    </div>
+    <p class="err" id="err"></p>
+    <div class="result">
+      <div class="box main"><span>Home price you can afford</span><b id="price">–</b></div>
+      <div class="box"><span>Mortgage amount</span><b id="loan">–</b></div>
+      <div class="box"><span>Monthly mortgage payment</span><b id="pay">–</b></div>
+    </div>
+    <div id="out"></div>
+    <p class="note" style="text-align:left;margin-top:12px">This is an estimate. Lenders also look at your credit score, job and savings. Closing costs and mortgage insurance are not included.</p>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">📋 Copy</button></div>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/embed.js?v=5"></script>
+<script>
+const v = id => parseFloat($(id).value);
+const fmt = n => $("cur").value + n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt0 = n => $("cur").value + Math.round(n).toLocaleString();
+let last = "";
+// Monthly payment <-> loan amount (Canada: interest added twice a year; standard: monthly)
+function mRate(annual, ca){ return ca ? Math.pow(1+annual/200, 1/6)-1 : annual/1200; }
+function pvOf(pay, i, n){ return i===0 ? pay*n : pay*(1-Math.pow(1+i,-n))/i; }
+function pmt(P, i, n){ return i===0 ? P/n : P*i/(1-Math.pow(1+i,-n)); }
+// Canada: highest price this down payment allows (5% of first 500k, 10% up to 1.5M, 20% from 1.5M)
+function caMaxPriceForDown(D){
+  if(D <= 25000) return D/0.05;
+  const tier = 500000 + (D-25000)/0.10;
+  if(tier < 1500000) return tier;
+  return D >= 300000 ? D/0.20 : 1499999;
+}
+function caMinDown(price){
+  if(price >= 1500000) return price*0.2;
+  return price <= 500000 ? price*0.05 : 25000 + (price-500000)*0.10;
+}
+function calc(){
+  const ca = $("rule").value==="ca";
+  $("stressWrap").style.display = ca ? "none" : "";
+  $("err").textContent = ""; $("out").innerHTML = ""; last = "";
+  const inc = v("inc"), debt = v("debt")||0, D = v("down")||0, r = v("rate"), yrs = +$("years").value, costs = v("costs")||0;
+  const clear = () => ["price","loan","pay"].forEach(i=>$(i).textContent="–");
+  if(!(inc>0) || !(r>=0) || isNaN(r)){ clear(); return; }
+  const gds = ca ? 0.39 : 0.28, tds = ca ? 0.44 : 0.36;
+  const stress = ca || $("stress").checked;
+  const qRate = stress ? Math.max(r+2, 5.25) : r;
+  const mInc = inc/12;
+  const byHousing = mInc*gds - costs, byDebts = mInc*tds - costs - debt;
+  const maxPay = Math.min(byHousing, byDebts);
+  if(maxPay <= 0){ clear(); $("err").textContent = "Your debts and home costs already use up the allowed part of your income."; return; }
+  const n = yrs*12;
+  let loan = pvOf(maxPay, mRate(qRate, ca), n);
+  let price = loan + D, limitByDown = false;
+  if(ca){
+    const cap = caMaxPriceForDown(D);
+    if(price > cap){ price = cap; loan = Math.max(price - D, 0); limitByDown = true; }
+  }
+  const realPay = pmt(loan, mRate(r, ca), n);
+  $("price").textContent = fmt0(price);
+  $("loan").textContent = fmt0(loan);
+  $("pay").textContent = fmt(realPay);
+
+  const limit = limitByDown ? "your down payment" : (byDebts < byHousing ? `all debts (${tds*100}% of income)` : `housing costs (${gds*100}% of income)`);
+  let html = `<div class="why"><b>What sets your limit:</b> ${limit}.<ul>
+    <li>Most you can spend on housing: <b>${fmt(byHousing+costs)}</b> a month (mortgage + home costs).</li>
+    <li>Most for housing plus other debts: <b>${fmt(byDebts+costs+debt)}</b> a month.</li>
+    ${stress ? `<li>Checked at <b>${qRate.toFixed(2)}%</b> instead of ${r}%, so you could still pay if rates go up.</li>` : ""}
+    <li>Your real payment at ${r}% would be <b>${fmt(realPay)}</b> a month.</li></ul></div>`;
+  if(ca){
+    const need = caMinDown(price), pct = price ? D/price*100 : 0;
+    if(limitByDown) html += `<div class="warn">💡 Your income could carry more, but in Canada a ${fmt0(D)} down payment allows a home up to about ${fmt0(price)}. Saving more for the down payment raises your limit.</div>`;
+    else if(pct < 20) html += `<div class="warn">ℹ️ Your down payment is ${pct.toFixed(1)}% (minimum for this price: ${fmt0(need)}). Under 20%, mortgage insurance is added and the longest term is usually 25 years (30 for some first-time buyers).</div>`;
+  }
+  $("out").innerHTML = html;
+  last = `Home price I can afford: ${fmt0(price)}\nMortgage: ${fmt0(loan)}\nMonthly payment at ${r}%: ${fmt(realPay)}\n(${ca?"Canada 39/44 rule":"28/36 rule"} · freenetsave.com)`;
+}
+["rule","inc","debt","down","rate","years","costs","stress","cur"].forEach(id=>$(id).addEventListener("input", calc));
+$("copy").addEventListener("click", ()=> last ? copyText(last) : toast("Fill in your income and rate first"));
+calc();
+</script>
+</body>
+</html>

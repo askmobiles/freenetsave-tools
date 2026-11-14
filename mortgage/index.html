@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mortgage Calculator (free) — freenetsave.com</title>
+<meta name="description" content="Free mortgage calculator. See your monthly, bi-weekly or weekly mortgage payment, total interest, payoff time and a year-by-year table. Works for any country. Nothing is saved.">
+<link rel="canonical" href="https://freenetsave.com/mortgage-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=5">
+<style>
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .tbl{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+  .tbl th,.tbl td{padding:7px 6px;border-bottom:1px solid var(--line);text-align:right}
+  .tbl th:first-child,.tbl td:first-child{text-align:left}
+  .tbl th{color:var(--muted);font-weight:600}
+  details summary{cursor:pointer;font-weight:700;color:var(--brand2);margin-top:14px}
+  .inline{display:flex;gap:8px}
+  .inline input{flex:1}
+  .inline select{width:auto;flex:none}
+  .bar2{display:flex;height:14px;border-radius:99px;overflow:hidden;margin:12px 0 4px;background:var(--line)}
+  .bar2 i{display:block;height:100%}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .legend b{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .good{background:#e9f6ec;border-radius:12px;padding:10px 12px;margin-top:10px;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Mortgage Calculator</h1>
+    <p class="sub">See your mortgage payment, the interest you'll pay, and how fast it's paid off.</p>
+  </div>
+  <div class="card">
+    <div class="row">
+      <div class="field"><label for="price">Home price</label><input id="price" type="number" inputmode="decimal" min="0" placeholder="Price of the home"></div>
+      <div class="field"><label for="down">Down payment</label>
+        <div class="inline"><input id="down" type="number" inputmode="decimal" min="0" placeholder="Amount or %">
+          <select id="downType" aria-label="Down payment type"><option value="amt">amount</option><option value="pct">%</option></select></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="rate">Interest rate (% per year)</label><input id="rate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Your rate, e.g. 4.5"></div>
+      <div class="field"><label for="years">Pay it off over</label>
+        <select id="years">
+          <option value="10">10 years</option><option value="15">15 years</option><option value="20">20 years</option>
+          <option value="25" selected>25 years</option><option value="30">30 years</option><option value="35">35 years</option><option value="40">40 years</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="freq">How often you pay</label>
+        <select id="freq">
+          <option value="12">Monthly</option>
+          <option value="24">Twice a month</option>
+          <option value="26">Every 2 weeks</option>
+          <option value="26a">Every 2 weeks – faster payoff</option>
+          <option value="52">Weekly</option>
+          <option value="52a">Weekly – faster payoff</option>
+        </select>
+      </div>
+      <div class="field"><label for="comp">How interest is added</label>
+        <select id="comp">
+          <option value="12">Monthly (most countries)</option>
+          <option value="2">Twice a year (Canada, fixed rate)</option>
+        </select>
+      </div>
+    </div>
+    <details>
+      <summary>Add property tax, insurance and fees (optional)</summary>
+      <div class="row" style="margin-top:10px">
+        <div class="field"><label for="tax">Property tax per year</label><input id="tax" type="number" inputmode="decimal" min="0" placeholder="0"></div>
+        <div class="field"><label for="ins">Home insurance per year</label><input id="ins" type="number" inputmode="decimal" min="0" placeholder="0"></div>
+      </div>
+      <div class="field"><label for="fees">Condo or HOA fees per month</label><input id="fees" type="number" inputmode="decimal" min="0" placeholder="0"></div>
+    </details>
+    <div class="field" style="margin-top:12px"><label for="cur">Money sign</label>
+      <select id="cur"><option value="$">$</option><option value="€">€</option><option value="£">£</option><option value="₹">₹</option><option value="">none</option></select>
+    </div>
+    <p class="err" id="err"></p>
+    <div class="result">
+      <div class="box main"><span id="payLabel">Monthly payment</span><b id="pay">–</b></div>
+      <div class="box"><span>Mortgage amount</span><b id="loan">–</b></div>
+      <div class="box"><span>Total interest</span><b id="interest">–</b></div>
+      <div class="box"><span>Paid off in</span><b id="time">–</b></div>
+    </div>
+    <div id="extra"></div>
+    <div class="bar2" id="bar"><i id="bP" style="background:var(--brand);width:0"></i><i id="bI" style="background:var(--accent);width:0"></i></div>
+    <div class="legend"><span><b style="background:var(--brand)"></b>Amount borrowed</span><span><b style="background:var(--accent)"></b>Interest</span></div>
+    <details id="tblWrap">
+      <summary>Year-by-year table</summary>
+      <div style="overflow-x:auto"><table class="tbl" id="tbl"></table></div>
+    </details>
+    <p class="note" style="text-align:left;margin-top:12px">Mortgage insurance, closing costs and rate changes are not included. Your lender's numbers may differ a little.</p>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">📋 Copy</button></div>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/embed.js?v=5"></script>
+<script>
+const v = id => parseFloat($(id).value);
+const fmt = n => $("cur").value + n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt0 = n => $("cur").value + Math.round(n).toLocaleString();
+const FREQ = {"12":"Monthly payment","24":"Twice-a-month payment","26":"Payment every 2 weeks","26a":"Payment every 2 weeks","52":"Weekly payment","52a":"Weekly payment"};
+let last = "";
+
+// Rate per payment period, from the yearly rate and how often interest is added
+function periodRate(annual, compPerYear, payPerYear){
+  return Math.pow(1 + annual/100/compPerYear, compPerYear/payPerYear) - 1;
+}
+function pmt(P, i, n){ return i===0 ? P/n : P*i/(1-Math.pow(1+i,-n)); }
+function years(t){ const y=Math.floor(t), m=Math.round((t-y)*12); return (m===12? (y+1)+" yr" : y+" yr"+(m? " "+m+" mo":"")); }
+
+function calc(){
+  $("err").textContent = "";
+  const price = v("price"), r = v("rate"), yrs = +$("years").value, comp = +$("comp").value;
+  let down = v("down") || 0;
+  if($("downType").value==="pct") down = (price||0) * down/100;
+  const fk = $("freq").value, fast = fk.endsWith("a"), k = parseInt(fk);
+  $("payLabel").textContent = FREQ[fk];
+  const P = (price||0) - down;
+  const reset = () => { ["pay","loan","interest","time"].forEach(i=>$(i).textContent="–"); $("extra").innerHTML=""; $("tbl").innerHTML=""; $("bP").style.width=$("bI").style.width="0"; last=""; };
+  if(!(price>0) || !(r>=0) || isNaN(r)){ reset(); return; }
+  if(P<=0){ reset(); $("err").textContent = "The down payment is the same as or more than the price."; return; }
+
+  // Payment
+  let pay, i;
+  if(fast){
+    const mPay = pmt(P, periodRate(r, comp, 12), yrs*12);
+    pay = k===26 ? mPay/2 : mPay/4;
+  } else {
+    pay = pmt(P, periodRate(r, comp, k), yrs*k);
+  }
+  i = periodRate(r, comp, k);
+
+  // Walk through every payment to get interest, payoff time and the yearly table
+  let bal = P, totI = 0, n = 0, rows = [], yP = 0, yI = 0;
+  const maxN = k*60;
+  while(bal > 0.005 && n < maxN){
+    const int = bal*i; let prin = pay - int;
+    if(prin <= 0){ $("err").textContent = "The payment does not cover the interest."; reset(); return; }
+    if(prin > bal) prin = bal;
+    bal -= prin; totI += int; yP += prin; yI += int; n++;
+    if(n % k === 0 || bal <= 0.005){ rows.push([rows.length+1, yP, yI, Math.max(bal,0)]); yP = 0; yI = 0; }
+  }
+  const t = n/k;
+  $("pay").textContent = fmt(pay);
+  $("loan").textContent = fmt0(P);
+  $("interest").textContent = fmt0(totI);
+  $("time").textContent = years(t);
+  const pp = P/(P+totI)*100;
+  $("bP").style.width = pp+"%"; $("bI").style.width = (100-pp)+"%";
+
+  // Extras: total monthly cost, faster payoff, down payment %
+  let extra = "";
+  const tax = v("tax")||0, ins = v("ins")||0, fees = v("fees")||0;
+  if(tax || ins || fees){
+    const monthly = pay*k/12 + tax/12 + ins/12 + fees;
+    extra += `<div class="good">🏠 Total home cost per month (mortgage + tax + insurance + fees): <b>${fmt(monthly)}</b></div>`;
+  }
+  if(fast){
+    const normalN = yrs*12, normalI = pmt(P, periodRate(r, comp, 12), normalN)*normalN - P;
+    extra += `<div class="good">⚡ Faster payoff: done in <b>${years(t)}</b> instead of ${yrs} years, saving about <b>${fmt0(normalI - totI)}</b> in interest.</div>`;
+  }
+  const dp = down/price*100;
+  if(dp < 20) extra += `<p class="note" style="text-align:left">Down payment is ${dp.toFixed(1)}%. Many lenders add mortgage insurance when it is under 20%.</p>`;
+  $("extra").innerHTML = extra;
+
+  $("tbl").innerHTML = "<tr><th>Year</th><th>Principal paid</th><th>Interest paid</th><th>Left to pay</th></tr>" +
+    rows.map(r=>`<tr><td>${r[0]}</td><td>${fmt0(r[1])}</td><td>${fmt0(r[2])}</td><td>${fmt0(r[3])}</td></tr>`).join("");
+  last = `${FREQ[fk]}: ${fmt(pay)}\nMortgage amount: ${fmt0(P)}\nTotal interest: ${fmt0(totI)}\nPaid off in: ${years(t)}\n(Rate ${r}% · ${yrs} years · freenetsave.com)`;
+}
+["price","down","downType","rate","years","freq","comp","tax","ins","fees","cur"].forEach(id=>$(id).addEventListener("input", calc));
+$("copy").addEventListener("click", ()=> last ? copyText(last) : toast("Fill in the price and rate first"));
+calc();
+</script>
+</body>
+</html>

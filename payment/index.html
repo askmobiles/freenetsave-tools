@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment Calculator — payment, payoff time or how much to borrow (free)</title>
+<meta name="description" content="Free payment calculator. Find your loan payment, how long it takes to pay off a loan or credit card, or how much you can borrow. Add extra payments to see the time and interest saved.">
+<link rel="canonical" href="https://freenetsave.com/payment-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=5">
+<style>
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .good{background:#e9f6ec;border-radius:12px;padding:10px 12px;margin-top:10px;font-size:15px}
+  .tl{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  [hidden]{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Payment Calculator</h1>
+    <p class="sub">Find the payment, how long to pay off, or how much you can borrow.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label>What do you want to find?</label>
+      <div class="seg" id="mode">
+        <button type="button" data-m="pay" class="on">The payment</button>
+        <button type="button" data-m="time">How long to pay off</button>
+        <button type="button" data-m="amt">How much I can borrow</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field" id="fAmt"><label for="amt">Amount borrowed or owed</label><input id="amt" type="number" inputmode="decimal" min="0" placeholder="Loan or card balance"></div>
+      <div class="field" id="fPay" hidden><label for="pay">Payment you can make</label><input id="pay" type="number" inputmode="decimal" min="0" placeholder="Each payment"></div>
+      <div class="field"><label for="rate">Interest rate (% per year)</label><input id="rate" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 7.5 or 19.99"></div>
+    </div>
+    <div class="row">
+      <div class="field" id="fTime"><label>Time to pay it off</label>
+        <div class="tl">
+          <select id="yrs" aria-label="Years"><option value="0">0 years</option><option value="1">1 year</option><option value="2">2 years</option><option value="3" selected>3 years</option><option value="4">4 years</option><option value="5">5 years</option><option value="6">6 years</option><option value="7">7 years</option><option value="8">8 years</option><option value="10">10 years</option><option value="15">15 years</option><option value="20">20 years</option><option value="25">25 years</option><option value="30">30 years</option></select>
+          <select id="mos" aria-label="Months"><option value="0" selected>0 months</option><option value="1">1 month</option><option value="2">2 months</option><option value="3">3 months</option><option value="4">4 months</option><option value="5">5 months</option><option value="6">6 months</option><option value="7">7 months</option><option value="8">8 months</option><option value="9">9 months</option><option value="10">10 months</option><option value="11">11 months</option></select>
+        </div>
+      </div>
+      <div class="field"><label for="freq">How often you pay</label>
+        <select id="freq"><option value="12">Monthly</option><option value="26">Every 2 weeks</option><option value="52">Weekly</option></select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field" id="fExtra"><label for="extra">Extra each payment <small>(optional)</small></label><input id="extra" type="number" inputmode="decimal" min="0" placeholder="0"></div>
+      <div class="field"><label for="cur">Money sign</label>
+        <select id="cur"><option value="$">$</option><option value="€">€</option><option value="£">£</option><option value="₹">₹</option><option value="">none</option></select>
+      </div>
+    </div>
+    <p class="err" id="err"></p>
+    <div class="result">
+      <div class="box main"><span id="mainLbl">Payment</span><b id="main">–</b></div>
+      <div class="box"><span>Total interest</span><b id="int">–</b></div>
+      <div class="box"><span>Total you pay</span><b id="tot">–</b></div>
+    </div>
+    <div id="out"></div>
+    <p class="note" style="text-align:left;margin-top:12px">Fees and rate changes are not included. Your lender's numbers may differ a little.</p>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">📋 Copy</button></div>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<div class="toast" id="toast"></div>
+<script src="../assets/embed.js?v=5"></script>
+<script>
+let MODE = "pay", last = "";
+const v = id => parseFloat($(id).value);
+const fmt = n => $("cur").value + n.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+const PER = {12:"month",26:"2 weeks",52:"week"};
+function pmt(P,i,n){ return i===0 ? P/n : P*i/(1-Math.pow(1+i,-n)); }
+function pv(p,i,n){ return i===0 ? p*n : p*(1-Math.pow(1+i,-n))/i; }
+function span(n,k){ const mo = Math.round(n*12/k), y = Math.floor(mo/12), m = mo%12;
+  return (y? y+(y===1?" year":" years"):"") + (y&&m?" ":"") + (m? m+(m===1?" month":" months"):"") || "under 1 month"; }
+// Pay a balance down payment by payment; returns {n, interest}
+function run(P,i,pay){ let b=P, n=0, I=0;
+  while(b>0.005 && n<5000){ const int=b*i; if(pay<=int) return null; I+=int; b=b+int-pay; n++; }
+  return {n, interest:I, total:P+I}; }
+
+function calc(){
+  $("err").textContent=""; $("out").innerHTML=""; last="";
+  $("fAmt").hidden = MODE==="amt"; $("fPay").hidden = MODE==="pay"; $("fTime").hidden = MODE==="time"; $("fExtra").hidden = MODE!=="pay";
+  const k = +$("freq").value, r = v("rate"), i = (r||0)/100/k;
+  const n = Math.round((+$("yrs").value + +$("mos").value/12)*k);
+  const clear = ()=>["main","int","tot"].forEach(x=>$(x).textContent="–");
+  if(!(r>=0) || isNaN(r)){ clear(); return; }
+
+  if(MODE==="pay"){
+    const P=v("amt"); $("mainLbl").textContent = "Payment every "+PER[k];
+    if(!(P>0) || !(n>0)){ clear(); if(P>0) $("err").textContent="Choose how long to pay it off."; return; }
+    const p = pmt(P,i,n);
+    $("main").textContent=fmt(p); $("int").textContent=fmt(p*n-P); $("tot").textContent=fmt(p*n);
+    last = `Payment every ${PER[k]}: ${fmt(p)}\nTotal interest: ${fmt(p*n-P)}\nTotal you pay: ${fmt(p*n)}`;
+    const x = v("extra")||0;
+    if(x>0){ const s = run(P,i,p+x);
+      if(s) $("out").innerHTML = `<div class="good">⚡ Paying <b>${fmt(x)}</b> extra each time: done in <b>${span(s.n,k)}</b> instead of ${span(n,k)}, saving <b>${fmt(p*n-P-s.interest)}</b> in interest.</div>`; }
+  }
+  else if(MODE==="time"){
+    const P=v("amt"), p=v("pay"); $("mainLbl").textContent="Paid off in";
+    if(!(P>0) || !(p>0)){ clear(); return; }
+    const s = run(P,i,p);
+    if(!s){ clear(); $("err").textContent = `That payment never pays it off — it must be more than ${fmt(P*i)} (the interest each ${PER[k]}).`; return; }
+    $("main").textContent=span(s.n,k); $("int").textContent=fmt(s.interest); $("tot").textContent=fmt(s.total);
+    $("out").innerHTML = `<p class="note" style="text-align:left">${s.n} payments of ${fmt(p)} (the last one is smaller).</p>`;
+    last = `Paid off in: ${span(s.n,k)} (${s.n} payments of ${fmt(p)})\nTotal interest: ${fmt(s.interest)}\nTotal you pay: ${fmt(s.total)}`;
+  }
+  else {
+    const p=v("pay"); $("mainLbl").textContent="You can borrow";
+    if(!(p>0) || !(n>0)){ clear(); return; }
+    const P = pv(p,i,n);
+    $("main").textContent=fmt(P); $("int").textContent=fmt(p*n-P); $("tot").textContent=fmt(p*n);
+    last = `I can borrow: ${fmt(P)}\nPaying ${fmt(p)} every ${PER[k]} for ${span(n,k)}\nTotal interest: ${fmt(p*n-P)}`;
+  }
+  last += `\n(Rate ${r}% · freenetsave.com)`;
+}
+$("mode").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return;
+  MODE=b.dataset.m; document.querySelectorAll("#mode button").forEach(x=>x.classList.toggle("on",x===b)); calc(); });
+["amt","pay","rate","yrs","mos","freq","extra","cur"].forEach(id=>$(id).addEventListener("input", calc));
+$("copy").addEventListener("click", ()=> last ? copyText(last) : toast("Fill in the boxes first"));
+calc();
+</script>
+</body>
+</html>

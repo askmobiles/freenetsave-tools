@@ -17,6 +17,10 @@ Free, simple online tools for [freenetsave.com](https://freenetsave.com), served
 | `imei/` | IMEI check-digit checker |
 | `word-counter/` | Word & character counter |
 | `numerology/` | Numerology calculator |
+| `mortgage/` | Mortgage calculator |
+| `affordability/` | How much house can I afford? |
+| `payment/` | Payment calculator (payment, payoff time, amount) |
+| `color/` | Colour picker — HEX, RGB, HSL, colour names |
 | `pdf-editor/` | PDF editor (add text, cover up, rotate, delete pages) |
 | `pdf-writer/` | Type text and save as PDF |
 | `pdf-smaller/` | Make a PDF smaller |
