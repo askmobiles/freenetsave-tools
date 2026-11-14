@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pictures to PDF — turn photos into one PDF (free) — freenetsave.com</title>
+<meta name="description" content="Free JPG and PNG to PDF converter. Put photos or scans into one PDF, in any order, on Letter or A4 pages. Your pictures never leave your device.">
+<link rel="canonical" href="https://freenetsave.com/pictures-to-pdf/">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Pictures to PDF</h1>
+    <p class="sub">Turn photos, scans or screenshots into one PDF file.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose pictures">
+      <div style="font-size:34px">📷</div>
+      <b>Choose pictures or drop them here</b>
+      <span>JPG, PNG, WebP · each picture becomes one page</span>
+      <div class="pick">Choose pictures</div>
+      <input type="file" accept="image/*" multiple>
+    </div>
+    <ul class="flist" id="list"></ul>
+    <div class="opts2">
+      <div class="field" style="margin:0">
+        <label for="page">Page size</label>
+        <select id="page">
+          <option value="letter" selected>Letter (Canada, USA)</option>
+          <option value="a4">A4 (most other countries)</option>
+          <option value="fit">Same size as each picture</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0">
+        <label for="margin">Margin</label>
+        <select id="margin">
+          <option value="0">No margin</option>
+          <option value="20" selected>Small</option>
+          <option value="45">Large</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px">
+      <label><input type="checkbox" id="shrink" checked style="width:auto;margin-right:6px">Make the PDF smaller (recommended for phone photos)</label>
+    </div>
+    <div class="actions">
+      <button class="btn" id="go" disabled style="flex:1">Make PDF</button>
+      <button class="btn ghost" id="clear" type="button">Clear</button>
+    </div>
+    <div class="bar" id="bar"><i></i></div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+  <p class="note">🔒 Your pictures are put together inside your browser. Nothing is uploaded or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script src="../assets/lib/pdf-lib.min.js"></script>
+<script>
+let items = [];
+const SIZES = { letter:[612,792], a4:[595.28,841.89] };
+function render(){
+  $("list").innerHTML = items.map((it,i)=>`<li>
+    <div class="thumb" style="background-image:url('${it.url}')"></div>
+    <div class="nm"><b>Page ${i+1}: ${it.file.name.replace(/</g,"&lt;")}</b><span>${fmtSize(it.file.size)}</span></div>
+    <button type="button" data-up="${i}" aria-label="Move up" ${i===0?"disabled":""}>↑</button>
+    <button type="button" data-dn="${i}" aria-label="Move down" ${i===items.length-1?"disabled":""}>↓</button>
+    <button type="button" data-rm="${i}" aria-label="Remove">✕</button></li>`).join("");
+  $("go").disabled = !items.length;
+}
+setupDrop($("drop"), files=>{
+  files.filter(f=>f.type.startsWith("image/")).forEach(f=>items.push({file:f,url:URL.createObjectURL(f)}));
+  render(); $("status").textContent="";
+});
+$("list").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  if(b.dataset.rm){ items.splice(+b.dataset.rm,1); }
+  if(b.dataset.up){ const i=+b.dataset.up; [items[i-1],items[i]]=[items[i],items[i-1]]; }
+  if(b.dataset.dn){ const i=+b.dataset.dn; [items[i+1],items[i]]=[items[i],items[i+1]]; }
+  render();
+});
+$("clear").addEventListener("click", ()=>{ items=[]; render(); $("status").textContent=""; });
+
+function loadImg(url){ return new Promise((ok,bad)=>{ const im=new Image(); im.onload=()=>ok(im); im.onerror=bad; im.src=url; }); }
+// Every picture goes through a canvas: fixes phone rotation, handles any format, optional shrink
+async function toJpeg(it){
+  const img = await loadImg(it.url);
+  let w = img.naturalWidth, h = img.naturalHeight;
+  const max = $("shrink").checked ? 2000 : 6000;
+  if(Math.max(w,h) > max){ const s = max/Math.max(w,h); w = Math.round(w*s); h = Math.round(h*s); }
+  const c = document.createElement("canvas"); c.width=w; c.height=h;
+  const x = c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,w,h); x.drawImage(img,0,0,w,h);
+  const blob = await new Promise(r=>c.toBlob(r,"image/jpeg", $("shrink").checked ? 0.8 : 0.92));
+  return {bytes: new Uint8Array(await blob.arrayBuffer()), w, h};
+}
+
+$("go").addEventListener("click", async ()=>{
+  $("go").disabled = true; $("bar").style.display="block";
+  try{
+    const pdf = await PDFLib.PDFDocument.create();
+    const m = +$("margin").value, mode = $("page").value;
+    for(let i=0;i<items.length;i++){
+      $("status").textContent = `Adding page ${i+1} of ${items.length}…`;
+      $("bar").firstElementChild.style.width = Math.round(i/items.length*100)+"%";
+      const j = await toJpeg(items[i]);
+      const img = await pdf.embedJpg(j.bytes);
+      let pw, ph;
+      if(mode==="fit"){ pw = j.w*0.75 + m*2; ph = j.h*0.75 + m*2; }      // 96 px = 72 pt
+      else { [pw,ph] = SIZES[mode]; if(j.w > j.h){ [pw,ph] = [ph,pw]; } } // landscape photo → landscape page
+      const page = pdf.addPage([pw,ph]);
+      const s = Math.min((pw-2*m)/j.w, (ph-2*m)/j.h);
+      const dw = j.w*s, dh = j.h*s;
+      page.drawImage(img, {x:(pw-dw)/2, y:(ph-dh)/2, width:dw, height:dh});
+    }
+    pdf.setTitle("Pictures"); pdf.setProducer("freenetsave.com"); pdf.setCreator("freenetsave.com");
+    const out = await pdf.save();
+    $("bar").firstElementChild.style.width="100%";
+    const blob = new Blob([out],{type:"application/pdf"});
+    saveFile(blob, items.length===1 ? baseName(items[0].file.name)+".pdf" : "pictures.pdf");
+    $("status").innerHTML = `✅ Done — ${items.length} page${items.length>1?"s":""}, ${fmtSize(blob.size)}. Your PDF is downloading.`;
+  }catch(e){ $("status").innerHTML = `<span class="bad">Something went wrong: ${e.message||e}. Try fewer or smaller pictures.</span>`; }
+  $("go").disabled = false; setTimeout(()=>$("bar").style.display="none", 800);
+});
+</script>
+</body>
+</html>

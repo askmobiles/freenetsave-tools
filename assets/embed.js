@@ -35,3 +35,29 @@
     }
   };
 })();
+
+// ---------- File helpers (PDF & picture tools). Files are read in the browser only — never uploaded. ----------
+(function(){
+  window.fmtSize = function(b){
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b/1024).toFixed(0) + ' KB';
+    return (b/1048576).toFixed(b < 10485760 ? 2 : 1) + ' MB';
+  };
+  window.saveFile = function(blob, name){
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+  };
+  // Make a box clickable + drag-and-drop. onFiles(FileList-as-array)
+  window.setupDrop = function(box, onFiles){
+    var input = box.querySelector('input[type=file]');
+    box.addEventListener('click', function(e){ if (e.target !== input) input.click(); });
+    box.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
+    input.addEventListener('change', function(){ if (input.files.length) onFiles([].slice.call(input.files)); input.value = ''; });
+    ['dragenter','dragover'].forEach(function(t){ box.addEventListener(t, function(e){ e.preventDefault(); box.classList.add('over'); }); });
+    ['dragleave','drop'].forEach(function(t){ box.addEventListener(t, function(e){ e.preventDefault(); box.classList.remove('over'); }); });
+    box.addEventListener('drop', function(e){ if (e.dataTransfer.files.length) onFiles([].slice.call(e.dataTransfer.files)); });
+  };
+  window.baseName = function(n){ return n.replace(/\.[^.]+$/, ''); };
+})();

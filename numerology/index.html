@@ -45,6 +45,10 @@
   .chart div{background:var(--soft);border-radius:6px;padding:4px 0}
   .chart b{display:block;font-size:15px;color:var(--brand)}
   #results{display:none}
+  .agenote{margin-top:12px;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:12px 14px;font-size:16px}
+  .agenote:empty{display:none}
+  .big.strong{outline:3px solid var(--accent,#f97316);outline-offset:-1px;background:#fff7ed}
+  .big.strong .t:after{content:" · stronger now";color:#c2410c;font-weight:700}
   @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
 </style>
 </head>
@@ -58,7 +62,7 @@
   <form class="card" id="form" autocomplete="off">
     <div class="field">
       <label for="name"><span data-t="nameLabel"></span> <small data-t="optional"></small></label>
-      <input id="name" placeholder="e.g. John Smith">
+      <input id="name" placeholder="Your full name">
     </div>
     <label data-t="dobLabel"></label>
     <div class="row3 field">
@@ -68,11 +72,11 @@
     </div>
     <div class="field">
       <label for="biz"><span data-t="bizLabel"></span> <small data-t="optional"></small></label>
-      <input id="biz" placeholder="e.g. Sunrise Bakery">
+      <input id="biz" placeholder="Your shop or business name">
     </div>
     <div class="field">
       <label for="phone"><span data-t="phoneLabel"></span> <small data-t="optional"></small></label>
-      <input id="phone" inputmode="tel" placeholder="e.g. 647-555-1234 or ABCD 123">
+      <input id="phone" inputmode="tel" placeholder="Phone, car plate or house number">
     </div>
     <button class="btn" type="submit" data-t="calculate"></button>
     <div class="err" id="err"></div>
@@ -86,6 +90,7 @@
         <div class="big"><div class="t" data-t="destinyNumber"></div><div class="num" id="destNum">–</div><div class="calc" id="destCalc"></div></div>
         <div class="big" id="nameBox"><div class="t" data-t="nameNumber"></div><div class="num" id="nameNum">–</div><div class="calc" id="nameCalc"></div></div>
       </div>
+      <div class="agenote" id="ageNote"></div>
     </div>
 
     <div class="card">
@@ -286,8 +291,11 @@ function rel(n, base){
   if(DATA[base].lucky.includes(n)) return 0.8;
   return 0.35;
 }
+// Under 30 the birth number leads; from 30 the destiny number leads
+let W = {b:50, d:30};
+const SWITCH_AGE = 30;
 function matchPct(n, birth, dest, opt={}){
-  let pts = 50*rel(n,birth) + 30*rel(n,dest), max = 80;
+  let pts = W.b*rel(n,birth) + W.d*rel(n,dest), max = 80;
   if(opt.nameN!=null){ pts += 20*rel(n,opt.nameN); max += 20; }
   let pct = pts/max*100;
   if(opt.business && [1,5,6].includes(n)) pct += 8;
@@ -340,6 +348,18 @@ $("form").addEventListener("submit", e=>{
   const destS = reduceSteps(allDigits.reduce((a,c)=>a+ +c,0)), dest = destS.at(-1);
   $("destNum").textContent = dest;
   $("destCalc").textContent = stepText(allDigits, destS);
+
+  // Which number is stronger now (age rule)
+  const now = new Date();
+  let age = now.getFullYear() - y;
+  if(now.getMonth() < m-1 || (now.getMonth()===m-1 && now.getDate() < d)) age--;
+  const destLeads = age >= SWITCH_AGE;
+  W = destLeads ? {b:30, d:50} : {b:50, d:30};
+  $("ageNote").innerHTML = age < 0 ? "" : destLeads
+    ? `🔆 Age ${age}: from age 30, your <b>destiny number ${dest}</b> is the stronger one. The name, business and phone match % below give it more weight.`
+    : `🔆 Age ${age}: until 30, your <b>birth number ${birth}</b> is the stronger one. From age 30, your destiny number ${dest} takes over.`;
+  $("birthNum").parentElement.classList.toggle("strong", !destLeads && age >= 0);
+  $("destNum").parentElement.classList.toggle("strong", destLeads);
   $("weekday").innerHTML = `${L.bornOn} <b>${DAYS[dt.getDay()]}</b>`;
 
   // Name number
@@ -440,8 +460,8 @@ $("form").addEventListener("submit", e=>{
   lastText =
 `🔢 Numerology result
 ${rawName?"Name: "+rawName+"\n":""}Date of birth: ${d} ${MONTHS[m-1]} ${y} (${DAYS[dt.getDay()]})
-Birth number: ${birth}
-Destiny number: ${dest}
+Birth number: ${birth}${destLeads?"":" (stronger now, age "+age+")"}
+Destiny number: ${dest}${destLeads?" (stronger now, age "+age+")":""}
 ${nameN!==null?"Name number: "+nameN+" ("+nameTotal+")\n":""}Planet: ${D.planet}
 Lucky numbers: ${D.lucky.join(", ")}
 Lucky days: ${D.days.map(i=>DAYS[i]).join(", ")}

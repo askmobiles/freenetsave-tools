@@ -17,6 +17,12 @@ Free, simple online tools for [freenetsave.com](https://freenetsave.com), served
 | `imei/` | IMEI check-digit checker |
 | `word-counter/` | Word & character counter |
 | `numerology/` | Numerology calculator |
+| `pdf-editor/` | PDF editor (add text, cover up, rotate, delete pages) |
+| `pdf-writer/` | Type text and save as PDF |
+| `pdf-smaller/` | Make a PDF smaller |
+| `pdf-merge/` | Merge PDFs |
+| `pictures-to-pdf/` | Pictures to PDF |
+| `picture-smaller/` | Make pictures smaller |
 
 ## Showing a tool on a website
 ```html
@@ -26,3 +32,7 @@ Inside a frame the tool hides its own title and sends its height to the page (`p
 
 ## Language
 Words in a tool can be translated by adding a new block next to `en` in that tool's `LANG` list (started in `numerology/`).
+
+## Libraries (copied into `assets/lib`, nothing loaded from other websites)
+- pdf-lib 1.17.1 — MIT licence
+- pdf.js 6.5.438 (Mozilla) — Apache 2.0 licence

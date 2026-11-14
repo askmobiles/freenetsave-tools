@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Merge PDFs — join PDF files into one (free) — freenetsave.com</title>
+<meta name="description" content="Free PDF merger. Join several PDF files into one, in any order. Works on phone, tablet and computer. Your files never leave your device.">
+<link rel="canonical" href="https://freenetsave.com/merge-pdf/">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Merge PDFs</h1>
+    <p class="sub">Join several PDF files into one, in the order you choose.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose PDF files">
+      <div style="font-size:34px">📚</div>
+      <b>Choose PDF files or drop them here</b>
+      <span>Pick two or more · use ↑ ↓ to change the order</span>
+      <div class="pick">Choose PDFs</div>
+      <input type="file" accept="application/pdf,.pdf" multiple>
+    </div>
+    <ul class="flist" id="list"></ul>
+    <div class="actions">
+      <button class="btn" id="go" disabled style="flex:1">Merge PDFs</button>
+      <button class="btn ghost" id="clear" type="button">Clear</button>
+    </div>
+    <div class="bar" id="bar"><i></i></div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+  <p class="note">🔒 Your PDFs are joined inside your browser. Nothing is uploaded or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script src="../assets/lib/pdf-lib.min.js"></script>
+<script>
+let items = []; // {file, pages|null, err}
+function render(){
+  $("list").innerHTML = items.map((it,i)=>`<li>
+    <div class="thumb">📄</div>
+    <div class="nm"><b>${i+1}. ${it.file.name.replace(/</g,"&lt;")}</b>
+      <span>${fmtSize(it.file.size)}${it.pages!=null?` · ${it.pages} page${it.pages>1?"s":""}`:""}${it.err?` · <span class="bad">${it.err}</span>`:""}</span></div>
+    <button type="button" data-up="${i}" aria-label="Move up" ${i===0?"disabled":""}>↑</button>
+    <button type="button" data-dn="${i}" aria-label="Move down" ${i===items.length-1?"disabled":""}>↓</button>
+    <button type="button" data-rm="${i}" aria-label="Remove">✕</button></li>`).join("");
+  $("go").disabled = items.filter(i=>!i.err).length < 2;
+}
+async function inspect(it){
+  try{
+    it.bytes = await it.file.arrayBuffer();
+    const d = await PDFLib.PDFDocument.load(it.bytes, {ignoreEncryption:true});
+    if(d.isEncrypted) it.err = "Locked with a password — unlock it first";
+    it.pages = d.getPageCount();
+  }catch(e){ it.err = "Not a readable PDF"; }
+  render();
+}
+setupDrop($("drop"), files=>{
+  files.filter(f=>/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name)).forEach(f=>{ const it={file:f,pages:null}; items.push(it); inspect(it); });
+  render(); $("status").textContent="";
+});
+$("list").addEventListener("click", e=>{
+  const b = e.target.closest("button"); if(!b) return;
+  if(b.dataset.rm){ items.splice(+b.dataset.rm,1); }
+  if(b.dataset.up){ const i=+b.dataset.up; [items[i-1],items[i]]=[items[i],items[i-1]]; }
+  if(b.dataset.dn){ const i=+b.dataset.dn; [items[i+1],items[i]]=[items[i],items[i+1]]; }
+  render();
+});
+$("clear").addEventListener("click", ()=>{ items=[]; render(); $("status").textContent=""; });
+
+$("go").addEventListener("click", async ()=>{
+  const good = items.filter(i=>!i.err && i.bytes);
+  $("go").disabled = true; $("bar").style.display="block";
+  try{
+    const out = await PDFLib.PDFDocument.create();
+    for(let i=0;i<good.length;i++){
+      $("status").textContent = `Adding ${good[i].file.name}…`;
+      $("bar").firstElementChild.style.width = Math.round(i/good.length*100)+"%";
+      const src = await PDFLib.PDFDocument.load(good[i].bytes);
+      const pages = await out.copyPages(src, src.getPageIndices());
+      pages.forEach(p=>out.addPage(p));
+    }
+    out.setProducer("freenetsave.com"); out.setCreator("freenetsave.com");
+    const bytes = await out.save();
+    $("bar").firstElementChild.style.width="100%";
+    const blob = new Blob([bytes],{type:"application/pdf"});
+    saveFile(blob, "merged.pdf");
+    $("status").innerHTML = `✅ Done — ${out.getPageCount()} pages, ${fmtSize(blob.size)}. Your merged PDF is downloading.`;
+  }catch(e){ $("status").innerHTML = `<span class="bad">Couldn't merge: ${e.message||e}</span>`; }
+  $("go").disabled = false; setTimeout(()=>$("bar").style.display="none", 800);
+});
+</script>
+</body>
+</html>

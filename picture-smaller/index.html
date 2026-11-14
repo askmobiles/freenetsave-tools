@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Make a Picture Smaller — compress & resize photos (free) — freenetsave.com</title>
+<meta name="description" content="Free photo compressor and resizer. Make pictures smaller to email or upload, change JPG/PNG/WebP, and remove hidden location details. Photos never leave your device.">
+<link rel="canonical" href="https://freenetsave.com/make-picture-smaller/">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Make a picture smaller</h1>
+    <p class="sub">Shrink photos to email, text or upload them. Your photos never leave your device.</p>
+  </div>
+
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose pictures">
+      <div style="font-size:34px">🖼️</div>
+      <b>Choose pictures or drop them here</b>
+      <span>JPG, PNG, WebP · one or many</span>
+      <div class="pick">Choose pictures</div>
+      <input type="file" accept="image/*" multiple>
+    </div>
+
+    <div class="opts2">
+      <div class="field" style="margin:0">
+        <label for="size">Size</label>
+        <select id="size">
+          <option value="0">Keep the same size</option>
+          <option value="3000">Large — 3000 px wide</option>
+          <option value="2000" selected>Medium — 2000 px wide</option>
+          <option value="1280">Small — 1280 px (email, chat)</option>
+          <option value="800">Tiny — 800 px (web, forms)</option>
+        </select>
+      </div>
+      <div class="field" style="margin:0">
+        <label for="fmt">Save as</label>
+        <select id="fmt">
+          <option value="image/jpeg" selected>JPG — smallest for photos</option>
+          <option value="image/webp">WebP — modern, very small</option>
+          <option value="image/png">PNG — best for screenshots</option>
+        </select>
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px" id="qBox">
+      <label for="q">Quality: <b id="qVal">80</b>% <small>— lower = smaller file</small></label>
+      <input id="q" type="range" min="40" max="95" value="80" style="padding:0;border:0">
+    </div>
+    <p class="calc" style="font-size:14px;color:var(--muted);margin:0">🔒 Hidden details inside photos (like GPS location and phone model) are removed automatically.</p>
+
+    <ul class="flist" id="list"></ul>
+    <div class="actions">
+      <button class="btn" id="go" disabled style="flex:1">Make smaller</button>
+      <button class="btn ghost" id="clear" type="button">Clear</button>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+
+  <p class="note">🔒 Pictures are handled inside your browser. Nothing is uploaded or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js"></script>
+<script>
+let items = []; // {file, url, out:{blob,name}|null}
+const ext = {"image/jpeg":"jpg","image/webp":"webp","image/png":"png"};
+
+function render(){
+  $("list").innerHTML = items.map((it,i)=>`<li>
+    <div class="thumb" style="background-image:url('${it.url}')"></div>
+    <div class="nm"><b>${it.file.name.replace(/</g,"&lt;")}</b>
+      <span>${fmtSize(it.file.size)}${it.out ? ` → <b style="color:var(--good)">${fmtSize(it.out.blob.size)}</b> (${pct(it)})` : ""}${it.err ? ` · <span class="bad">${it.err}</span>` : ""}</span></div>
+    ${it.out ? `<button type="button" data-dl="${i}" title="Download" aria-label="Download">⬇</button>` : ""}
+    <button type="button" data-rm="${i}" title="Remove" aria-label="Remove">✕</button></li>`).join("");
+  $("go").disabled = !items.length;
+}
+function pct(it){ const p = Math.round((1 - it.out.blob.size/it.file.size)*100); return p>0 ? p+"% smaller" : "no smaller"; }
+
+setupDrop($("drop"), files=>{
+  files.filter(f=>f.type.startsWith("image/") || /\.(heic|heif)$/i.test(f.name)).forEach(f=>items.push({file:f, url:URL.createObjectURL(f), out:null}));
+  render(); $("status").textContent = "";
+});
+$("list").addEventListener("click", e=>{
+  const d = e.target.closest("[data-dl]"), r = e.target.closest("[data-rm]");
+  if(d){ const it = items[+d.dataset.dl]; saveFile(it.out.blob, it.out.name); }
+  if(r){ URL.revokeObjectURL(items[+r.dataset.rm].url); items.splice(+r.dataset.rm,1); render(); }
+});
+$("clear").addEventListener("click", ()=>{ items.forEach(i=>URL.revokeObjectURL(i.url)); items=[]; render(); $("status").textContent=""; });
+$("q").addEventListener("input", ()=> $("qVal").textContent = $("q").value);
+$("fmt").addEventListener("change", ()=> $("qBox").style.display = $("fmt").value==="image/png" ? "none" : "");
+
+function loadImg(url){ return new Promise((ok,bad)=>{ const im=new Image(); im.onload=()=>ok(im); im.onerror=bad; im.src=url; }); }
+
+async function shrink(it){
+  const img = await loadImg(it.url);  // browsers apply the photo's rotation automatically
+  const max = +$("size").value;
+  let w = img.naturalWidth, h = img.naturalHeight;
+  if(max && w > max){ h = Math.round(h * max / w); w = max; }
+  const c = document.createElement("canvas"); c.width = w; c.height = h;
+  const x = c.getContext("2d");
+  const type = $("fmt").value;
+  if(type === "image/jpeg"){ x.fillStyle = "#fff"; x.fillRect(0,0,w,h); } // JPG has no see-through areas
+  x.imageSmoothingQuality = "high";
+  x.drawImage(img, 0, 0, w, h);
+  const blob = await new Promise(r=> c.toBlob(r, type, +$("q").value/100));
+  if(!blob || (type==="image/webp" && blob.type!=="image/webp")) throw new Error("This browser can't save that type — try JPG.");
+  return {blob, name: baseName(it.file.name) + "-small." + ext[type]};
+}
+
+$("go").addEventListener("click", async ()=>{
+  $("go").disabled = true;
+  let done = 0, before = 0, after = 0;
+  for(const it of items){
+    it.err = null;
+    $("status").textContent = `Working… ${done+1} of ${items.length}`;
+    try { it.out = await shrink(it); before += it.file.size; after += it.out.blob.size; }
+    catch(e){ it.out = null; it.err = /heic|heif/i.test(it.file.name) ? "iPhone HEIC photos only open in Safari — try on your iPhone, or set iPhone Camera to 'Most Compatible'." : (e.message || "Couldn't open this picture."); }
+    done++; render();
+  }
+  const ok = items.filter(i=>i.out);
+  $("status").innerHTML = ok.length
+    ? `✅ Done. ${fmtSize(before)} → <b style="color:var(--good)">${fmtSize(after)}</b>. Tap ⬇ to save each picture` + (ok.length>1 ? ` — or <a href="#" id="all">save all</a>.` : ".")
+    : `<span class="bad">Nothing could be made smaller.</span>`;
+  const all = $("all"); if(all) all.addEventListener("click", e=>{ e.preventDefault(); ok.forEach((it,i)=> setTimeout(()=>saveFile(it.out.blob, it.out.name), i*400)); });
+  if(ok.length===1) saveFile(ok[0].out.blob, ok[0].out.name);
+  $("go").disabled = false;
+});
+</script>
+</body>
+</html>
