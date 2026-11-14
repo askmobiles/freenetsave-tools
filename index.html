@@ -3,57 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Free online tools — freenetsave.com</title>
-<meta name="description" content="Free, simple online tools that run in your browser. Nothing is sent or saved.">
+<title>All free tools — freenetsave.com</title>
+<meta name="description" content="Free, simple online tools: PDF editor, merge PDF, make a PDF or picture smaller, calculators and more. Everything runs in your browser — nothing is sent or saved.">
 <link rel="canonical" href="https://freenetsave.com/">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/style.css?v=4">
 <style>
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:10px}
-  .grid a{display:block;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--ink);text-decoration:none}
-  .grid a:hover{border-color:var(--brand)}
-  .grid b{display:block;font-size:16px}
-  .grid span{font-size:13px;color:var(--muted)}
-  h2{font-size:18px;margin:22px 0 0;color:var(--muted)}
+  .wrap{max-width:1080px}
+  .hero{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px;margin:22px 0 8px}
+  .hero h1{font-size:clamp(34px,6vw,56px);line-height:1.04;letter-spacing:-.03em;color:var(--ink);margin:0 0 10px}
+  .hero p{font-size:19px;color:var(--muted);margin:0;max-width:44ch}
+  .home{display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#fff;font-weight:700;text-decoration:none;padding:12px 18px;border-radius:12px;white-space:nowrap}
+  .home:hover{background:var(--brand2)}
+  .find{margin:22px 0 4px;max-width:520px}
+  .find input{border-width:2px;font-size:18px;padding:14px 16px}
+  .find input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px var(--soft)}
+  .grp{border-top:1px solid var(--line);padding:22px 0 6px;margin-top:18px;scroll-margin-top:16px}
+  .grp h2{font-size:21px;margin:0 0 12px;color:var(--ink)}
+  .grp h2 small{font-size:15px;font-weight:500;color:var(--muted);margin-left:6px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .grid a{display:block;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:16px;color:var(--ink);text-decoration:none}
+  .grid a:hover,.grid a:focus-visible{border-color:var(--brand);background:var(--soft);outline:none}
+  .grid b{display:block;font-size:17px}
+  .grid span{font-size:14px;color:var(--muted)}
+  .none{display:none;color:var(--muted);font-size:17px;padding:18px 0}
+  .note{margin-top:30px}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>freenetsave.com tools</h1>
-  <p class="sub">Free, simple tools. Everything runs on your own device — nothing is sent or saved.
-    For the full site, visit <a href="https://freenetsave.com/">freenetsave.com</a>.</p>
-
-  <h2>💰 Money</h2>
-  <div class="grid">
-    <a href="hst/"><b>HST Calculator</b><span>Add or remove 13% HST</span></a>
-    <a href="tip-split/"><b>Tip &amp; Bill Splitter</b><span>Tip and what each person pays</span></a>
-    <a href="percentage/"><b>Percentage &amp; Discount</b><span>Sale price, % of, % change</span></a>
-    <a href="loan/"><b>Loan &amp; Car Payment</b><span>Monthly, bi-weekly or weekly</span></a>
+  <div class="hero">
+    <div><h1>All free tools</h1><p>PDFs, pictures, sums and passwords. Open one and use it — no sign-up, and nothing you type is saved.</p></div>
+    <a class="home hide-embed" href="https://freenetsave.com/">← freenetsave.com home</a>
   </div>
-
-  <h2>📱 Phone &amp; tech</h2>
-  <div class="grid">
-    <a href="password/"><b>Password Generator</b><span>Strong random passwords</span></a>
-    <a href="imei/"><b>IMEI Checker</b><span>Is the number valid?</span></a>
-    <a href="word-counter/"><b>Word Counter</b><span>Words, characters, reading time</span></a>
-  </div>
-
-  <h2>📄 PDF &amp; pictures</h2>
-  <div class="grid">
-    <a href="pdf-editor/"><b>PDF Editor</b><span>Add text, cover up, rotate, delete pages</span></a>
-    <a href="pdf-writer/"><b>PDF Writer</b><span>Type text, get a PDF</span></a>
-    <a href="pdf-smaller/"><b>Make PDF Smaller</b><span>Shrink a PDF to email it</span></a>
-    <a href="pdf-merge/"><b>Merge PDF</b><span>Join PDFs into one</span></a>
-    <a href="pictures-to-pdf/"><b>Pictures to PDF</b><span>Photos or scans into one PDF</span></a>
-    <a href="picture-smaller/"><b>Make Picture Smaller</b><span>Shrink photos, remove location</span></a>
-  </div>
-
-  <h2>✨ Fun</h2>
-  <div class="grid">
-    <a href="numerology/"><b>Numerology Calculator</b><span>Birth, destiny &amp; name numbers</span></a>
-  </div>
-
-  <p class="note hide-embed" style="display:none">© freenetsave.com</p>
+  <div class="find"><input id="q" type="search" placeholder="Find a tool — try “PDF” or “discount”" aria-label="Find a tool"></div>
+  <section class="grp" id="pdf"><h2>📄 PDF &amp; pictures <small>Your files stay on your device</small></h2><div class="grid"><a href="pdf-smaller/" data-k="pdf smaller compress reduce size"><b>Make a PDF smaller</b><span>To email or upload it</span></a><a href="pdf-merge/" data-k="pdf merge combine join"><b>Merge PDFs</b><span>Join files into one</span></a><a href="pdf-editor/" data-k="pdf edit editor text sign hide"><b>PDF editor</b><span>Add text, hide parts, remove pages</span></a><a href="pdf-writer/" data-k="pdf writer create make text letter"><b>PDF writer</b><span>Type it, save it as a PDF</span></a><a href="pictures-to-pdf/" data-k="picture photo image jpg png pdf convert scan"><b>Pictures to PDF</b><span>Photos into one file</span></a><a href="picture-smaller/" data-k="picture photo image smaller compress resize"><b>Make a picture smaller</b><span>Shrink photos for sending</span></a></div></section><section class="grp" id="money"><h2>💰 Money <small>Tips, discounts, loans</small></h2><div class="grid"><a href="tip-split/" data-k="tip bill split restaurant"><b>Tip &amp; bill splitter</b><span>What each person pays</span></a><a href="percentage/" data-k="percent discount sale off"><b>Percent &amp; discount</b><span>Sale price, % of, % change</span></a><a href="loan/" data-k="loan car payment finance interest mortgage"><b>Loan &amp; car payment</b><span>Monthly, bi-weekly, weekly</span></a></div></section><section class="grp" id="tech"><h2>📱 Phone &amp; tech <small>Everyday helpers</small></h2><div class="grid"><a href="password/" data-k="password strong random secure"><b>Password maker</b><span>Strong passwords in one tap</span></a><a href="imei/" data-k="imei phone check valid"><b>IMEI checker</b><span>Is a phone's number valid?</span></a><a href="word-counter/" data-k="word character count text"><b>Word counter</b><span>Words, letters, reading time</span></a></div></section><section class="grp" id="fun"><h2>✨ Just for fun</h2><div class="grid"><a href="numerology/" data-k="numerology lucky number birth name house phone vehicle"><b>Numerology</b><span>Birth, name, house &amp; phone numbers</span></a></div></section><section class="grp" id="canada"><h2>🍁 Canada <small>Local tools</small></h2><div class="grid"><a href="hst/" data-k="hst gst tax sales ontario canada"><b>HST calculator</b><span>Add or take out HST / GST</span></a></div></section>
+  <p class="none" id="none">Nothing matches that yet. <a href="https://freenetsave.com/contact/">Ask us to make it</a>.</p>
+  <p class="note">🔒 Every tool runs inside your browser. Your files and numbers never leave your device.</p>
 </div>
-<script src="assets/embed.js"></script>
+<script src="assets/embed.js?v=4"></script>
+<script>
+(function(){
+  var q=document.getElementById('q');
+  q.addEventListener('input',function(){
+    var v=q.value.trim().toLowerCase(), any=false;
+    document.querySelectorAll('.grp').forEach(function(g){
+      var n=0;
+      g.querySelectorAll('.grid a').forEach(function(a){
+        var hit=!v||(a.textContent+' '+a.getAttribute('data-k')).toLowerCase().indexOf(v)>-1;
+        a.style.display=hit?'':'none'; if(hit) n++;
+      });
+      g.style.display=n?'':'none'; if(n) any=true;
+    });
+    document.getElementById('none').style.display=any?'none':'block';
+  });
+})();
+</script>
 </body>
 </html>
