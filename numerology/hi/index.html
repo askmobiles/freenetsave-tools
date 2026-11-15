@@ -459,6 +459,9 @@ function matchPct(n, birth, dest, opt={}){
     if(r) pct = r.adj<0 ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
     if(COMPOUND_GOOD.includes(opt.total)) pct = (r && r.adj<0) ? pct : Math.max(pct + 7, GOOD_FLOOR);
     if(COMPOUND_BAD.includes(opt.total)) pct -= 12;
+    // A lucky total whose single digit suits the number that is stronger now is always green
+    const strong = W.d > W.b ? dest : birth;
+    if(COMPOUND_GOOD.includes(opt.total) && !(r && r.adj<0) && rel(n,strong)>=0.8) pct = Math.max(pct, 75);
   }
   return Math.max(5, Math.min(100, Math.round(pct)));
 }
@@ -469,11 +472,29 @@ function bestTotalsHTML(birth, dest, opt, current, title){
   const top=digits.flatMap(s=>list.filter(x=>x.s===s).sort((a,b)=>a.t-b.t).slice(0,3)).filter(x=>x.p>=50);
   const curP = matchPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   const inList = top.some(x=>x.t===current) || (COMPOUND_GOOD.includes(current) && top.length && curP>=Math.min(...top.map(x=>x.p)));
+  const luckyOk = COMPOUND_GOOD.includes(current) && !(dateRule(current)?.adj<0) && curP>=50;
   const cur = inList
     ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ आपका जोड़ <b>${current}</b> पहले से ही सबसे अच्छे जोड़ों में है।</div>`
+    : luckyOk ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ आपका जोड़ <b>${current}</b> शुभ है, इसलिए इसे बदलने की ज़रूरत नहीं। ऊपर दिए जोड़ केवल तब के लिए हैं जब आप और मज़बूत मेल चाहें।</div>`
     : `<div class="plain" style="font-size:13px;margin-top:6px">अभी: <b>${current}</b>। वर्तनी थोड़ी बदलें (एक अक्षर जोड़ें या बदलें) ताकि जोड़ इनमें से एक बन जाए।</div>`;
   return `<div style="margin-top:12px;font-weight:600;color:var(--ink)">⭐ ${title}</div>
     <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.p}%</span>`).join("")}</div>${cur}`;
+}
+// Totals that stay strong both before 30 (birth number leads) and from 30 (destiny number leads)
+function twinPct(n, birth, dest, opt){
+  const keep=W;
+  W={b:50,d:30}; const a=matchPct(n,birth,dest,opt);
+  W={b:30,d:50}; const b=matchPct(n,birth,dest,opt);
+  W=keep; return {a,b,lo:Math.min(a,b),sum:a+b};
+}
+function wholeLifeHTML(birth, dest, opt, current){
+  const list=[];
+  for(let t=10;t<=52;t++){ if(!COMPOUND_GOOD.includes(t)) continue; const s=reduceSteps(t).at(-1); list.push({t,s,...twinPct(s,birth,dest,{...opt,total:t})}); }
+  const top=list.filter(x=>x.lo>=60).sort((x,y)=>y.lo-x.lo || y.sum-x.sum || x.t-y.t).slice(0,5);
+  const cur=twinPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
+  return `<div style="margin-top:14px;font-weight:600;color:var(--ink)">🌿 पूरे जीवन के लिए सबसे अच्छे (30 से पहले और बाद)</div>`
+    + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.a}% / ${x.b}%</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">पहला % 30 से पहले का है, दूसरा % 30 से।</div>` : "")
+    + `<div class="plain" style="font-size:13px;margin-top:6px">आपका जोड़ ${current}: 30 से पहले ${cur.a}%, 30 से ${cur.b}% → पूरा जीवन ${cur.lo}%</div>`;
 }
 const stars = p => { const s=Math.max(1,Math.round(p/20)); return "★".repeat(s)+"☆".repeat(5-s); };
 const level = p => p>=75 ? "ok" : p>=50 ? "mid" : "no";
@@ -588,7 +609,7 @@ $("form").addEventListener("submit", e=>{
       const iv=valueOf(initials), mv=valueOf(mainName);
       v.innerHTML += `<div class="splitname"><b>शुरुआती अक्षर ${esc(initials.split("").join(".")+".")}</b> = ${iv.total}${iv.total>9?" → "+iv.single:""} ${compoundTag(iv.total)}<br><b>नाम ${esc(mainName)}</b> = ${mv.total}${mv.total>9?" → "+mv.single:""} ${compoundTag(mv.total)}<br><span style="color:var(--muted)">दोनों मिलकर पूरा जोड़ ${nameTotal} बनाते हैं।</span></div>`;
     }
-    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "आपके नाम के लिए सबसे अच्छे जोड़");
+    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "आपके नाम के लिए सबसे अच्छे जोड़") + wholeLifeHTML(birth, dest, {}, nameTotal);
   }
 
   // Business name match
@@ -612,7 +633,7 @@ $("form").addEventListener("submit", e=>{
       .map(t=>({...t, p:matchPct(t.r.single, birth, dest, {business:true, total:t.r.total})}))
       .filter(t=>t.p>bzScore).sort((a,b)=>b.p-a.p).slice(0,4);
     $("bzTip").innerHTML = (tweaks.length && bzScore<90 ? `💡 सुझाव: ` + tweaks.map(t=>`<b>${esc(rawBiz)} ${esc(t.x)}</b> (+${valueOf(t.x).total}: ${t.r.total} → ${t.r.single}, ${t.p}%)`).join(" · ") : "")
-      + bestTotalsHTML(birth, dest, {business:true}, bz.total, "व्यापार के नाम के लिए सबसे अच्छे जोड़");
+      + bestTotalsHTML(birth, dest, {business:true}, bz.total, "व्यापार के नाम के लिए सबसे अच्छे जोड़") + wholeLifeHTML(birth, dest, {business:true}, bz.total);
   }
   $("bizCard").style.display = bz.single===null ? "none" : "";
 
