@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Split PDF, Rotate Pages, Add Page Numbers — free</title>
+<meta name="description" content="Free PDF tool. Take out the pages you want, rotate pages, or add page numbers. It all happens on your device and nothing is uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/pdf-split/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Split, Rotate & Number a PDF</h1>
+    <p class="sub">Keep only the pages you want, turn pages, or add page numbers.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a PDF"><b>Choose a PDF</b><span>or drop it here</span><span class="pick">Choose a PDF</span><input type="file" accept="application/pdf,.pdf"></div>
+    <p class="status" id="info"></p>
+    <div id="opts" hidden>
+      <div class="field"><label>What do you want to do?</label><div class="seg" id="mode"><button type="button" data-m="split" class="on">Keep some pages</button><button type="button" data-m="rot">Rotate pages</button><button type="button" data-m="num">Add page numbers</button></div></div>
+      <div class="field" id="fPages"><label for="pages" id="pagesL">Pages to keep</label><input id="pages" placeholder="e.g. 1-3, 5, 8-10"></div>
+      <div class="field" id="fRot" hidden><label for="deg">Turn them</label><select id="deg"><option value="90">To the right (90°)</option><option value="270">To the left (90°)</option><option value="180">Upside down (180°)</option></select></div>
+      <p class="err" id="err"></p>
+      <button class="btn" id="go" type="button">Make my PDF</button>
+      <div class="saved" id="saved"></div>
+    </div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/lib/pdf-lib.min.js"></script>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+let bytes=null,name="",count=0,M="split";
+function parsePages(s,n){s=s.trim();if(!s)return null;const out=[];for(const part of s.split(",")){const m=part.trim().match(/^(\d+)(?:\s*-\s*(\d+))?$/);if(!m)return null;let a=+m[1],b=m[2]?+m[2]:a;if(a<1||b>n||a>b)return null;for(let i=a;i<=b;i++)out.push(i-1);}return out;}
+setupDrop($("drop"),async fs=>{const f=fs[0];$("saved").style.display="none";$("err").textContent="";
+  try{bytes=await f.arrayBuffer();const d=await PDFLib.PDFDocument.load(bytes,{ignoreEncryption:true});count=d.getPageCount();name=baseName(f.name);$("info").textContent=f.name+" · "+count+(count===1?" page":" pages");$("opts").hidden=false;}
+  catch(e){bytes=null;$("opts").hidden=true;$("info").textContent="This file could not be opened as a PDF.";}});
+$("mode").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;M=b.dataset.m;document.querySelectorAll("#mode button").forEach(x=>x.classList.toggle("on",x===b));
+  $("fPages").hidden=M==="num";$("fRot").hidden=M!=="rot";$("pagesL").innerHTML=M==="rot"?"Pages to rotate <small>(leave empty for all pages)</small>":"Pages to keep";});
+$("go").addEventListener("click",async()=>{if(!bytes)return;$("err").textContent="";const P=PDFLib;let out;
+  try{const all=[...Array(count).keys()];
+    if(M==="split"){const pg=parsePages($("pages").value,count);if(!pg){$("err").textContent="Type page numbers from 1 to "+count+", like 1-3, 5";return;}
+      const src=await P.PDFDocument.load(bytes,{ignoreEncryption:true});out=await P.PDFDocument.create();(await out.copyPages(src,pg)).forEach(p=>out.addPage(p));}
+    else{out=await P.PDFDocument.load(bytes,{ignoreEncryption:true});
+      if(M==="rot"){const txt=$("pages").value.trim(),pg=txt?parsePages(txt,count):all;if(!pg){$("err").textContent="Type page numbers from 1 to "+count+", like 1-3, 5";return;}
+        pg.forEach(i=>{const p=out.getPage(i);p.setRotation(P.degrees((p.getRotation().angle+ +$("deg").value)%360));});}
+      else{const font=await out.embedFont(P.StandardFonts.Helvetica);out.getPages().forEach((p,i)=>{const t=(i+1)+" / "+count,w=font.widthOfTextAtSize(t,10);p.drawText(t,{x:(p.getWidth()-w)/2,y:18,size:10,font:font,color:P.rgb(.2,.2,.2)});});}}
+    const b=new Blob([await out.save()],{type:"application/pdf"}),fn=name+(M==="split"?"-pages":M==="rot"?"-rotated":"-numbered")+".pdf";saveFile(b,fn);
+    $("saved").style.display="block";$("saved").innerHTML="<b>Done.</b> Saved as "+fn.replace(/</g,"&lt;")+" ("+fmtSize(b.size)+", "+out.getPageCount()+" pages).";}
+  catch(e){$("err").textContent="Sorry, this PDF could not be changed. It may be locked.";}});
+</script>
+</body>
+</html>

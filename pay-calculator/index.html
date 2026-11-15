@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pay Calculator — hourly to yearly salary, with overtime (free)</title>
+<meta name="description" content="Free pay calculator. Turn an hourly wage into weekly, monthly and yearly pay, or a yearly salary into an hourly rate. Add overtime hours.">
+<link rel="canonical" href="https://tools.freenetsave.com/pay-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Pay Calculator</h1>
+    <p class="sub">Hourly to yearly, yearly to hourly, with overtime. Before tax.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label>I know my</label><div class="seg" id="mode"><button type="button" data-m="h" class="on">Hourly pay</button><button type="button" data-m="y">Yearly salary</button></div></div>
+    <div class="row"><div class="field"><label for="amt" id="amtL">Pay per hour</label><input id="amt" type="number" inputmode="decimal" min="0" placeholder="Amount"></div>
+    <div class="field"><label for="hrs">Hours each week</label><input id="hrs" type="number" inputmode="decimal" min="0" value="40"></div></div>
+    <div class="row"><div class="field"><label for="wks">Weeks worked each year</label><input id="wks" type="number" inputmode="decimal" min="0" max="52" value="52"></div>
+    <div class="field"><label for="ot">Overtime hours each week <small>(paid 1.5×)</small></label><input id="ot" type="number" inputmode="decimal" min="0" placeholder="0"></div></div>
+    <div class="field"><label for="cur">Money sign</label><select id="cur"><option value="$">$</option><option value="€">€</option><option value="£">£</option><option value="₹">₹</option><option value="">none</option></select></div>
+    <div class="result"><div class="box main"><span id="mL">Each year</span><b id="m">–</b></div><div class="box"><span>Each month</span><b id="mo">–</b></div><div class="box"><span>Every 2 weeks</span><b id="bw">–</b></div><div class="box"><span>Each week</span><b id="wk">–</b></div><div class="box"><span>Each day (5-day week)</span><b id="dy">–</b></div></div>
+    <p class="note" style="text-align:left">These are amounts before tax and deductions.</p>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">Copy result</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+let M="h",last="";
+const f=x=>$("cur").value+x.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2});
+function calc(){const a=+$("amt").value||0,h=+$("hrs").value||0,w=+$("wks").value||0,ot=+$("ot").value||0;last="";
+  if(!a||!h||!w){["m","mo","bw","wk","dy"].forEach(k=>$(k).textContent="–");return;}
+  let rate,yr;if(M==="h"){rate=a;yr=(a*h+a*1.5*ot)*w;}else{rate=a/(h*w);yr=a+rate*1.5*ot*w;}
+  const wk=yr/w;$("m").textContent=M==="h"?f(yr):f(rate);$("mL").textContent=M==="h"?"Each year":"Each hour";
+  $("mo").textContent=f(yr/12);$("bw").textContent=f(wk*2);$("wk").textContent=f(wk);$("dy").textContent=f(wk/5);
+  last="Hourly: "+f(rate)+"\nYearly: "+f(yr)+"\nMonthly: "+f(yr/12)+"\nWeekly: "+f(wk)+"\n(Before tax · freenetsave.com)";}
+$("mode").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;M=b.dataset.m;document.querySelectorAll("#mode button").forEach(x=>x.classList.toggle("on",x===b));$("amtL").textContent=M==="h"?"Pay per hour":"Salary per year";calc();});
+["amt","hrs","wks","ot","cur"].forEach(k=>$(k).addEventListener("input",calc));
+$("copy").addEventListener("click",()=>last?copyText(last):toast("Fill in the boxes first"));
+</script>
+</body>
+</html>

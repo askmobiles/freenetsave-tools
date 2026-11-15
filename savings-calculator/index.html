@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Savings and Compound Interest Calculator — free</title>
+<meta name="description" content="Free savings calculator. See how your money grows with regular deposits and compound interest, or how long it takes to reach a savings goal.">
+<link rel="canonical" href="https://tools.freenetsave.com/savings-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Savings & Compound Interest</h1>
+    <p class="sub">See how savings grow, and how long a goal will take.</p>
+  </div>
+  <div class="card">
+    <div class="row"><div class="field"><label for="p">Starting amount</label><input id="p" type="number" inputmode="decimal" min="0" placeholder="0"></div>
+    <div class="field"><label for="d">Added each month</label><input id="d" type="number" inputmode="decimal" min="0" placeholder="0"></div></div>
+    <div class="row"><div class="field"><label for="r">Interest rate (% per year)</label><input id="r" type="number" inputmode="decimal" min="0" step="0.01" placeholder="e.g. 4"></div>
+    <div class="field"><label for="y">Years</label><input id="y" type="number" inputmode="decimal" min="0" placeholder="e.g. 10"></div></div>
+    <div class="row"><div class="field"><label for="g">Savings goal <small>(optional)</small></label><input id="g" type="number" inputmode="decimal" min="0" placeholder="Amount you want to reach"></div>
+    <div class="field"><label for="cur">Money sign</label><select id="cur"><option value="$">$</option><option value="€">€</option><option value="£">£</option><option value="₹">₹</option><option value="">none</option></select></div></div>
+    <div class="result"><div class="box main"><span>You will have</span><b id="fv">–</b></div><div class="box"><span>You put in</span><b id="in">–</b></div><div class="box"><span>Interest earned</span><b id="it">–</b></div></div>
+    <div id="goal" class="lead" style="margin-top:12px"></div>
+    <p class="note" style="text-align:left">Interest is added monthly. Taxes, fees and rate changes are not included.</p>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">Copy result</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+let last="";
+const f=x=>$("cur").value+x.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2});
+function grow(P,d,i,n){let b=P;for(let k=0;k<n;k++)b=b*(1+i)+d;return b;}
+function calc(){const P=+$("p").value||0,d=+$("d").value||0,r=+$("r").value||0,y=+$("y").value||0,g=+$("g").value||0,i=r/1200,n=Math.round(y*12);last="";
+  if(!(P||d)||!n){["fv","in","it"].forEach(k=>$(k).textContent="–");}
+  else{const fv=grow(P,d,i,n),put=P+d*n;$("fv").textContent=f(fv);$("in").textContent=f(put);$("it").textContent=f(fv-put);
+    last="After "+y+" years: "+f(fv)+"\nPut in: "+f(put)+"\nInterest earned: "+f(fv-put)+"\n(Rate "+r+"% · freenetsave.com)";}
+  if(g>0&&(P||d)){if(P>=g){$("goal").textContent="You already have your goal.";return;}let b=P,m=0;while(b<g&&m<1200){b=b*(1+i)+d;m++;}
+    $("goal").textContent=m>=1200&&b<g?"At this pace the goal is more than 100 years away. Try adding more each month.":"You reach "+f(g)+" in about "+(Math.floor(m/12)?Math.floor(m/12)+" years ":"")+(m%12?m%12+" months":"")+".";}
+  else $("goal").textContent="";}
+["p","d","r","y","g","cur"].forEach(k=>$(k).addEventListener("input",calc));
+$("copy").addEventListener("click",()=>last?copyText(last):toast("Fill in the boxes first"));
+</script>
+</body>
+</html>

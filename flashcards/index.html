@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flashcard Maker — free online flashcards to study anything</title>
+<meta name="description" content="Free flashcard maker. Type your own words and answers, then flip through the cards and quiz yourself. Nothing is saved or sent.">
+<link rel="canonical" href="https://tools.freenetsave.com/flashcards/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  #card{min-height:210px;display:grid;place-items:center;text-align:center;background:var(--brand);color:#fff;border-radius:18px;padding:22px;font-size:clamp(22px,6vw,32px);font-weight:700;cursor:pointer;overflow-wrap:anywhere}
+  #card.back{background:#fff;color:var(--ink);border:3px solid var(--brand)}
+  #card small{display:block;font-size:14px;font-weight:600;opacity:.8;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Flashcard Maker</h1>
+    <p class="sub">Type your own cards, then flip through them to study.</p>
+  </div>
+  <div class="card" id="make">
+    <div class="field"><label for="list">Your cards <small>(one on each line: question, then a comma or tab, then the answer)</small></label><textarea id="list" placeholder="question, answer"></textarea></div>
+    <p class="lead">Tip: copy two columns from a spreadsheet and paste them here.</p>
+    <button class="btn" id="start" type="button">Study these cards</button>
+  </div>
+  <div class="card" id="study" hidden>
+    <p class="lead" id="pos"></p>
+    <div id="card" tabindex="0" role="button" aria-live="polite"></div>
+    <div class="btnrow"><button class="btn alt" id="hard" type="button">Show it again later</button><button class="btn" id="easy" type="button">I knew it</button></div>
+    <div class="btnrow"><button class="btn line" id="shuf" type="button">Shuffle</button><button class="btn line" id="edit" type="button">Edit cards</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+let deck=[],front=true,known=0,total=0;
+function parse(){return $("list").value.split("\n").map(l=>{const i=l.search(/\t|,/);return i<0?null:[l.slice(0,i).trim(),l.slice(i+1).trim()];}).filter(c=>c&&c[0]&&c[1]);}
+function show(){if(!deck.length){$("card").className="back";$("card").innerHTML="All done! You knew all "+total+" cards.<small>Tap Shuffle to go again</small>";$("pos").textContent="";return;}
+  front=true;$("card").className="";$("card").textContent=deck[0][0];$("card").insertAdjacentHTML("beforeend","<small>Tap to see the answer</small>");$("pos").textContent=known+" of "+total+" known · "+deck.length+" left";}
+function flip(){if(!deck.length)return;front=!front;$("card").className=front?"":"back";$("card").textContent=deck[0][front?0:1];$("card").insertAdjacentHTML("beforeend","<small>"+(front?"Tap to see the answer":"Answer")+"</small>");}
+function begin(sh){const c=parse();if(!c.length){toast("Type at least one card: question, answer");return;}deck=c;total=c.length;known=0;if(sh)deck.sort(()=>Math.random()-.5);$("make").hidden=true;$("study").hidden=false;show();}
+$("start").addEventListener("click",()=>begin(false));$("shuf").addEventListener("click",()=>begin(true));
+$("edit").addEventListener("click",()=>{$("make").hidden=false;$("study").hidden=true;});
+$("card").addEventListener("click",flip);$("card").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();flip();}});
+$("easy").addEventListener("click",()=>{if(deck.length){deck.shift();known++;show();}});
+$("hard").addEventListener("click",()=>{if(deck.length){deck.push(deck.shift());show();}});
+</script>
+</body>
+</html>

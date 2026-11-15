@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Handwriting Practice Sheets — free printable tracing worksheets</title>
+<meta name="description" content="Free printable handwriting sheets. Type a name, letters, numbers or words and print a tracing worksheet with guide lines for young children.">
+<link rel="canonical" href="https://tools.freenetsave.com/handwriting-sheets/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  #sheet{background:#fff;color:#000;border:1px solid var(--line);border-radius:6px;padding:26px;margin-top:16px;overflow-x:auto}
+  @media print{body{background:#fff}.card,.hide-embed,.note,.fh,.ff{display:none!important}.wrap{max-width:none;padding:0}#sheet{border:0;padding:0;margin:0;overflow:visible}@page{margin:14mm}}
+  #sheet h2{margin:0 0 6px;font-size:20px}
+  .ln{position:relative;height:var(--h);margin:calc(var(--h)*.42) 0;border-top:1.5px solid #555;border-bottom:1.5px solid #555;white-space:nowrap;overflow:hidden}
+  .ln:before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.5px dashed #9ab}
+  .ln span{position:absolute;left:6px;bottom:calc(var(--h)*-.3);font:400 calc(var(--h)*1.32)/1 "Comic Sans MS","Chalkboard SE","Comic Neue",system-ui,sans-serif;letter-spacing:.12em;color:transparent;-webkit-text-stroke:1.2px #9aa3b5}
+  .ln.solid span{color:#333;-webkit-text-stroke:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Handwriting Practice Sheets</h1>
+    <p class="sub">Type a name, letters or numbers. Print a tracing sheet with guide lines.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label for="txt">What should the child trace?</label><input id="txt" placeholder="A name, word, letters or numbers"></div>
+    <div class="btnrow" style="margin:0 0 14px"><button class="btn line" type="button" data-fill="Aa Bb Cc Dd Ee Ff Gg">A to G</button><button class="btn line" type="button" data-fill="Hh Ii Jj Kk Ll Mm Nn">H to N</button><button class="btn line" type="button" data-fill="Oo Pp Qq Rr Ss Tt Uu">O to U</button><button class="btn line" type="button" data-fill="Vv Ww Xx Yy Zz">V to Z</button><button class="btn line" type="button" data-fill="0 1 2 3 4 5 6 7 8 9">Numbers</button></div>
+    <div class="row"><div class="field"><label for="size">Letter size</label><select id="size"><option value="64">Big (ages 3 to 5)</option><option value="46" selected>Medium (ages 5 to 7)</option><option value="32">Small (ages 7 and up)</option></select></div>
+    <div class="field"><label for="rows">Lines on the page</label><select id="rows"><option>4</option><option selected>6</option><option>8</option><option>10</option></select></div></div>
+    <button class="btn alt" id="print" type="button">Print</button>
+  </div>
+  <div id="sheet"></div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+const E=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function draw(){const t=$("txt").value.trim(),n=+$("rows").value;let h='<h2>Name: ______________________</h2>';
+  for(let i=0;i<n;i++){const rep=t?(t+"   ").repeat(i===0?1:12):"";h+='<div class="ln'+(i===0?" solid":"")+'"><span>'+(i%2===0||i===0?E(rep):"")+"</span></div>";}
+  $("sheet").style.setProperty("--h",$("size").value+"px");$("sheet").innerHTML=h;}
+document.querySelectorAll("[data-fill]").forEach(b=>b.addEventListener("click",()=>{$("txt").value=b.dataset.fill;draw();}));
+["txt","size","rows"].forEach(i=>$(i).addEventListener("input",draw));$("print").addEventListener("click",()=>window.print());draw();
+</script>
+</body>
+</html>

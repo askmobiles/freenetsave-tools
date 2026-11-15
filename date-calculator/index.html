@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Age and Date Calculator — age, days between dates, add days (free)</title>
+<meta name="description" content="Free age and date calculator. Find an exact age in years, months and days, count the days between two dates, or add days to a date.">
+<link rel="canonical" href="https://tools.freenetsave.com/date-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Age & Date Calculator</h1>
+    <p class="sub">Exact age, days between two dates, or a date some days from now.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label>What do you want to find?</label>
+      <div class="seg" id="mode"><button type="button" data-m="age" class="on">Age</button><button type="button" data-m="between">Days between</button><button type="button" data-m="add">Add or take away days</button></div></div>
+    <div class="row"><div class="field"><label for="d1" id="l1">Date of birth</label><input id="d1" type="date"></div>
+    <div class="field" id="f2"><label for="d2" id="l2">Age on this date</label><input id="d2" type="date"></div>
+    <div class="field" id="f3" hidden><label for="n">Days to add <small>(use − to go back)</small></label><input id="n" type="number" inputmode="numeric" placeholder="e.g. 90"></div></div>
+    <p class="err" id="err"></p>
+    <div class="result"><div class="box main"><span id="mainL">Age</span><b id="main">–</b></div><div class="box"><span id="aL">In days</span><b id="a">–</b></div><div class="box"><span id="bL">In weeks</span><b id="b">–</b></div></div>
+    <div id="more" class="lead" style="margin-top:12px"></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+let M="age";
+const D=s=>{if(!s)return null;const p=s.split("-").map(Number);return new Date(Date.UTC(p[0],p[1]-1,p[2]));};
+const iso=d=>d.toISOString().slice(0,10);
+const long=d=>d.toLocaleDateString("en",{weekday:"long",year:"numeric",month:"long",day:"numeric",timeZone:"UTC"});
+function ymd(a,b){let y=b.getUTCFullYear()-a.getUTCFullYear(),m=b.getUTCMonth()-a.getUTCMonth(),d=b.getUTCDate()-a.getUTCDate();
+  if(d<0){m--;d+=new Date(Date.UTC(b.getUTCFullYear(),b.getUTCMonth(),0)).getUTCDate();}if(m<0){y--;m+=12;}return [y,m,d];}
+const pl=(n,w)=>n+" "+w+(n===1?"":"s");
+function calc(){const a=D($("d1").value),b=D($("d2").value);$("err").textContent="";$("more").textContent="";
+  const set=(m,x,y)=>{$("main").textContent=m;$("a").textContent=x;$("b").textContent=y;};
+  if(M==="add"){const n=parseInt($("n").value,10);if(!a||isNaN(n)){set("–","–","–");return;}
+    const r=new Date(a.getTime()+n*864e5);set(long(r),iso(r),pl(Math.abs(n),"day")+(n<0?" before":" after"));return;}
+  if(!a||!b){set("–","–","–");return;}
+  if(b<a){set("–","–","–");$("err").textContent="The second date is before the first one.";return;}
+  const days=Math.round((b-a)/864e5),p=ymd(a,b);
+  set(M==="age"?pl(p[0],"year"):pl(days,"day"),M==="age"?days.toLocaleString("en"):pl(p[0],"year")+", "+pl(p[1],"month")+", "+pl(p[2],"day"),(Math.floor(days/7)).toLocaleString("en")+(days%7?" and "+pl(days%7,"day"):""));
+  if(M==="age"){$("more").textContent="Exactly "+pl(p[0],"year")+", "+pl(p[1],"month")+" and "+pl(p[2],"day")+". Born on a "+long(a).split(",")[0]+".";}}
+function mode(m){M=m;document.querySelectorAll("#mode button").forEach(x=>x.classList.toggle("on",x.dataset.m===m));
+  $("l1").textContent=m==="age"?"Date of birth":m==="between"?"From":"Start date";$("l2").textContent=m==="age"?"Age on this date":"To";
+  $("f2").hidden=m==="add";$("f3").hidden=m!=="add";$("mainL").textContent=m==="age"?"Age":m==="between"?"Days between":"The date is";
+  $("aL").textContent=m==="age"?"In days":m==="between"?"Years, months, days":"Short date";$("bL").textContent=m==="add"?"That is":"In weeks";calc();}
+$("mode").addEventListener("click",e=>{const b=e.target.closest("button");if(b)mode(b.dataset.m);});
+["d1","d2","n"].forEach(i=>$(i).addEventListener("input",calc));
+(function(){const t=new Date();$("d2").value=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");})();mode("age");
+</script>
+</body>
+</html>

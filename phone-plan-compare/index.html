@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone Plan Comparison — real monthly cost of two plans (free)</title>
+<meta name="description" content="Free phone plan comparison. Enter the monthly price, phone payment, one-time fees and contract length for two plans to see the real total cost and which one is cheaper.">
+<link rel="canonical" href="https://tools.freenetsave.com/phone-plan-compare/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .pl{border:1.5px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+  .pl h2{margin:0 0 10px;font-size:18px;color:var(--brand)}
+  .win{background:#e9f6ec;border-radius:12px;padding:12px 14px;margin-top:12px;font-weight:700;color:var(--good)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Compare Two Phone Plans</h1>
+    <p class="sub">See the real total cost of two plans over the whole contract.</p>
+  </div>
+  <div class="card">
+    <div id="plans"></div>
+    <div class="row"><div class="field"><label for="tax">Tax % <small>(optional)</small></label><input id="tax" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0"></div>
+    <div class="field"><label for="cur">Money sign</label><select id="cur"><option value="$">$</option><option value="€">€</option><option value="£">£</option><option value="₹">₹</option><option value="">none</option></select></div></div>
+    <div class="result"><div class="box"><span>Plan A total</span><b id="ta">–</b></div><div class="box"><span>Plan B total</span><b id="tb">–</b></div></div>
+    <div class="result" style="margin-top:10px"><div class="box"><span>Plan A real cost each month</span><b id="ma">–</b></div><div class="box"><span>Plan B real cost each month</span><b id="mb">–</b></div></div>
+    <div id="win"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">Copy result</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+const F=[["m","Plan price each month","Monthly plan price"],["p","Phone payment each month","0 if you own your phone"],["o","One-time costs","Activation, SIM, money down"],["c","Credits or gift cards you get","Bill credits, trade-in"],["n","Months","Length of the deal, e.g. 24"]];
+$("plans").innerHTML=["A","B"].map(k=>'<div class="pl"><h2>Plan '+k+'</h2><div class="row">'+F.map(f=>'<div class="field"><label for="'+f[0]+k+'">'+f[1]+'</label><input id="'+f[0]+k+'" type="number" inputmode="decimal" min="0" placeholder="'+f[2]+'"></div>').join("")+"</div></div>").join("");
+const fm=x=>$("cur").value+x.toLocaleString("en",{minimumFractionDigits:2,maximumFractionDigits:2});let last="";
+function one(k){const v=i=>+$(i+k).value||0,n=v("n");if(!n||!(v("m")||v("p")))return null;const t=1+(+$("tax").value||0)/100;const tot=((v("m")+v("p"))*n+v("o"))*t-v("c");return {tot:tot,mo:tot/n,n:n};}
+function calc(){const a=one("A"),b=one("B");last="";$("ta").textContent=a?fm(a.tot):"–";$("ma").textContent=a?fm(a.mo):"–";$("tb").textContent=b?fm(b.tot):"–";$("mb").textContent=b?fm(b.mo):"–";$("win").innerHTML="";
+  if(a&&b){const d=Math.abs(a.mo-b.mo),w=a.mo<b.mo?"A":"B";const msg=d<0.005?"Both plans cost the same each month.":"Plan "+w+" is cheaper by "+fm(d)+" a month"+(a.n===b.n?" ("+fm(Math.abs(a.tot-b.tot))+" over "+a.n+" months).":".");
+    $("win").innerHTML='<div class="win"></div>';$("win").firstChild.textContent=msg;last="Plan A: "+fm(a.tot)+" total, "+fm(a.mo)+" a month\nPlan B: "+fm(b.tot)+" total, "+fm(b.mo)+" a month\n"+msg+"\n(freenetsave.com)";}}
+document.querySelector(".card").addEventListener("input",calc);
+$("copy").addEventListener("click",()=>last?copyText(last):toast("Fill in both plans first"));
+</script>
+</body>
+</html>

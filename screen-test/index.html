@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone Screen Test — dead pixels and touch test (free)</title>
+<meta name="description" content="Free screen test for phones, tablets and monitors. Check for dead pixels with full-screen colours and test every part of the touch screen. Useful when buying a used phone.">
+<link rel="canonical" href="https://tools.freenetsave.com/screen-test/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  #full{position:fixed;inset:0;z-index:9999;display:none;touch-action:none}
+  #full.on{display:block}
+  #grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(8,1fr);grid-auto-rows:1fr}
+  #grid i{border:1px solid #334;background:#172033}
+  #grid i.hit{background:#22c55e}
+  #tip{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);background:rgba(0,0,0,.65);color:#fff;padding:8px 14px;border-radius:99px;font-size:14px;pointer-events:none;white-space:nowrap}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Screen Test</h1>
+    <p class="sub">Check for dead pixels and test the touch screen. Handy when buying a used phone.</p>
+  </div>
+  <div class="card">
+    <h2 style="margin:0 0 6px;font-size:20px">Dead pixel test</h2>
+    <p class="lead">The screen fills with one colour. Look for tiny dots that stay black, white or the wrong colour. Tap to go to the next colour.</p>
+    <button class="btn" id="px" type="button">Start colour test</button>
+  </div>
+  <div class="card">
+    <h2 style="margin:0 0 6px;font-size:20px">Touch test</h2>
+    <p class="lead">Slide your finger over every square until they all turn green. A square that will not turn green means that part of the screen does not sense touch.</p>
+    <button class="btn" id="tc" type="button">Start touch test</button>
+    <p class="lead" id="res" style="margin-top:12px"></p>
+  </div>
+  <div id="full"><div id="grid" hidden></div><div id="tip"></div></div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+const C=["#ffffff","#000000","#ff0000","#00ff00","#0000ff","#ffff00","#00ffff","#ff00ff","#808080"],N=["White","Black","Red","Green","Blue","Yellow","Cyan","Magenta","Grey"];
+let mode="",ci=0;const F=$("full");
+function open(){F.classList.add("on");try{(F.requestFullscreen||F.webkitRequestFullscreen||function(){}).call(F);}catch(e){}}
+function close(){F.classList.remove("on");mode="";try{if(document.fullscreenElement)document.exitFullscreen();}catch(e){}}
+function colour(){F.style.background=C[ci];$("tip").textContent=N[ci]+" · tap for next ("+(ci+1)+" of "+C.length+")";$("tip").style.color=ci===0||ci===5||ci===6?"#fff":"#fff";}
+$("px").addEventListener("click",()=>{mode="px";ci=0;$("grid").hidden=true;open();colour();});
+$("tc").addEventListener("click",()=>{mode="tc";$("grid").hidden=false;F.style.background="#172033";$("grid").innerHTML="";const rows=Math.max(8,Math.round(8*innerHeight/innerWidth));for(let i=0;i<8*rows;i++)$("grid").appendChild(document.createElement("i"));$("tip").textContent="Slide over every square · double-tap to stop";open();});
+F.addEventListener("click",()=>{if(mode!=="px")return;ci++;if(ci>=C.length){close();toast("Colour test finished");}else colour();});
+function hit(x,y){const e=document.elementFromPoint(x,y);if(e&&e.parentNode===$("grid")&&!e.classList.contains("hit")){e.classList.add("hit");const left=$("grid").querySelectorAll("i:not(.hit)").length;if(!left){finish();}}}
+function finish(){const all=$("grid").children.length,left=$("grid").querySelectorAll("i:not(.hit)").length;close();$("res").textContent=left?left+" of "+all+" squares were not touched. If you slid over them and they stayed dark, that part of the screen may be faulty.":"Every square sensed your touch. The touch screen looks good.";}
+F.addEventListener("pointermove",e=>{if(mode==="tc")hit(e.clientX,e.clientY);});F.addEventListener("pointerdown",e=>{if(mode==="tc")hit(e.clientX,e.clientY);});
+F.addEventListener("dblclick",()=>{if(mode==="tc")finish();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&mode){if(mode==="tc")finish();else close();}});
+</script>
+</body>
+</html>

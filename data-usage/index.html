@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mobile Data Calculator — how many GB do I need? (free)</title>
+<meta name="description" content="Free mobile data calculator. Enter how much you browse, stream music, watch video and use maps each day to see how many GB a month you need.">
+<link rel="canonical" href="https://tools.freenetsave.com/data-usage/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .use{display:grid;grid-template-columns:1fr 130px;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+  .use:first-child{border-top:0}
+  .use b{display:block;font-size:16px}
+  .use span{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>How Much Data Do I Need?</h1>
+    <p class="sub">Tell us what you do on your phone away from Wi-Fi. See how many GB a month you need.</p>
+  </div>
+  <div class="card">
+    <p class="lead">Type how much you do each day <b>without Wi-Fi</b>. Leave a box empty for things you do not do.</p>
+    <div id="rows"></div>
+    <div class="result" style="margin-top:14px"><div class="box main"><span>You need about</span><b id="gb">–</b></div><div class="box"><span>Each day</span><b id="day">–</b></div><div class="box"><span>A plan this size fits</span><b id="plan">–</b></div></div>
+    <p class="note" style="text-align:left">These are typical amounts. Real use changes with video quality and the app.</p>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">Copy result</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+const R=[["web","Web and social media","hours a day",90],["mail","Email and chat messages","messages a day",0.05],["music","Music or podcasts","hours a day",70],["sd","Video, normal quality (480p)","hours a day",600],["hd","Video, HD (1080p)","hours a day",2500],["call","Video calls","hours a day",800],["maps","Maps and directions","hours a day",8],["game","Online games","hours a day",80],["hot","Laptop on phone hotspot","hours a day",300]];
+$("rows").innerHTML=R.map(r=>'<div class="use"><label for="'+r[0]+'" style="margin:0"><b>'+r[1]+'</b><span>'+r[2]+'</span></label><input id="'+r[0]+'" type="number" inputmode="decimal" min="0" placeholder="0"></div>').join("");
+let last="";function calc(){let mb=0;R.forEach(r=>mb+=(+$(r[0]).value||0)*r[3]);last="";
+  if(!mb){["gb","day","plan"].forEach(k=>$(k).textContent="–");return;}
+  const gb=mb*30/1000,sizes=[1,2,3,5,8,10,15,20,30,40,50,60,75,100,150];const plan=sizes.find(s=>s>=gb*1.15);
+  $("gb").textContent=(gb<10?gb.toFixed(1):Math.round(gb))+" GB a month";$("day").textContent=mb<1000?Math.round(mb)+" MB":(mb/1000).toFixed(1)+" GB";$("plan").textContent=plan?plan+" GB":"Unlimited";
+  last="I need about "+$("gb").textContent+" of mobile data.\nA "+$("plan").textContent+" plan fits.\n(freenetsave.com)";}
+R.forEach(r=>$(r[0]).addEventListener("input",calc));
+$("copy").addEventListener("click",()=>last?copyText(last):toast("Fill in the boxes first"));
+</script>
+</body>
+</html>

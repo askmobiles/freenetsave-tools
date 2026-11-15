@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Word Search Maker — make and print your own puzzle (free)</title>
+<meta name="description" content="Free word search maker. Type your own words, make a puzzle and print it with an answer key. Great for kids, classrooms and parties.">
+<link rel="canonical" href="https://tools.freenetsave.com/word-search/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  #sheet{background:#fff;color:#000;border:1px solid var(--line);border-radius:6px;padding:26px;margin-top:16px;overflow-x:auto}
+  @media print{body{background:#fff}.card,.hide-embed,.note,.fh,.ff{display:none!important}.wrap{max-width:none;padding:0}#sheet{border:0;padding:0;margin:0;overflow:visible}@page{margin:14mm}}
+  #sheet h2{margin:0 0 4px;font-size:24px;text-align:center}
+  #gridT{border-collapse:collapse;margin:14px auto;font-family:ui-monospace,Menlo,Consolas,monospace}
+  #gridT td{width:1.75em;height:1.75em;text-align:center;font-size:clamp(13px,3.6vw,20px);font-weight:700;border:1px solid #bbb}
+  #gridT td.a{background:#ffd89c}
+  #wl{columns:3;list-style:none;padding:0;margin:10px 0 0;font-size:16px}
+  @media print{#gridT td.a{background:#ddd}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Word Search Maker</h1>
+    <p class="sub">Type your words, make a puzzle, and print it.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label for="ttl">Puzzle title</label><input id="ttl" placeholder="e.g. Animals"></div>
+    <div class="field"><label for="words">Words <small>(one on each line, up to 20)</small></label><textarea id="words" style="min-height:150px" placeholder="Type one word on each line"></textarea></div>
+    <div class="row"><div class="field"><label for="size">Puzzle size</label><select id="size"><option value="10">Small (10 by 10)</option><option value="13" selected>Medium (13 by 13)</option><option value="16">Large (16 by 16)</option></select></div>
+    <div class="field"><label for="lvl">How hard?</label><select id="lvl"><option value="1">Easy (across and down)</option><option value="2" selected>Medium (adds diagonal)</option><option value="3">Hard (adds backwards)</option></select></div></div>
+    <p class="err" id="err"></p>
+    <div class="btnrow"><button class="btn" id="make" type="button">Make puzzle</button><button class="btn line" id="key" type="button" disabled>Show answers</button><button class="btn alt" id="print" type="button" disabled>Print</button></div>
+  </div>
+  <div id="sheet" hidden></div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+let G=null,ANS=null,showKey=false,WL=[];const E=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function make(){const n=+$("size").value,lvl=+$("lvl").value;$("err").textContent="";
+  let ws=[...new Set($("words").value.split("\n").map(w=>w.toUpperCase().replace(/[^A-Z]/g,"")).filter(w=>w.length>1))];
+  if(!ws.length){$("err").textContent="Type at least one word (letters A to Z).";return;}
+  const long=ws.filter(w=>w.length>n);if(long.length){$("err").textContent=long[0]+" is too long for this size. Pick a bigger puzzle.";return;}
+  ws=ws.slice(0,20).sort((a,b)=>b.length-a.length);
+  const dirs=[[0,1],[1,0]];if(lvl>1)dirs.push([1,1],[-1,1]);if(lvl>2)dirs.push([0,-1],[-1,0],[-1,-1],[1,-1]);
+  for(let attempt=0;attempt<60;attempt++){const g=[...Array(n)].map(()=>Array(n).fill("")),a=[...Array(n)].map(()=>Array(n).fill(false));let ok=true;
+    for(const w of ws){let placed=false;for(let t=0;t<300&&!placed;t++){const d=dirs[Math.floor(Math.random()*dirs.length)],r=Math.floor(Math.random()*n),c=Math.floor(Math.random()*n),er=r+d[0]*(w.length-1),ec=c+d[1]*(w.length-1);
+        if(er<0||er>=n||ec<0||ec>=n)continue;let fit=true;for(let i=0;i<w.length;i++){const ch=g[r+d[0]*i][c+d[1]*i];if(ch&&ch!==w[i]){fit=false;break;}}
+        if(fit){for(let i=0;i<w.length;i++){g[r+d[0]*i][c+d[1]*i]=w[i];a[r+d[0]*i][c+d[1]*i]=true;}placed=true;}}
+      if(!placed){ok=false;break;}}
+    if(ok){for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(!g[r][c])g[r][c]="ABCDEFGHIJKLMNOPQRSTUVWXYZ"[Math.floor(Math.random()*26)];G=g;ANS=a;WL=ws.slice().sort();showKey=false;draw();return;}}
+  $("err").textContent="These words do not all fit. Use a bigger puzzle or fewer words.";}
+function draw(){if(!G)return;$("sheet").hidden=false;$("key").disabled=$("print").disabled=false;$("key").textContent=showKey?"Hide answers":"Show answers";
+  $("sheet").innerHTML="<h2>"+E($("ttl").value||"Word Search")+'</h2><table id="gridT">'+G.map((row,r)=>"<tr>"+row.map((ch,c)=>"<td"+(showKey&&ANS[r][c]?' class="a"':"")+">"+ch+"</td>").join("")+"</tr>").join("")+'</table><ul id="wl">'+WL.map(w=>"<li>"+w+"</li>").join("")+"</ul>";}
+$("make").addEventListener("click",make);$("key").addEventListener("click",()=>{showKey=!showKey;draw();});$("print").addEventListener("click",()=>window.print());
+</script>
+</body>
+</html>

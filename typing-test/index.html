@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typing Speed Test — free, words per minute and accuracy</title>
+<meta name="description" content="Free typing speed test. Type for one minute and see your words per minute and accuracy. No sign-up, nothing saved.">
+<link rel="canonical" href="https://tools.freenetsave.com/typing-test/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  #text{font-size:20px;line-height:1.7;background:var(--soft);border-radius:14px;padding:14px 16px;user-select:none}
+  #text .ok{color:var(--good);font-weight:400}
+  #text .bad{color:#fff;background:var(--warn);border-radius:3px;font-weight:400}
+  #text .cur{border-bottom:3px solid var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Typing Speed Test</h1>
+    <p class="sub">Type for one minute. See your speed and accuracy.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label>How long?</label><div class="seg" id="len"><button type="button" data-s="30">30 seconds</button><button type="button" data-s="60" class="on">1 minute</button><button type="button" data-s="120">2 minutes</button></div></div>
+    <div id="text" aria-hidden="true"></div>
+    <div class="field" style="margin-top:12px"><label for="inp">Type the words above here</label><input id="inp" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Start typing to begin"></div>
+    <div class="result"><div class="box main"><span>Words per minute</span><b id="wpm">–</b></div><div class="box"><span>Accuracy</span><b id="acc">–</b></div><div class="box"><span>Time left</span><b id="left">60</b></div></div>
+    <div class="btnrow"><button class="btn line" id="again" type="button">New words</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+const W="the and you that was for are with his they this have from one had word but not what all were when your can said there use each which she how their will other about out many then them these some her would make like him into time has look two more write see number way could people than first water been call who oil now find long down day did get come made may part over new sound take only little work know place year live back give most very after thing our just name good sentence man think say great where help through much before line right too mean old any same tell boy follow came want show also around form three small set put end does another well large must big even such because turn here why ask went men read need land different home move try kind hand picture again change off play spell air away animal house point page letter mother answer found study still learn should world high every near add food between own below country plant last school father keep tree never start city earth eye light thought head under story saw left few while along might close something seem next hard open example begin life always those both paper together got group often run".split(" ");
+let S=60,target="",t0=0,int=null,done=false;
+function fresh(){clearInterval(int);int=null;done=false;const a=[];for(let i=0;i<220;i++)a.push(W[Math.floor(Math.random()*W.length)]);target=a.join(" ");$("inp").value="";$("inp").disabled=false;$("wpm").textContent="–";$("acc").textContent="–";$("left").textContent=S;paint();}
+function paint(){const v=$("inp").value,st=Math.max(0,v.length-60);let h="";const end=Math.min(target.length,st+150);
+  for(let i=st;i<end;i++){const c=target[i]===" "?" ":target[i];h+=i<v.length?'<span class="'+(v[i]===target[i]?"ok":"bad")+'">'+c+"</span>":i===v.length?'<span class="cur">'+c+"</span>":c;}$("text").innerHTML=h;}
+function score(sec){const v=$("inp").value;let ok=0;for(let i=0;i<v.length;i++)if(v[i]===target[i])ok++;
+  $("wpm").textContent=sec>0?Math.round(ok/5/(sec/60)):"–";$("acc").textContent=v.length?Math.round(ok/v.length*100)+"%":"–";}
+function tick(){const e=(Date.now()-t0)/1000;$("left").textContent=Math.max(0,Math.ceil(S-e));score(Math.min(e,S));if(e>=S){clearInterval(int);int=null;done=true;$("inp").disabled=true;toast("Time is up!");}}
+$("inp").addEventListener("input",()=>{if(done)return;if(!int&&$("inp").value){t0=Date.now();int=setInterval(tick,250);}paint();});
+$("inp").addEventListener("paste",e=>e.preventDefault());
+$("len").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;S=+b.dataset.s;document.querySelectorAll("#len button").forEach(x=>x.classList.toggle("on",x===b));fresh();});
+$("again").addEventListener("click",()=>{fresh();$("inp").focus();});fresh();
+</script>
+</body>
+</html>

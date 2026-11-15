@@ -40,3 +40,8 @@ Words in a tool can be translated by adding a new block next to `en` in that too
 ## Libraries (copied into `assets/lib`, nothing loaded from other websites)
 - pdf-lib 1.17.1 — MIT licence
 - pdf.js 6.5.438 (Mozilla) — Apache 2.0 licence
+
+## Added 2026-11-15
+qr-code, unit-converter, date-calculator, timer, savings-calculator, pay-calculator, fuel-cost, typing-test, flashcards, screen-test, data-usage, picture-converter, pdf-split, invoice-maker, word-search, printable-calendar, phone-plan-compare, handwriting-sheets.
+
+Third-party code: `assets/lib/qrcode.js` (QR Code Generator by Kazuhiko Arase, MIT licence).

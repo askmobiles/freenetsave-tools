@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picture Converter — change to JPG, PNG or WebP and remove location (free)</title>
+<meta name="description" content="Free picture converter. Change photos to JPG, PNG or WebP on your device. The new picture has no location or camera details in it. Nothing is uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/picture-converter/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Picture Converter</h1>
+    <p class="sub">Change a photo to JPG, PNG or WebP. The new picture has no location details in it.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose pictures"><b>Choose pictures</b><span>or drop them here</span><span class="pick">Choose pictures</span><input type="file" accept="image/*,.heic,.heif" multiple></div>
+    <div class="opts2"><div class="field"><label for="fmt">Change to</label><select id="fmt"><option value="image/jpeg">JPG (best for photos)</option><option value="image/png">PNG (keeps see-through parts)</option><option value="image/webp">WebP (smallest)</option></select></div>
+    <div class="field"><label for="q">Quality</label><select id="q"><option value="0.92">High</option><option value="0.8">Medium</option><option value="0.6">Small file</option></select></div></div>
+    <ul class="flist" id="list"></ul>
+    <p class="status" id="st"></p>
+    <p class="lead">Location, date and camera details stored inside the photo are not copied into the new picture. iPhone HEIC photos open in Safari on iPhone, iPad and Mac.</p>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+const EXT={"image/jpeg":"jpg","image/png":"png","image/webp":"webp"};
+function conv(f){return new Promise(res=>{const u=URL.createObjectURL(f),im=new Image();
+  im.onload=()=>{const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext("2d"),t=$("fmt").value;
+    if(t==="image/jpeg"){x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);}x.drawImage(im,0,0);URL.revokeObjectURL(u);c.toBlob(b=>res(b),t,+$("q").value);};
+  im.onerror=()=>{URL.revokeObjectURL(u);res(null);};im.src=u;});}
+async function go(files){$("st").textContent="Working…";let ok=0;
+  for(const f of files){const b=await conv(f),li=document.createElement("li");
+    if(!b){li.innerHTML='<div class="thumb">!</div><div class="nm"><b></b><span>This browser cannot open this kind of picture</span></div>';li.querySelector("b").textContent=f.name;}
+    else{ok++;const name=baseName(f.name)+"."+EXT[b.type||$("fmt").value],u=URL.createObjectURL(b);
+      li.innerHTML='<div class="thumb"></div><div class="nm"><b></b><span></span></div><button type="button" aria-label="Download">⬇</button>';li.querySelector(".thumb").style.backgroundImage="url("+u+")";
+      li.querySelector("b").textContent=name;li.querySelector("span").textContent=fmtSize(f.size)+" → "+fmtSize(b.size);li.querySelector("button").addEventListener("click",()=>saveFile(b,name));if(files.length===1)saveFile(b,name);}
+    $("list").appendChild(li);}
+  $("st").textContent=ok?ok+(ok===1?" picture is":" pictures are")+" ready. Tap ⬇ to save.":"";}
+setupDrop($("drop"),go);
+</script>
+</body>
+</html>

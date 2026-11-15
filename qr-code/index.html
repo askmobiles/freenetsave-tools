@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR Code Maker — free, for links, Wi-Fi and text</title>
+<meta name="description" content="Free QR code maker. Make a QR code for a link, text, Wi-Fi password or phone number and download it as a picture. No sign-up, nothing saved.">
+<link rel="canonical" href="https://tools.freenetsave.com/qr-code/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  #qr{display:grid;place-items:center;background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;min-height:220px}
+  #qr canvas{max-width:100%;height:auto;image-rendering:pixelated}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>QR Code Maker</h1>
+    <p class="sub">For a link, Wi-Fi, text or a phone number. Download it as a picture.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label>What is the code for?</label>
+      <div class="seg" id="kind"><button type="button" data-k="link" class="on">Link or text</button><button type="button" data-k="wifi">Wi-Fi</button><button type="button" data-k="tel">Phone number</button></div></div>
+    <div id="fLink" class="field"><label for="txt">Link or text</label><textarea id="txt" style="min-height:90px" placeholder="Type or paste a link or any text"></textarea></div>
+    <div id="fWifi" hidden>
+      <div class="row"><div class="field"><label for="ssid">Wi-Fi name</label><input id="ssid" placeholder="Network name" autocomplete="off"></div>
+      <div class="field"><label for="wpass">Wi-Fi password</label><input id="wpass" placeholder="Password" autocomplete="off"></div></div>
+      <div class="field"><label for="enc">Security</label><select id="enc"><option value="WPA">WPA / WPA2 / WPA3 (most common)</option><option value="WEP">WEP (old)</option><option value="nopass">No password</option></select></div>
+    </div>
+    <div id="fTel" class="field" hidden><label for="tel">Phone number</label><input id="tel" type="tel" placeholder="Number with area code"></div>
+    <div id="qr"><span class="lead">Your QR code will show here</span></div>
+    <p class="err" id="err"></p>
+    <div class="btnrow"><button class="btn" id="dl" type="button" disabled>Download picture</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/lib/qrcode.js"></script>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+let K="link", cv=null;
+function esc(s){return s.replace(/([\\;,:"])/g,"\\$1");}
+function data(){
+  if(K==="link") return $("txt").value.trim();
+  if(K==="tel"){const t=$("tel").value.replace(/[^0-9+]/g,"");return t?"tel:"+t:"";}
+  const s=$("ssid").value; if(!s) return "";
+  const e=$("enc").value; return "WIFI:T:"+e+";S:"+esc(s)+";"+(e==="nopass"?"":"P:"+esc($("wpass").value)+";")+";";
+}
+function draw(){
+  const d=data(); $("err").textContent=""; cv=null; $("dl").disabled=true;
+  if(!d){$("qr").innerHTML='<span class="lead">Your QR code will show here</span>';return;}
+  try{
+    const q=qrcode(0,"M"); q.addData(unescape(encodeURIComponent(d)),"Byte"); q.make();
+    const n=q.getModuleCount(), s=Math.max(4,Math.floor(880/(n+8))), m=4*s;
+    const c=document.createElement("canvas"); c.width=c.height=n*s+2*m; const x=c.getContext("2d");
+    x.fillStyle="#fff"; x.fillRect(0,0,c.width,c.height); x.fillStyle="#000";
+    for(let r=0;r<n;r++)for(let k=0;k<n;k++)if(q.isDark(r,k))x.fillRect(m+k*s,m+r*s,s,s);
+    c.style.width="260px"; $("qr").innerHTML=""; $("qr").appendChild(c); cv=c; $("dl").disabled=false;
+  }catch(e){$("qr").innerHTML="";$("err").textContent="That is too long for one QR code. Try a shorter text.";}
+}
+$("kind").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;K=b.dataset.k;
+  document.querySelectorAll("#kind button").forEach(x=>x.classList.toggle("on",x===b));
+  $("fLink").hidden=K!=="link";$("fWifi").hidden=K!=="wifi";$("fTel").hidden=K!=="tel";draw();});
+["txt","ssid","wpass","enc","tel"].forEach(i=>$(i).addEventListener("input",draw));
+$("dl").addEventListener("click",()=>{if(cv)cv.toBlob(b=>saveFile(b,"qr-code.png"));});
+</script>
+</body>
+</html>
