@@ -6,7 +6,7 @@
 <title>Numerology Calculator (free) — freenetsave.com</title>
 <meta name="description" content="Free numerology calculator: birth number, destiny number, name number, lucky numbers, business name and phone number match. Runs in your browser — nothing is saved.">
 <link rel="canonical" href="https://freenetsave.com/numerology-calculator/">
-<link rel="stylesheet" href="../assets/style.css?v=5">
+<link rel="stylesheet" href="../assets/style.css?v=6">
 <style>
   .big3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   .big{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
@@ -69,6 +69,15 @@
   .famrow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px}
   .famrow button{border:0;background:#fdecea;color:#9b2c22;border-radius:10px;padding:0 14px;cursor:pointer;font-size:16px}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .booknote{margin-top:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:400;font-size:15px;color:var(--ink)}
+  .booknote hr{border:0;border-top:1px dashed var(--line);margin:8px 0}
+  .booknote small{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+  .splitname,.gcn{margin-top:10px;font-weight:400;font-size:14px;color:var(--ink);background:rgba(255,255,255,.6);border-radius:10px;padding:8px 10px;line-height:1.7}
+  .inlang{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;font-size:14px;color:var(--muted)}
+  .inlang span{font-weight:700;margin-right:2px}
+  .inlang button{font:inherit;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+  .inlang button:hover,.inlang button:focus-visible{border-color:var(--brand);color:var(--brand)}
+  .hint{font-size:13px;color:var(--muted);margin:-4px 0 12px}
   @media (max-width:700px){ .tabs{grid-template-columns:repeat(3,1fr)} }
   @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
 </style>
@@ -79,6 +88,8 @@
     <h1 data-t="title"></h1>
     <p class="sub" data-t="subtitle"></p>
   </div>
+
+  <div class="inlang" translate="no"><span>Read in:</span><button type="button" data-l="ta">தமிழ்</button><button type="button" data-l="hi">हिन्दी</button><button type="button" data-l="te">తెలుగు</button><button type="button" data-l="ml">മലയാളം</button><button type="button" data-l="kn">ಕನ್ನಡ</button><button type="button" data-l="mr">मराठी</button><button type="button" data-l="gu">ગુજરાતી</button><button type="button" data-l="pa">ਪੰਜਾਬੀ</button><button type="button" data-l="bn">বাংলা</button><button type="button" data-l="ur">اردو</button><button type="button" data-l="si">සිංහල</button><button type="button" data-l="en">English</button></div>
 
   <nav class="tabs" id="tabs" role="tablist" aria-label="What to check">
     <button type="button" role="tab" data-tab="my" class="on"><span class="ic">🔢</span>My numbers</button>
@@ -101,6 +112,7 @@
       <select id="m" aria-label="Month"></select>
       <input id="y" type="number" inputmode="numeric" min="1900" max="2100" aria-label="Year">
     </div>
+    <p class="hint" data-tab="my name">Born after 12 midnight? The book counts that as the next date, so enter the next date.</p>
     <div class="field" data-tab="biz">
       <label for="biz">Business or shop name</label>
       <input id="biz" placeholder="Business name, as on the sign">
@@ -167,6 +179,8 @@
         <tr><td data-t="luckyColours"></td><td id="lkColors"></td></tr>
         <tr><td data-t="luckyGem"></td><td id="lkGem"></td></tr>
         <tr><td data-t="luckyDates"></td><td id="lkDates"></td></tr>
+        <tr id="avoidDatesRow"><td>Dates to avoid</td><td id="lkAvoidDates"></td></tr>
+        <tr><td>Lucky ages</td><td id="lkAges"></td></tr>
       </table>
     </div>
 
@@ -217,7 +231,7 @@
 
     <div class="card" data-tab="name biz vehicle">
       <h2 data-t="chartTitle"></h2>
-      <div class="chart" id="chart"></div>
+      <div class="chart" id="chart" translate="no"></div>
     </div>
 
     <div class="card" data-tab="house" id="houseCard">
@@ -229,11 +243,11 @@
 
     <div class="card explain" data-tab="my">
       <h2>📖 How your numbers work</h2>
-      <p><b>Birth number</b> = the digits of your birth day added up (27 → 2+7 = 9). <b>Destiny number</b> = every digit of your full date of birth added up. Until age 30 the birth number is stronger; from 30 the destiny number leads. Lucky numbers, days and colours come from the planet that rules your birth number.</p>
+      <p><b>Birth number</b> = the digits of your birth day added up (27 → 2+7 = 9). <b>Destiny number</b> = every digit of your full date of birth added up. Until age 30 the birth number is stronger; from 30 the destiny number leads. Lucky numbers, days and colours come from the planet that rules your birth number. A birth after 12 midnight counts as the next date.</p>
     </div>
     <div class="card explain" data-tab="name">
       <h2>📖 How the name check works</h2>
-      <p>Every English letter has a value (see the chart). The name is checked two ways: the <b>full total</b> (e.g. 37) and the single digit it reduces to (3+7 = 10 → 1). Best is when the single digit is friendly to your numbers and the full total is a lucky one. If not, adding or changing one letter can move it to one of your best totals.</p>
+      <p>Every English letter has a value (see the chart). The name is checked two ways: the <b>full total</b> (e.g. 37) and the single digit it reduces to (3+7 = 10 → 1). Best is when the single digit is friendly to your numbers and the full total is a lucky one. If not, adding or changing one letter can move it to one of your best totals. Titles such as Mr, Mrs or Dr are not counted, and initials are shown on their own as well. The lucky and harmful totals follow the book Athirshta Vignanam by Pandit Sethuraman.</p>
     </div>
     <div class="card explain" data-tab="biz">
       <h2>📖 How the business check works</h2>
@@ -257,7 +271,7 @@
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · <span data-t="freeTools"></span></p>
 </div>
 
-<script src="../assets/embed.js?v=5"></script>
+<script src="../assets/embed.js?v=6"></script>
 <script>
 /* ---------- All words on this page. To add a language later, copy "en" and translate. ---------- */
 const LANG = {
@@ -276,8 +290,8 @@ const LANG = {
   natureTitle:"Your nature", copy:"📋 Copy result", whatsapp:"💬 Share on WhatsApp", chartTitle:"Letter chart used",
   innerNature:"Your inner nature", lifePath:"Life path & suitable work", howOthers:"How others see you",
   together:"How your birth and destiny numbers work together",
-  compGood:"Lucky compound", compBad:"Caution compound", compNeutral:"Neutral compound",
-  disclaimer:"Based on traditional Chaldean (Cheiro) numerology. For fun and cultural interest only — not advice.",
+  compGood:"Lucky total", compBad:"Harmful total", compNeutral:"Neutral total",
+  disclaimer:"Based on traditional Chaldean (Cheiro) numerology and the book Athirshta Vignanam by Pandit Sethuraman. For fun and cultural interest only, not advice.",
   privacy:"🔒 Nothing you type leaves your device. We don't save or keep any information.",
   freeTools:"free online tools", copied:"Copied!"
  }
@@ -349,8 +363,58 @@ const COMBO = {
   enemy:"Opposing numbers — inner wishes and life events can clash at times; many people balance this with their name number."
 };
 
-const COMPOUND_GOOD = [1,3,5,6,10,14,15,19,23,24,27,32,33,37,41,42,45,46,50,51,55,60,64,65,69,73,77,78,82,87,91,96,100];
-const COMPOUND_BAD  = [12,16,18,26,29,35,43,44,48,53,62,71,80,89,98];
+// Lucky and harmful full totals, following "Athirshta Vignanam" by Pandit Sethuraman (with Cheiro's caution totals)
+const COMPOUND_GOOD = [10,19,21,23,24,27,32,33,37,41,42,45,46,68];
+const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47];
+const GOOD_FLOOR = 55;            // a lucky total never shows red, unless a birth-date rule says it does not suit
+let CUR_DAY = 0, CUR_DEST = 0;    // set on each calculation, used by the birth-date rules
+// Rules that depend on the birth date. adj below 0 means "the book advises against this total".
+function dateRule(total){
+  const d=CUR_DAY, nine=[9,18,27].includes(d), six=[6,15,24].includes(d)||CUR_DEST===6;
+  if(total===46 && nine) return {adj:-25, en:"46 stands for high position, but the book advises against this total for people with birth number 9."};
+  if(total===37 && nine) return {adj:-25, en:"37 stands for comfort, but the book advises against this total for people born on the 9th, 18th or 27th."};
+  if(total===45 && (d===9||d===27)) return {adj:10, en:"The book says 45 is good for people born on the 9th or 27th."};
+  if((total===45||total===44) && d===18) return {adj:-25, en:"The book advises against this total for people born on the 18th."};
+  if(total===42 && six) return {adj:10, en:"The book recommends 42 for people born on the 6th, 15th or 24th, or with destiny number 6."};
+  if(total===33 && six) return {adj:-10, en:"For people born on the 6th, 15th or 24th, or with destiny number 6, the book advises against this total and prefers 42."};
+  return null;
+}
+const HARM = "The book lists this as a harmful name total and advises changing the name to reach a lucky total.";
+const BOOK_NOTES = {
+  23:"Big success when you work to a clear plan. Without a goal, simply a comfortable life.",
+  32:"A sharp mind, sudden new ideas and popularity, but money can go up and down.",
+  41:"Very lucky: public support and wealth. Best when you act with patience.",
+  46:"Often seen with leaders and people in high positions. It gives the good effects of number 1.",
+  68:"Very lucky for wealth, but it can bring a restless mind that always wants more.",
+  37:"Brings great comfort and enjoyment.",
+  42:"A good total, and especially good for number 6 people.",
+  45:"Generally a good total. How good depends on the birth date.",
+  12:"Points to sacrifice and struggle (an example from the book).",
+  29:"Progress comes only through hard effort (an example from the book). " + HARM,
+  16:HARM, 17:HARM, 26:HARM, 31:HARM, 35:HARM, 38:HARM, 44:HARM, 47:HARM
+};
+const NAME_DIGIT_NOTES = {
+  2:"A name that comes down to 2 can bring complications.",
+  4:"A name that comes down to 4 can bring unexpected opposition.",
+  7:"A name that comes down to 7 can bring repeated obstacles.",
+  8:"The book warns that a name that comes down to 8 does not suit business.",
+  5:"5 attracts everyone: it draws people of every number."
+};
+function bookNotesHTML(total, n){
+  const out=[];
+  if(BOOK_NOTES[total]) out.push(`📘 ${total}: ${BOOK_NOTES[total]}`);
+  const dr = dateRule(total);
+  if(dr) out.push(`${dr.adj<0?"⚠️":"✅"} ${dr.en}`);
+  if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"📘":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
+  return out.length ? `<div class="booknote">${out.join("<hr>")}<small>Athirshta Vignanam, Pandit Sethuraman</small></div>` : "";
+}
+function goodCompoundNote(total, n, birth, dest){
+  if(!COMPOUND_GOOD.includes(total) || dateRule(total)?.adj<0) return "";
+  if(rel(n,birth)>=0.8 || rel(n,dest)>=0.8) return "";
+  return `<div class="gcn">🌟 The full total ${total} is a lucky one. The single digit ${n} is not a direct friend of your numbers, but because the full total is lucky this name is not marked as weak.</div>`;
+}
+// Titles are not counted
+const TITLES = /^(MR|MRS|MS|MISS|DR|PROF|SRI|SHRI|SMT|THIRU|THIRUMATHI|SELVI|SELVAN)\.?\s+/i;
 function compoundTag(t){
   if(COMPOUND_GOOD.includes(t)) return `<span class="chip good">${t} · ${L.compGood}</span>`;
   if(COMPOUND_BAD.includes(t))  return `<span class="chip bad">${t} · ${L.compBad}</span>`;
@@ -384,12 +448,19 @@ function matchPct(n, birth, dest, opt={}){
   if(opt.nameN!=null){ pts += 20*rel(n,opt.nameN); max += 20; }
   let pct = pts/max*100;
   if(opt.business && [1,5,6].includes(n)) pct += 8;
-  if(opt.total!=null){ if(COMPOUND_GOOD.includes(opt.total)) pct += 7; if(COMPOUND_BAD.includes(opt.total)) pct -= 12; }
+  if(opt.total!=null){                       // names and business names only
+    if([2,4,7,8].includes(n)) pct -= 8;
+    if(n===5) pct += 8;
+    const r = dateRule(opt.total);
+    if(r) pct = r.adj<0 ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
+    if(COMPOUND_GOOD.includes(opt.total)) pct = (r && r.adj<0) ? pct : Math.max(pct + 7, GOOD_FLOOR);
+    if(COMPOUND_BAD.includes(opt.total)) pct -= 12;
+  }
   return Math.max(5, Math.min(100, Math.round(pct)));
 }
 function bestTotalsHTML(birth, dest, opt, current, title){
   const list=[];
-  for(let t=14;t<=70;t++){ if(!COMPOUND_GOOD.includes(t)) continue; const s=reduceSteps(t).at(-1); list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
+  for(let t=10;t<=68;t++){ if(!COMPOUND_GOOD.includes(t) || dateRule(t)?.adj<0) continue; const s=reduceSteps(t).at(-1); list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
   const digits=[...new Set(list.sort((a,b)=>b.p-a.p).map(x=>x.s))].slice(0,3);
   const top=digits.flatMap(s=>list.filter(x=>x.s===s).sort((a,b)=>a.t-b.t).slice(0,3)).filter(x=>x.p>=50);
   const curP = matchPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
@@ -438,6 +509,7 @@ $("form").addEventListener("submit", e=>{
   const allDigits = (String(d).padStart(2,"0")+String(m).padStart(2,"0")+String(y)).split("").filter(c=>c!=="0");
   const destS = reduceSteps(allDigits.reduce((a,c)=>a+ +c,0)), dest = destS.at(-1);
   $("destNum").textContent = dest;
+  CUR_DAY = d; CUR_DEST = dest;
   $("destCalc").textContent = stepText(allDigits, destS);
 
   // Which number is stronger now (age rule)
@@ -454,9 +526,14 @@ $("form").addEventListener("submit", e=>{
   $("weekday").innerHTML = `${L.bornOn} <b>${DAYS[dt.getDay()]}</b>`;
 
   // Name number
-  const rawName = $("name").value.trim();
+  const typedName = (TAB==="my" || TAB==="name") ? $("name").value.trim() : "";
+  let rawName = typedName, droppedTitle = "";
+  while(TITLES.test(rawName)){ droppedTitle += rawName.match(TITLES)[0]; rawName = rawName.replace(TITLES,""); }
   const nm = valueOf(rawName.replace(/[^A-Za-z]/g,""));
   const nameN = nm.single, nameTotal = nm.total;
+  const nmParts = rawName.toUpperCase().replace(/\./g," ").split(/\s+/).filter(Boolean);
+  const initials = nmParts.filter(w=>w.replace(/[^A-Z]/g,"").length===1).map(w=>w.replace(/[^A-Z]/g,"")).join("");
+  const mainName = nmParts.filter(w=>w.replace(/[^A-Z]/g,"").length>1).join(" ");
   if(nameN!==null){
     const nS = reduceSteps(nameTotal);
     $("nameNum").textContent = nameN;
@@ -476,7 +553,13 @@ $("form").addEventListener("submit", e=>{
   $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ");
   $("lkGem").textContent = D.gem;
   const luckyDates=[]; for(let i=1;i<=31;i++) if(D.lucky.includes(reduceSteps(i).at(-1))) luckyDates.push(i);
-  $("lkDates").textContent = luckyDates.join(", ");
+  const eightBad = [1,2,4,7,8].includes(birth) || [1,2,4,7,8].includes(dest);
+  $("lkDates").textContent = (eightBad ? luckyDates.filter(x=>reduceSteps(x).at(-1)!==8) : luckyDates).join(", ");
+  $("avoidDatesRow").style.display = eightBad ? "" : "none";
+  $("lkAvoidDates").innerHTML = eightBad ? `<div class="chips"><span class="chip bad">8</span><span class="chip bad">17</span><span class="chip bad">26</span></div><div class="calc" style="margin-top:4px">For people with birth or destiny number 1, 2, 4, 7 or 8, the book advises against starting new things on these dates.</div>` : "";
+  const ageNums = [...new Set([birth, dest, ...D.lucky])].filter(n=>!D.avoid.includes(n));
+  const nextAges = []; for(let a=Math.max(age,1); a<=110 && nextAges.length<8; a++) if(ageNums.includes(reduceSteps(a).at(-1))) nextAges.push(a);
+  $("lkAges").innerHTML = `<div class="chips">` + nextAges.map(a=>`<span class="chip${a===age?" good":""}">${a}${a===age?" · now":""}</span>`).join("") + `</div><div class="calc" style="margin-top:4px">With a suitable name, the book says progress comes at these ages.</div>`;
 
   // Name match
   const v = $("verdict");
@@ -487,9 +570,21 @@ $("form").addEventListener("submit", e=>{
     $("nmPct").textContent = p+"%"; $("nmStars").textContent = stars(p); $("nmBox").className = "big pct "+level(p);
     const withBirth = rel(nameN,birth)>=0.8;
     if(level(p)==="ok"){ v.className="verdict ok"; v.innerHTML=`✅ Excellent match — name number ${nameN} suits both your birth number (${birth}) and destiny number (${dest}).`; }
-    else if(level(p)==="mid"){ v.className="verdict mid"; v.innerHTML=`🙂 Good match — name number ${nameN} suits your ${withBirth?"birth":"destiny"} number.<br><span class="plain">Lucky name totals for you: ${D.lucky.join(", ")}.</span>`; }
-    else { v.className="verdict no"; v.innerHTML=`⚠️ Name number ${nameN} is not a strong match.<br><span class="plain">Traditionally, a small spelling change to reach ${D.lucky.join(", ")} is suggested.</span>`; }
-    v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + bestTotalsHTML(birth, dest, {}, nameTotal, "Best name totals for you");
+    else if(level(p)==="mid"){ v.className="verdict mid"; v.innerHTML=`🙂 Good match — name number ${nameN} suits your ${withBirth?"birth":"destiny"} number.`; }
+    else { v.className="verdict no"; v.innerHTML=`⚠️ Name number ${nameN} is not a strong match.<br><span class="plain">A small spelling change to reach one of the best totals below is suggested.</span>`; }
+    const ruleOut = dateRule(nameTotal)?.adj<0;
+    if(ruleOut){ v.className="verdict no"; v.innerHTML=`⚠️ The book advises against the total ${nameTotal} for this date of birth.<br><span class="plain">A small spelling change to reach one of the best totals below is suggested.</span>`; }
+    else if(level(p)==="mid" && !withBirth && rel(nameN,dest)<0.8 && COMPOUND_GOOD.includes(nameTotal)) v.innerHTML=`🙂 Good name — the full total ${nameTotal} is a lucky one.`;
+    v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + goodCompoundNote(nameTotal, nameN, birth, dest) + bookNotesHTML(nameTotal, nameN);
+    if(droppedTitle){
+      const wt = valueOf(typedName.replace(/[^A-Za-z]/g,""));
+      v.innerHTML += `<div class="splitname">The title "${esc(droppedTitle.trim())}" is not counted. Without it: <b>${nameTotal}</b>${nameTotal>9?" → "+nameN:""}. With it: <b>${wt.total}</b>${wt.total>9?" → "+wt.single:""} ${compoundTag(wt.total)}<br><span style="color:var(--muted)">If you always sign with the title, the total with the title also matters.</span></div>`;
+    }
+    if(initials && mainName){
+      const iv=valueOf(initials), mv=valueOf(mainName);
+      v.innerHTML += `<div class="splitname"><b>Initials ${esc(initials.split("").join(".")+".")}</b> = ${iv.total}${iv.total>9?" → "+iv.single:""} ${compoundTag(iv.total)}<br><b>Name ${esc(mainName)}</b> = ${mv.total}${mv.total>9?" → "+mv.single:""} ${compoundTag(mv.total)}<br><span style="color:var(--muted)">Together they make the full total ${nameTotal}.</span></div>`;
+    }
+    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "Best name totals for you");
   }
 
   // Business name match
@@ -500,19 +595,19 @@ $("form").addEventListener("submit", e=>{
     const b = bz.single, bS = reduceSteps(bz.total);
     $("bzNum").textContent = b;
     $("bzCalc").textContent = `${rawBiz} → ${bz.vals.filter(x=>x).join(" + ")} = ${bz.total}${bS.length>1?" → "+bS.slice(1).join(" → "):""}`;
-    $("bzCompound").innerHTML = compoundTag(bz.total);
+    $("bzCompound").innerHTML = compoundTag(bz.total) + goodCompoundNote(bz.total, b, birth, dest) + bookNotesHTML(bz.total, b);
     bzScore = matchPct(b, birth, dest, {business:true, total:bz.total});
     $("bzStars").textContent = stars(bzScore); $("bzPct").textContent = bzScore+"%"; $("bzBox").className = "big pct "+level(bzScore);
     const bestBiz = [1,5,6,3,9].filter(n=>(D.lucky.includes(n)||n===birth||n===dest) && !D.avoid.includes(n) && !DATA[dest].avoid.includes(n));
     const bv = $("bzVerdict");
     if(level(bzScore)==="ok"){ bv.className="verdict ok"; bv.innerHTML=`✅ Strong business name — number ${b} works well with the owner's birth (${birth}) and destiny (${dest}) numbers.`; }
     else if(level(bzScore)==="mid"){ bv.className="verdict mid"; bv.innerHTML=`🙂 Good name.<br><span class="plain">Business number ${b} is fine. It could be stronger with a total of <b>${bestBiz.join(", ")||birth}</b>.</span>`; }
-    else { bv.className="verdict no"; bv.innerHTML=`⚠️ Weak match for the owner.<br><span class="plain">Try a small spelling change, or add a word like "Inc", "Store" or "&amp; Co", so the total becomes <b>${bestBiz.join(", ")||birth}</b>.</span>`; }
-    const extras = ["Inc","Ltd","Store","Shop","Services","& Co","Group","Plus","Pro","Centre","Solutions"];
+    else { bv.className="verdict no"; bv.innerHTML=`⚠️ Weak match for the owner.<br><span class="plain">Try a small spelling change, or add a word like "&amp; Co", "Ltd" or "Limited", so the total becomes <b>${bestBiz.join(", ")||birth}</b>.</span>`; }
+    const extras = ["& Co","Ltd","Limited","Inc","Store","Shop","Services","Group","Plus","Pro","Centre","Solutions"];
     const tweaks = extras.map(x=>({x, r:valueOf(rawBiz+" "+x)}))
       .map(t=>({...t, p:matchPct(t.r.single, birth, dest, {business:true, total:t.r.total})}))
       .filter(t=>t.p>bzScore).sort((a,b)=>b.p-a.p).slice(0,4);
-    $("bzTip").innerHTML = (tweaks.length && bzScore<90 ? `💡 Suggestions: ` + tweaks.map(t=>`<b>${esc(rawBiz)} ${esc(t.x)}</b> (${t.r.total} → ${t.r.single}, ${t.p}%)`).join(" · ") : "")
+    $("bzTip").innerHTML = (tweaks.length && bzScore<90 ? `💡 Suggestions: ` + tweaks.map(t=>`<b>${esc(rawBiz)} ${esc(t.x)}</b> (+${valueOf(t.x).total}: ${t.r.total} → ${t.r.single}, ${t.p}%)`).join(" · ") : "")
       + bestTotalsHTML(birth, dest, {business:true}, bz.total, "Best business name totals");
   }
   $("bizCard").style.display = bz.single===null ? "none" : "";
@@ -660,6 +755,12 @@ function houseCheck(head){
   }
 }
 applyTab();
+/* Read this page in an Indian language (Google Translate shows the page; names you type are not changed) */
+document.querySelectorAll(".inlang button").forEach(b=>b.addEventListener("click",()=>{
+  const u="https://tools.freenetsave.com/numerology/", l=b.dataset.l;
+  const to = l==="en" ? u : "https://translate.google.com/translate?sl=en&tl="+l+"&u="+encodeURIComponent(u);
+  try{ window.top.location.href = to; }catch(e){ window.open(to,"_blank","noopener"); }
+}));
 </script>
 </body>
 </html>
