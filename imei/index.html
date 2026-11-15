@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IMEI Number Checker — is it valid? (free) — freenetsave.com</title>
-<meta name="description" content="Free IMEI checker. Find out if a phone's 15-digit IMEI number is correctly formed, using the check digit. Runs in your browser.">
+<title>IMEI Checker &amp; Blacklist Check (free) — freenetsave.com</title>
+<meta name="description" content="Free IMEI checker. See if a phone's IMEI is a real number, then check if it is blacklisted (reported lost or stolen) on the official free Canada and US checkers.">
 <link rel="canonical" href="https://freenetsave.com/imei-checker/">
 <link rel="stylesheet" href="../assets/style.css?v=5">
-<style>#imei{font-family:ui-monospace,Consolas,monospace;font-size:22px;letter-spacing:2px;text-align:center}</style>
+<style>.bl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:12px} .bl a{display:block;text-decoration:none;background:var(--soft);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;color:var(--ink)} .bl a:hover{border-color:var(--brand)} .bl b{display:block;font-size:17px} .bl span{font-size:14px;color:var(--muted)} #blCard[hidden]{display:none} #imei{font-family:ui-monospace,Consolas,monospace;font-size:22px;letter-spacing:2px;text-align:center}</style>
 </head>
 <body>
 <div class="wrap">
   <div class="hide-embed">
-    <h1>IMEI Number Checker</h1>
-    <p class="sub">Check if a phone's IMEI number is a real, correctly formed number.</p>
+    <h1>IMEI Checker &amp; Blacklist Check</h1>
+    <p class="sub">Check that an IMEI is real, then see if the phone was reported lost or stolen.</p>
   </div>
   <div class="card">
     <div class="field">
@@ -27,10 +27,20 @@
       <div class="box"><span>Check digit</span><b id="cd" style="font-size:20px"></b></div>
     </div>
   </div>
+  <div class="card" id="blCard" hidden>
+    <label>🚫 Is this phone blacklisted?</label>
+    <p style="margin:0">A blacklisted phone was reported <b>lost or stolen</b> and is blocked by the carriers. Tap a checker below — we copy the IMEI for you, so just paste it there and press their Check button.</p>
+    <div class="bl">
+      <a href="https://www.devicecheck.ca/" target="_blank" rel="noopener" data-copy><b>🇨🇦 Canada: Device Check</b><span>Free, from the Canadian Telecommunications Association</span></a>
+      <a href="https://stolenphonechecker.org/" target="_blank" rel="noopener" data-copy><b>🇺🇸 USA: Stolen Phone Checker</b><span>Free, from CTIA (the US wireless industry), up to 5 checks a day</span></a>
+    </div>
+    <p class="calc" style="margin:12px 0 0">Other countries: ask your phone company to check the IMEI. A clean result only means it hasn't been reported <i>yet</i> — when buying used, get a receipt and the seller's details.</p>
+    <p class="note" style="text-align:left;margin:10px 0 0">🔒 We never send your IMEI anywhere. It only goes to the checker site if you paste it there.</p>
+  </div>
   <div class="card">
     <label>📱 How to find your IMEI</label>
     <p style="margin:0">Dial <b>*#06#</b> on the phone. Or look in <b>Settings → About phone</b> (Android) or <b>Settings → General → About</b> (iPhone). It's also printed on the box and the SIM tray on many phones.</p>
-    <p class="calc" style="margin:10px 0 0">⚠️ This checker only tells you if the number is correctly formed. It <b>cannot</b> tell you if a phone is stolen, blocked, locked to a carrier or under warranty — ask your carrier for that.</p>
+    <p class="calc" style="margin:10px 0 0">ℹ️ The number check here works offline. To see if a phone is blacklisted, enter a valid IMEI and use the official checkers that appear above. Carrier lock and warranty can only be checked by the phone company or maker.</p>
   </div>
   <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
@@ -45,17 +55,21 @@ function luhnCheckDigit(d14){ // check digit for the first 14 digits
 function check(){
   const raw = $("imei").value, d = raw.replace(/\D/g,"");
   const out = $("out");
-  $("parts").style.display = "none";
+  $("parts").style.display = "none"; $("blCard").hidden = true;
   if(!d){ out.className="box"; out.textContent="Type the 15 digits to check."; return; }
   if(d.length<15){ out.className="box"; out.textContent=`${d.length} of 15 digits…`; return; }
   if(d.length>15){ out.className="box"; out.innerHTML=`<span class="bad">❌ Too many digits (${d.length}).</span> An IMEI has 15 digits. (16 digits is an IMEI-SV, which has no check digit.)`; return; }
   const want = luhnCheckDigit(d.slice(0,14)), got = +d[14];
   $("tac").textContent = d.slice(0,8); $("sn").textContent = d.slice(8,14); $("cd").textContent = d[14];
   $("parts").style.display = "";
-  if(want===got){ out.className="box"; out.innerHTML=`<span class="ok">✅ Valid IMEI format.</span> The check digit is correct.`; }
+  if(want===got){ out.className="box"; out.innerHTML=`<span class="ok">✅ Valid IMEI format.</span> The check digit is correct.`; $("blCard").hidden = false; }
   else { out.className="box"; out.innerHTML=`<span class="bad">❌ Not a valid IMEI.</span> The last digit should be <b>${want}</b>, not ${got}. Check for a typing mistake.`; }
 }
 $("imei").addEventListener("input", check);
+document.querySelectorAll("[data-copy]").forEach(a => a.addEventListener("click", () => {
+  const d = $("imei").value.replace(/\D/g,"");
+  if(d.length===15 && navigator.clipboard) navigator.clipboard.writeText(d).then(()=>toast("IMEI copied — paste it on the checker"), ()=>{});
+}));
 </script>
 </body>
 </html>
