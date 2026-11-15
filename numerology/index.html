@@ -6,6 +6,9 @@
 <title>Numerology Calculator (free) — freenetsave.com</title>
 <meta name="description" content="Free numerology calculator: birth number, destiny number, name number, lucky numbers, business name and phone number match. Runs in your browser — nothing is saved.">
 <link rel="canonical" href="https://freenetsave.com/numerology-calculator/">
+<link rel="alternate" hreflang="en" href="https://tools.freenetsave.com/numerology/">
+<link rel="alternate" hreflang="ta" href="https://tools.freenetsave.com/numerology/ta/">
+<link rel="alternate" hreflang="hi" href="https://tools.freenetsave.com/numerology/hi/">
 <link rel="stylesheet" href="../assets/style.css?v=6">
 <style>
   .big3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
@@ -23,7 +26,7 @@
   td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
   td:first-child{font-weight:600;width:40%}
   .chips{display:flex;flex-wrap:wrap;gap:6px}
-  .chip{background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-weight:600}
+  .chip{white-space:nowrap;display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-weight:600}
   .chip.good{background:#e9f6ec;border-color:#bfe3c7;color:#1e6b35}
   .chip.bad{background:#fdecea;border-color:#f5c6c1;color:#9b2c22}
   .sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
@@ -69,14 +72,14 @@
   .famrow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px}
   .famrow button{border:0;background:#fdecea;color:#9b2c22;border-radius:10px;padding:0 14px;cursor:pointer;font-size:16px}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .booknote{margin-top:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:400;font-size:15px;color:var(--ink)}
-  .booknote hr{border:0;border-top:1px dashed var(--line);margin:8px 0}
-  .booknote small{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+  .totalnote{margin-top:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:400;font-size:15px;color:var(--ink)}
+  .totalnote hr{border:0;border-top:1px dashed var(--line);margin:8px 0}
+  .totalnote small{display:block;margin-top:8px;color:var(--muted);font-size:12px}
   .splitname,.gcn{margin-top:10px;font-weight:400;font-size:14px;color:var(--ink);background:rgba(255,255,255,.6);border-radius:10px;padding:8px 10px;line-height:1.7}
   .inlang{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;font-size:14px;color:var(--muted)}
   .inlang span{font-weight:700;margin-right:2px}
-  .inlang button{font:inherit;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
-  .inlang button:hover,.inlang button:focus-visible{border-color:var(--brand);color:var(--brand)}
+  .inlang a{text-decoration:none;font:inherit;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+  .inlang a:hover,.inlang a:focus-visible,.inlang a.on{border-color:var(--brand);color:var(--brand)}
   .hint{font-size:13px;color:var(--muted);margin:-4px 0 12px}
   @media (max-width:700px){ .tabs{grid-template-columns:repeat(3,1fr)} }
   @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
@@ -89,7 +92,7 @@
     <p class="sub" data-t="subtitle"></p>
   </div>
 
-  <div class="inlang" translate="no"><span>Read in:</span><button type="button" data-l="ta">தமிழ்</button><button type="button" data-l="hi">हिन्दी</button><button type="button" data-l="te">తెలుగు</button><button type="button" data-l="ml">മലയാളം</button><button type="button" data-l="kn">ಕನ್ನಡ</button><button type="button" data-l="mr">मराठी</button><button type="button" data-l="gu">ગુજરાતી</button><button type="button" data-l="pa">ਪੰਜਾਬੀ</button><button type="button" data-l="bn">বাংলা</button><button type="button" data-l="ur">اردو</button><button type="button" data-l="si">සිංහල</button><button type="button" data-l="en">English</button></div>
+  <div class="inlang" translate="no"><span>Read in:</span><a href="https://tools.freenetsave.com/numerology/" target="_top" aria-current="page" class="on">English</a><a href="https://tools.freenetsave.com/numerology/ta/" target="_top">தமிழ்</a><a href="https://tools.freenetsave.com/numerology/hi/" target="_top">हिन्दी</a></div>
 
   <nav class="tabs" id="tabs" role="tablist" aria-label="What to check">
     <button type="button" role="tab" data-tab="my" class="on"><span class="ic">🔢</span>My numbers</button>
@@ -112,7 +115,7 @@
       <select id="m" aria-label="Month"></select>
       <input id="y" type="number" inputmode="numeric" min="1900" max="2100" aria-label="Year">
     </div>
-    <p class="hint" data-tab="my name">Born after 12 midnight? The book counts that as the next date, so enter the next date.</p>
+    <p class="hint" data-tab="my name">Born after 12 midnight? Tradition counts that as the next date, so enter the next date.</p>
     <div class="field" data-tab="biz">
       <label for="biz">Business or shop name</label>
       <input id="biz" placeholder="Business name, as on the sign">
@@ -247,7 +250,7 @@
     </div>
     <div class="card explain" data-tab="name">
       <h2>📖 How the name check works</h2>
-      <p>Every English letter has a value (see the chart). The name is checked two ways: the <b>full total</b> (e.g. 37) and the single digit it reduces to (3+7 = 10 → 1). Best is when the single digit is friendly to your numbers and the full total is a lucky one. If not, adding or changing one letter can move it to one of your best totals. Titles such as Mr, Mrs or Dr are not counted, and initials are shown on their own as well. The lucky and harmful totals follow the book Athirshta Vignanam by Pandit Sethuraman.</p>
+      <p>Every English letter has a value (see the chart). The name is checked two ways: the <b>full total</b> (e.g. 37) and the single digit it reduces to (3+7 = 10 → 1). Best is when the single digit is friendly to your numbers and the full total is a lucky one. If not, adding or changing one letter can move it to one of your best totals. Titles such as Mr, Mrs or Dr are not counted, and initials are shown on their own as well.</p>
     </div>
     <div class="card explain" data-tab="biz">
       <h2>📖 How the business check works</h2>
@@ -291,7 +294,7 @@ const LANG = {
   innerNature:"Your inner nature", lifePath:"Life path & suitable work", howOthers:"How others see you",
   together:"How your birth and destiny numbers work together",
   compGood:"Lucky total", compBad:"Harmful total", compNeutral:"Neutral total",
-  disclaimer:"Based on traditional Chaldean (Cheiro) numerology and the book Athirshta Vignanam by Pandit Sethuraman. For fun and cultural interest only, not advice.",
+  disclaimer:"Based on traditional Chaldean and Tamil numerology. For fun and cultural interest only, not advice.",
   privacy:"🔒 Nothing you type leaves your device. We don't save or keep any information.",
   freeTools:"free online tools", copied:"Copied!"
  }
@@ -363,24 +366,24 @@ const COMBO = {
   enemy:"Opposing numbers — inner wishes and life events can clash at times; many people balance this with their name number."
 };
 
-// Lucky and harmful full totals, following "Athirshta Vignanam" by Pandit Sethuraman (with Cheiro's caution totals)
+// Lucky and harmful full totals (traditional Tamil numerology)
 const COMPOUND_GOOD = [10,19,21,23,24,27,32,33,37,41,42,45,46,68];
 const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47];
 const GOOD_FLOOR = 55;            // a lucky total never shows red, unless a birth-date rule says it does not suit
 let CUR_DAY = 0, CUR_DEST = 0;    // set on each calculation, used by the birth-date rules
-// Rules that depend on the birth date. adj below 0 means "the book advises against this total".
+// Rules that depend on the birth date. adj below 0 means "tradition advises against this total".
 function dateRule(total){
   const d=CUR_DAY, nine=[9,18,27].includes(d), six=[6,15,24].includes(d)||CUR_DEST===6;
-  if(total===46 && nine) return {adj:-25, en:"46 stands for high position, but the book advises against this total for people with birth number 9."};
-  if(total===37 && nine) return {adj:-25, en:"37 stands for comfort, but the book advises against this total for people born on the 9th, 18th or 27th."};
-  if(total===45 && (d===9||d===27)) return {adj:10, en:"The book says 45 is good for people born on the 9th or 27th."};
-  if((total===45||total===44) && d===18) return {adj:-25, en:"The book advises against this total for people born on the 18th."};
-  if(total===42 && six) return {adj:10, en:"The book recommends 42 for people born on the 6th, 15th or 24th, or with destiny number 6."};
-  if(total===33 && six) return {adj:-10, en:"For people born on the 6th, 15th or 24th, or with destiny number 6, the book advises against this total and prefers 42."};
+  if(total===46 && nine) return {adj:-25, en:"46 stands for high position, but tradition advises against this total for people with birth number 9."};
+  if(total===37 && nine) return {adj:-25, en:"37 stands for comfort, but tradition advises against this total for people born on the 9th, 18th or 27th."};
+  if(total===45 && (d===9||d===27)) return {adj:10, en:"Tradition says 45 is good for people born on the 9th or 27th."};
+  if((total===45||total===44) && d===18) return {adj:-25, en:"Tradition advises against this total for people born on the 18th."};
+  if(total===42 && six) return {adj:10, en:"Tradition recommends 42 for people born on the 6th, 15th or 24th, or with destiny number 6."};
+  if(total===33 && six) return {adj:-10, en:"For people born on the 6th, 15th or 24th, or with destiny number 6, tradition advises against this total and prefers 42."};
   return null;
 }
-const HARM = "The book lists this as a harmful name total and advises changing the name to reach a lucky total.";
-const BOOK_NOTES = {
+const HARM = "Traditionally a harmful name total. Changing the name to reach a lucky total is advised.";
+const TOTAL_NOTES = {
   23:"Big success when you work to a clear plan. Without a goal, simply a comfortable life.",
   32:"A sharp mind, sudden new ideas and popularity, but money can go up and down.",
   41:"Very lucky: public support and wealth. Best when you act with patience.",
@@ -389,24 +392,24 @@ const BOOK_NOTES = {
   37:"Brings great comfort and enjoyment.",
   42:"A good total, and especially good for number 6 people.",
   45:"Generally a good total. How good depends on the birth date.",
-  12:"Points to sacrifice and struggle (an example from the book).",
-  29:"Progress comes only through hard effort (an example from the book). " + HARM,
+  12:"Points to sacrifice and struggle.",
+  29:"Progress comes only through hard effort. " + HARM,
   16:HARM, 17:HARM, 26:HARM, 31:HARM, 35:HARM, 38:HARM, 44:HARM, 47:HARM
 };
 const NAME_DIGIT_NOTES = {
   2:"A name that comes down to 2 can bring complications.",
   4:"A name that comes down to 4 can bring unexpected opposition.",
   7:"A name that comes down to 7 can bring repeated obstacles.",
-  8:"The book warns that a name that comes down to 8 does not suit business.",
+  8:"Tradition warns that a name that comes down to 8 does not suit business.",
   5:"5 attracts everyone: it draws people of every number."
 };
-function bookNotesHTML(total, n){
+function totalNotesHTML(total, n){
   const out=[];
-  if(BOOK_NOTES[total]) out.push(`📘 ${total}: ${BOOK_NOTES[total]}`);
+  if(TOTAL_NOTES[total]) out.push(`📘 ${total}: ${TOTAL_NOTES[total]}`);
   const dr = dateRule(total);
   if(dr) out.push(`${dr.adj<0?"⚠️":"✅"} ${dr.en}`);
   if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"📘":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
-  return out.length ? `<div class="booknote">${out.join("<hr>")}<small>Athirshta Vignanam, Pandit Sethuraman</small></div>` : "";
+  return out.length ? `<div class="totalnote">${out.join("<hr>")}</div>` : "";
 }
 function goodCompoundNote(total, n, birth, dest){
   if(!COMPOUND_GOOD.includes(total) || dateRule(total)?.adj<0) return "";
@@ -556,10 +559,10 @@ $("form").addEventListener("submit", e=>{
   const eightBad = [1,2,4,7,8].includes(birth) || [1,2,4,7,8].includes(dest);
   $("lkDates").textContent = (eightBad ? luckyDates.filter(x=>reduceSteps(x).at(-1)!==8) : luckyDates).join(", ");
   $("avoidDatesRow").style.display = eightBad ? "" : "none";
-  $("lkAvoidDates").innerHTML = eightBad ? `<div class="chips"><span class="chip bad">8</span><span class="chip bad">17</span><span class="chip bad">26</span></div><div class="calc" style="margin-top:4px">For people with birth or destiny number 1, 2, 4, 7 or 8, the book advises against starting new things on these dates.</div>` : "";
+  $("lkAvoidDates").innerHTML = eightBad ? `<div class="chips"><span class="chip bad">8</span><span class="chip bad">17</span><span class="chip bad">26</span></div><div class="calc" style="margin-top:4px">For people with birth or destiny number 1, 2, 4, 7 or 8, tradition advises against starting new things on these dates.</div>` : "";
   const ageNums = [...new Set([birth, dest, ...D.lucky])].filter(n=>!D.avoid.includes(n));
   const nextAges = []; for(let a=Math.max(age,1); a<=110 && nextAges.length<8; a++) if(ageNums.includes(reduceSteps(a).at(-1))) nextAges.push(a);
-  $("lkAges").innerHTML = `<div class="chips">` + nextAges.map(a=>`<span class="chip${a===age?" good":""}">${a}${a===age?" · now":""}</span>`).join("") + `</div><div class="calc" style="margin-top:4px">With a suitable name, the book says progress comes at these ages.</div>`;
+  $("lkAges").innerHTML = `<div class="chips">` + nextAges.map(a=>`<span class="chip${a===age?" good":""}">${a}${a===age?" · now":""}</span>`).join("") + `</div><div class="calc" style="margin-top:4px">With a suitable name, tradition says progress comes at these ages.</div>`;
 
   // Name match
   const v = $("verdict");
@@ -573,9 +576,9 @@ $("form").addEventListener("submit", e=>{
     else if(level(p)==="mid"){ v.className="verdict mid"; v.innerHTML=`🙂 Good match — name number ${nameN} suits your ${withBirth?"birth":"destiny"} number.`; }
     else { v.className="verdict no"; v.innerHTML=`⚠️ Name number ${nameN} is not a strong match.<br><span class="plain">A small spelling change to reach one of the best totals below is suggested.</span>`; }
     const ruleOut = dateRule(nameTotal)?.adj<0;
-    if(ruleOut){ v.className="verdict no"; v.innerHTML=`⚠️ The book advises against the total ${nameTotal} for this date of birth.<br><span class="plain">A small spelling change to reach one of the best totals below is suggested.</span>`; }
+    if(ruleOut){ v.className="verdict no"; v.innerHTML=`⚠️ Tradition advises against the total ${nameTotal} for this date of birth.<br><span class="plain">A small spelling change to reach one of the best totals below is suggested.</span>`; }
     else if(level(p)==="mid" && !withBirth && rel(nameN,dest)<0.8 && COMPOUND_GOOD.includes(nameTotal)) v.innerHTML=`🙂 Good name — the full total ${nameTotal} is a lucky one.`;
-    v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + goodCompoundNote(nameTotal, nameN, birth, dest) + bookNotesHTML(nameTotal, nameN);
+    v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + goodCompoundNote(nameTotal, nameN, birth, dest) + totalNotesHTML(nameTotal, nameN);
     if(droppedTitle){
       const wt = valueOf(typedName.replace(/[^A-Za-z]/g,""));
       v.innerHTML += `<div class="splitname">The title "${esc(droppedTitle.trim())}" is not counted. Without it: <b>${nameTotal}</b>${nameTotal>9?" → "+nameN:""}. With it: <b>${wt.total}</b>${wt.total>9?" → "+wt.single:""} ${compoundTag(wt.total)}<br><span style="color:var(--muted)">If you always sign with the title, the total with the title also matters.</span></div>`;
@@ -595,7 +598,7 @@ $("form").addEventListener("submit", e=>{
     const b = bz.single, bS = reduceSteps(bz.total);
     $("bzNum").textContent = b;
     $("bzCalc").textContent = `${rawBiz} → ${bz.vals.filter(x=>x).join(" + ")} = ${bz.total}${bS.length>1?" → "+bS.slice(1).join(" → "):""}`;
-    $("bzCompound").innerHTML = compoundTag(bz.total) + goodCompoundNote(bz.total, b, birth, dest) + bookNotesHTML(bz.total, b);
+    $("bzCompound").innerHTML = compoundTag(bz.total) + goodCompoundNote(bz.total, b, birth, dest) + totalNotesHTML(bz.total, b);
     bzScore = matchPct(b, birth, dest, {business:true, total:bz.total});
     $("bzStars").textContent = stars(bzScore); $("bzPct").textContent = bzScore+"%"; $("bzBox").className = "big pct "+level(bzScore);
     const bestBiz = [1,5,6,3,9].filter(n=>(D.lucky.includes(n)||n===birth||n===dest) && !D.avoid.includes(n) && !DATA[dest].avoid.includes(n));
@@ -755,12 +758,6 @@ function houseCheck(head){
   }
 }
 applyTab();
-/* Read this page in an Indian language (Google Translate shows the page; names you type are not changed) */
-document.querySelectorAll(".inlang button").forEach(b=>b.addEventListener("click",()=>{
-  const u="https://tools.freenetsave.com/numerology/", l=b.dataset.l;
-  const to = l==="en" ? u : "https://translate.google.com/translate?sl=en&tl="+l+"&u="+encodeURIComponent(u);
-  try{ window.top.location.href = to; }catch(e){ window.open(to,"_blank","noopener"); }
-}));
 </script>
 </body>
 </html>

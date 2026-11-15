@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="hi" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>अंक ज्योतिष कैलकुलेटर (मुफ़्त): मूलांक, भाग्यांक, नामांक</title>
+<meta name="google" content="notranslate">
+<meta name="description" content="मुफ़्त अंक ज्योतिष कैलकुलेटर: मूलांक, भाग्यांक, नामांक, शुभ अंक, व्यापार का नाम, घर, वाहन और फ़ोन नंबर का मेल। आपके डिवाइस पर ही चलता है; कुछ भी सहेजा नहीं जाता।">
+<link rel="canonical" href="https://tools.freenetsave.com/numerology/hi/">
+<link rel="alternate" hreflang="en" href="https://tools.freenetsave.com/numerology/">
+<link rel="alternate" hreflang="ta" href="https://tools.freenetsave.com/numerology/ta/">
+<link rel="alternate" hreflang="hi" href="https://tools.freenetsave.com/numerology/hi/">
+<link rel="stylesheet" href="../../assets/style.css?v=6">
+<style>
+  .big3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .big{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .big .t{font-weight:700;font-size:15px;color:var(--brand)}
+  .num{font-size:52px;font-weight:800;line-height:1.1;color:var(--brand2);margin:6px 0}
+  .calc{font-size:13px;color:var(--muted);word-break:break-word}
+  h2{font-size:20px;margin:0 0 12px;color:var(--ink)}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .tot{border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
+  .tot b{display:block;font-size:26px}
+  .tot span{font-size:13px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  td:first-child{font-weight:600;width:40%}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{white-space:nowrap;display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-weight:600}
+  .chip.good{background:#e9f6ec;border-color:#bfe3c7;color:#1e6b35}
+  .chip.bad{background:#fdecea;border-color:#f5c6c1;color:#9b2c22}
+  .sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+  .verdict{border-radius:12px;padding:14px 16px;font-weight:600}
+  .verdict.ok{background:#e9f6ec;color:#1e6b35}
+  .verdict.mid{background:#fff4dc;color:#7a5200}
+  .verdict.no{background:#fdecea;color:#9b2c22}
+  .verdict .plain{font-weight:400}
+  .trait{background:var(--soft);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+  .trait .role{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:2px 0 4px}
+  .pct{min-width:120px;margin-left:auto}
+  .pct .num{font-size:40px}
+  .pct.ok{background:#e9f6ec}.pct.ok .num{color:#1e6b35}
+  .pct.mid{background:#fff4dc}.pct.mid .num{color:#9a6a00}
+  .pct.no{background:#fdecea}.pct.no .num{color:#9b2c22}
+  .flex{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .stars{font-size:20px;letter-spacing:2px}
+  .chart{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;font-size:12px;text-align:center}
+  .chart div{background:var(--soft);border-radius:6px;padding:4px 0}
+  .chart b{display:block;font-size:15px;color:var(--brand)}
+  #results{display:none}
+  .agenote{margin-top:12px;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:12px 14px;font-size:16px}
+  .agenote:empty{display:none}
+  .big.strong{outline:3px solid var(--accent,#f97316);outline-offset:-1px;background:#fff7ed}
+  .big.strong .t:after{content:" · अभी ज़्यादा असरदार";color:#c2410c;font-weight:700}
+  .tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:0 0 4px}
+  .tabs button{font:inherit;font-weight:700;font-size:14px;border:1.5px solid var(--line);background:#fff;color:var(--brand2);border-radius:12px;padding:10px 4px;cursor:pointer;line-height:1.25}
+  .tabs button .ic{display:block;font-size:18px}
+  .tabs button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .tabs button:focus-visible{outline:3px solid var(--accent,#f97316);outline-offset:2px}
+  .tabintro{margin:0 0 12px;color:var(--muted);font-size:14px}
+  .hidetab{display:none !important}
+  .explain p{margin:0;font-size:15px;color:var(--muted)}
+  .htable{width:100%;border-collapse:collapse;font-size:14px;text-align:center}
+  .htable th,.htable td{padding:8px 6px;border-bottom:1px solid var(--line);width:auto}
+  .htable th{color:var(--brand2);font-size:13px;vertical-align:bottom}
+  .htable td:first-child,.htable th:first-child{text-align:left;font-weight:700;color:var(--ink);width:auto}
+  .htable td.ok{background:#e9f6ec;color:#1e6b35;font-weight:700}
+  .htable td.mid{background:#fff4dc;color:#9a6a00;font-weight:700}
+  .htable td.no{background:#fdecea;color:#9b2c22;font-weight:700}
+  .htable tr.best td{box-shadow:inset 0 -3px 0 var(--accent,#f97316)}
+  .htable .sm{font-weight:400;font-size:12px;color:var(--muted)}
+  .famrow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px}
+  .famrow button{border:0;background:#fdecea;color:#9b2c22;border-radius:10px;padding:0 14px;cursor:pointer;font-size:16px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .totalnote{margin-top:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:400;font-size:15px;color:var(--ink)}
+  .totalnote hr{border:0;border-top:1px dashed var(--line);margin:8px 0}
+  .totalnote small{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+  .splitname,.gcn{margin-top:10px;font-weight:400;font-size:14px;color:var(--ink);background:rgba(255,255,255,.6);border-radius:10px;padding:8px 10px;line-height:1.7}
+  .inlang{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;font-size:14px;color:var(--muted)}
+  .inlang span{font-weight:700;margin-right:2px}
+  .inlang a{text-decoration:none;font:inherit;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+  .inlang a:hover,.inlang a:focus-visible,.inlang a.on{border-color:var(--brand);color:var(--brand)}
+  .hint{font-size:13px;color:var(--muted);margin:-4px 0 12px}
+  @media (max-width:700px){ .tabs{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1 data-t="title"></h1>
+    <p class="sub" data-t="subtitle"></p>
+  </div>
+
+  <div class="inlang" translate="no"><span>भाषा:</span><a href="https://tools.freenetsave.com/numerology/" target="_top">English</a><a href="https://tools.freenetsave.com/numerology/ta/" target="_top">தமிழ்</a><a href="https://tools.freenetsave.com/numerology/hi/" target="_top" aria-current="page" class="on">हिन्दी</a></div>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="What to check">
+    <button type="button" role="tab" data-tab="my" class="on"><span class="ic">🔢</span>मेरे अंक</button>
+    <button type="button" role="tab" data-tab="name"><span class="ic">✍️</span>नाम</button>
+    <button type="button" role="tab" data-tab="biz"><span class="ic">🏪</span>व्यापार</button>
+    <button type="button" role="tab" data-tab="house"><span class="ic">🏠</span>घर और दुकान</button>
+    <button type="button" role="tab" data-tab="vehicle"><span class="ic">🚗</span>वाहन</button>
+    <button type="button" role="tab" data-tab="phone"><span class="ic">📱</span>फ़ोन</button>
+  </nav>
+
+  <form class="card" id="form" autocomplete="off">
+    <p class="tabintro" id="tabIntro"></p>
+    <div class="field" data-tab="my name">
+      <label for="name"><span id="nameLbl">आपका नाम</span> <small id="nameOpt">(वैकल्पिक)</small></label>
+      <input id="name" placeholder="नाम अंग्रेज़ी अक्षरों में लिखें">
+    </div>
+    <label id="dobLbl">जन्म तिथि</label>
+    <div class="row3 field">
+      <select id="d" aria-label="Day"></select>
+      <select id="m" aria-label="Month"></select>
+      <input id="y" type="number" inputmode="numeric" min="1900" max="2100" aria-label="Year">
+    </div>
+    <p class="hint" data-tab="my name">रात 12 बजे के बाद जन्म हुआ? परंपरा में उसे अगली तारीख माना जाता है, इसलिए अगली तारीख डालें।</p>
+    <div class="field" data-tab="biz">
+      <label for="biz">व्यापार या दुकान का नाम</label>
+      <input id="biz" placeholder="जैसा बोर्ड पर लिखा है (अंग्रेज़ी अक्षरों में)">
+    </div>
+    <div data-tab="house">
+      <div class="field">
+        <label for="hType">यह क्या है?</label>
+        <select id="hType">
+          <option value="house">🏠 घर (पूरा परिवार)</option>
+          <option value="shop">🏪 दुकान या दफ़्तर (केवल मालिक)</option>
+        </select>
+      </div>
+      <div class="row2 field">
+        <div><label for="hNum">घर या यूनिट नंबर</label><input id="hNum" placeholder="दरवाज़े पर लिखा नंबर"></div>
+        <div><label for="hStreet">इमारत का नंबर <small>(वैकल्पिक, यूनिट के लिए)</small></label><input id="hStreet" inputmode="numeric" placeholder="इमारत का नंबर"></div>
+      </div>
+      <div class="field" id="famWrap">
+        <label>परिवार के अन्य सदस्य <small>(वैकल्पिक, 6 तक)</small></label>
+        <div id="famList"></div>
+        <button type="button" class="btn ghost" id="addFam" style="margin-top:6px">➕ परिवार का सदस्य जोड़ें</button>
+      </div>
+    </div>
+    <div class="field" data-tab="vehicle">
+      <label for="plate">वाहन का नंबर</label>
+      <input id="plate" placeholder="नंबर प्लेट के अक्षर और अंक">
+    </div>
+    <div class="field" data-tab="phone">
+      <label for="phone">फ़ोन नंबर</label>
+      <input id="phone" inputmode="tel" placeholder="पूरा फ़ोन नंबर">
+    </div>
+    <button class="btn" type="submit" data-t="calculate"></button>
+    <div class="err" id="err"></div>
+  </form>
+
+  <section id="results">
+    <div class="card" data-tab="my name biz house vehicle phone">
+      <h2 data-t="coreTitle"></h2>
+      <div class="big3">
+        <div class="big"><div class="t" data-t="birthNumber"></div><div class="num" id="birthNum">–</div><div class="calc" id="birthCalc"></div></div>
+        <div class="big"><div class="t" data-t="destinyNumber"></div><div class="num" id="destNum">–</div><div class="calc" id="destCalc"></div></div>
+        <div class="big" id="nameBox"><div class="t" data-t="nameNumber"></div><div class="num" id="nameNum">–</div><div class="calc" id="nameCalc"></div></div>
+      </div>
+      <div class="agenote" id="ageNote"></div>
+    </div>
+
+    <div class="card" data-tab="my">
+      <h2 data-t="totalsTitle"></h2>
+      <div class="totals">
+        <div class="tot"><span data-t="date"></span><b id="tD">–</b><span id="tDc"></span></div>
+        <div class="tot"><span data-t="month"></span><b id="tM">–</b><span id="tMc"></span></div>
+        <div class="tot"><span data-t="year"></span><b id="tY">–</b><span id="tYc"></span></div>
+      </div>
+      <p class="calc" style="margin:12px 0 0;text-align:center" id="weekday"></p>
+    </div>
+
+    <div class="card" data-tab="my">
+      <h2 data-t="luckyTitle"></h2>
+      <p class="calc" style="margin:-6px 0 10px" id="lkBase"></p>
+      <table>
+        <tr><td data-t="planet"></td><td id="lkPlanet"></td></tr>
+        <tr><td data-t="luckyNumbers"></td><td><div class="chips" id="lkNums"></div></td></tr>
+        <tr><td data-t="avoidNumbers"></td><td><div class="chips" id="lkAvoid"></div></td></tr>
+        <tr><td data-t="luckyDays"></td><td id="lkDays"></td></tr>
+        <tr><td data-t="luckyColours"></td><td id="lkColors"></td></tr>
+        <tr><td data-t="luckyGem"></td><td id="lkGem"></td></tr>
+        <tr><td data-t="luckyDates"></td><td id="lkDates"></td></tr>
+        <tr id="avoidDatesRow"><td>जिन तारीखों से बचें</td><td id="lkAvoidDates"></td></tr>
+        <tr><td>भाग्यशाली उम्र</td><td id="lkAges"></td></tr>
+      </table>
+    </div>
+
+    <div class="card" data-tab="name" id="nameCard">
+      <h2 data-t="nameMatchTitle"></h2>
+      <div class="flex">
+        <div class="verdict" id="verdict" style="flex:1;min-width:240px"></div>
+        <div class="big pct" id="nmBox"><div class="t" data-t="match"></div><div class="num" id="nmPct">–</div><div class="stars" id="nmStars"></div></div>
+      </div>
+    </div>
+
+    <div class="card" data-tab="biz" id="bizCard">
+      <h2 data-t="bizMatchTitle"></h2>
+      <div class="flex" style="margin-bottom:12px">
+        <div class="big" style="min-width:130px"><div class="t" data-t="bizNumber"></div><div class="num" id="bzNum">–</div></div>
+        <div style="flex:1;min-width:200px">
+          <div class="calc" id="bzCalc"></div>
+          <div style="margin-top:6px" id="bzCompound"></div>
+          <div class="stars" style="margin-top:6px" id="bzStars"></div>
+        </div>
+        <div class="big pct" id="bzBox"><div class="t" data-t="match"></div><div class="num" id="bzPct">–</div></div>
+      </div>
+      <div class="verdict" id="bzVerdict"></div>
+      <div class="calc" style="margin-top:10px" id="bzTip"></div>
+    </div>
+
+    <div class="card" data-tab="vehicle phone" id="phoneCard">
+      <h2 id="phTitle">फ़ोन नंबर का मेल</h2>
+      <div class="flex" style="margin-bottom:12px">
+        <div class="big" style="min-width:130px"><div class="t" data-t="numberValue"></div><div class="num" id="phNum">–</div></div>
+        <div style="flex:1;min-width:200px">
+          <div class="calc" id="phCalc"></div>
+          <div class="stars" style="margin-top:8px" id="phStars"></div>
+        </div>
+        <div class="big pct" id="phBox"><div class="t" data-t="match"></div><div class="num" id="phPct">–</div></div>
+      </div>
+      <div class="verdict" id="phVerdict"></div>
+    </div>
+
+    <div class="card" data-tab="my">
+      <h2 data-t="natureTitle"></h2>
+      <div id="traits"></div>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="copyBtn" data-t="copy"></button>
+        <a class="btn ghost" id="waBtn" href="#" target="_blank" rel="noopener" style="text-decoration:none" data-t="whatsapp"></a>
+      </div>
+    </div>
+
+    <div class="card" data-tab="name biz vehicle">
+      <h2 data-t="chartTitle"></h2>
+      <div class="chart" id="chart" translate="no"></div>
+    </div>
+
+    <div class="card" data-tab="house" id="houseCard">
+      <h2 id="hTitle">घर के नंबर का मेल</h2>
+      <div class="calc" id="hCalc"></div>
+      <div style="overflow-x:auto;margin-top:10px"><table class="htable" id="hTable"></table></div>
+      <div class="verdict" id="hVerdict" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card explain" data-tab="my">
+      <h2>📖 आपके अंक कैसे निकलते हैं</h2>
+      <p><b>मूलांक</b> = जन्म की तारीख के अंकों का जोड़ (27 → 2+7 = 9)। <b>भाग्यांक</b> = पूरी जन्म तिथि के सभी अंकों का जोड़। 30 साल की उम्र तक मूलांक ज़्यादा असर करता है; 30 के बाद भाग्यांक आगे रहता है। शुभ अंक, दिन और रंग उस ग्रह से आते हैं जो आपके मूलांक का स्वामी है। रात 12 बजे के बाद का जन्म अगली तारीख माना जाता है।</p>
+    </div>
+    <div class="card explain" data-tab="name">
+      <h2>📖 नाम की जाँच कैसे होती है</h2>
+      <p>हर अंग्रेज़ी अक्षर का एक मान होता है (तालिका देखें)। नाम दो तरह से देखा जाता है: <b>पूरा जोड़</b> (जैसे 37) और वह एक अंक जिसमें वह घटता है (3+7 = 10 → 1)। सबसे अच्छा तब है जब वह एक अंक आपके अंकों का मित्र हो और पूरा जोड़ शुभ हो। ऐसा न हो तो एक अक्षर जोड़कर या बदलकर नाम को अच्छे जोड़ पर लाया जा सकता है। Mr, Mrs, Dr जैसी उपाधियाँ नहीं गिनी जातीं, और नाम के शुरुआती अक्षर अलग से भी दिखाए जाते हैं।</p>
+    </div>
+    <div class="card explain" data-tab="biz">
+      <h2>📖 व्यापार के नाम की जाँच कैसे होती है</h2>
+      <p>व्यापार का नाम केवल <b>मालिक</b> के अंकों से मिलाया जाता है। परंपरा में 1, 5 और 6 व्यापार के लिए मज़बूत माने जाते हैं। <b>हर जगह एक ही पूरा नाम</b> रखें (बोर्ड, रसीद, Google, फ़ोन पर), क्योंकि छोटा किया हुआ नाम अलग अंक देता है।</p>
+    </div>
+    <div class="card explain" data-tab="house">
+      <h2>📖 घर और दुकान की जाँच कैसे होती है</h2>
+      <p><b>घर:</b> वह परिवार के मुखिया के अनुकूल हो और किसी और के लिए बुरा न हो। <b>दुकान:</b> केवल मालिक को देखा जाता है। नंबर अनुकूल न हो तो दरवाज़े या नेमप्लेट पर एक अक्षर जोड़ा जा सकता है (जैसे 23 → 23E)। आपका सरकारी पता वही रहता है।</p>
+    </div>
+    <div class="card explain" data-tab="vehicle">
+      <h2>📖 वाहन की जाँच कैसे होती है</h2>
+      <p>नंबर प्लेट के अंक और अक्षर (अक्षर तालिका के अनुसार) जोड़े जाते हैं। मुख्य चालक या मालिक की जन्म तिथि डालें। नया नंबर चुनते समय दिखाए गए मज़बूत जोड़ों में से कोई एक चुनें।</p>
+    </div>
+    <div class="card explain" data-tab="phone">
+      <h2>📖 फ़ोन की जाँच कैसे होती है</h2>
+      <p>फ़ोन नंबर के सभी अंक जोड़े जाते हैं। जो व्यक्ति नंबर इस्तेमाल करता है उसकी जन्म तिथि डालें। नया नंबर लेते समय ऐसा नंबर चुनें जिसका जोड़ दिखाए गए मज़बूत जोड़ों में से एक हो।</p>
+    </div>
+  </section>
+
+  <p class="note"><span data-t="disclaimer"></span><br><span data-t="privacy"></span><br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · <span data-t="freeTools"></span></p>
+</div>
+
+<script src="../../assets/embed.js?v=6"></script>
+<script>
+/* ---------- All words on this page. To add a language later, copy "en" and translate. ---------- */
+const LANG = {
+ en:{
+  title:"अंक ज्योतिष कैलकुलेटर", subtitle:"अपना मूलांक, भाग्यांक, नामांक और शुभ अंक जानें।",
+  nameLabel:"Your name", optional:"(optional)", dobLabel:"Date of birth", day:"दिन", monthPh:"महीना", yearPh:"वर्ष",
+  bizLabel:"Business or shop name", phoneLabel:"Phone, car or house number", calculate:"✨ गणना करें",
+  errDate:"कृपया पूरी जन्म तिथि डालें।", errYear:"कृपया 1900 से 2100 के बीच का वर्ष डालें।", errNoDate:"यह तारीख मौजूद नहीं है।",
+  coreTitle:"आपके मुख्य अंक", birthNumber:"मूलांक", destinyNumber:"भाग्यांक", nameNumber:"नामांक",
+  enterName:"इसे देखने के लिए नाम डालें", totalsTitle:"तारीख, महीने और वर्ष के जोड़", date:"तारीख", month:"महीना", year:"वर्ष",
+  bornOn:"आपके जन्म का दिन:", luckyTitle:"आपके शुभ विवरण", basedOn:"आपके मूलांक के आधार पर",
+  planet:"स्वामी ग्रह", luckyNumbers:"शुभ अंक", avoidNumbers:"जिन अंकों से बचें", luckyDays:"शुभ दिन",
+  luckyColours:"शुभ रंग", luckyGem:"शुभ रत्न", luckyDates:"हर महीने की शुभ तारीखें",
+  nameMatchTitle:"नाम का मेल", match:"मेल", bizMatchTitle:"व्यापार के नाम का मेल", bizNumber:"व्यापार अंक",
+  phoneMatchTitle:"Phone / vehicle number match", numberValue:"नंबर का मान",
+  natureTitle:"आपका स्वभाव", copy:"📋 नतीजा कॉपी करें", whatsapp:"💬 WhatsApp पर भेजें", chartTitle:"इस्तेमाल की गई अक्षर तालिका",
+  innerNature:"आपका भीतरी स्वभाव", lifePath:"जीवन की राह और अनुकूल काम", howOthers:"लोग आपको कैसे देखते हैं",
+  together:"मूलांक और भाग्यांक साथ में कैसे काम करते हैं",
+  compGood:"शुभ जोड़", compBad:"अशुभ जोड़", compNeutral:"सामान्य जोड़",
+  disclaimer:"पारंपरिक कैल्डियन और तमिल अंक ज्योतिष पर आधारित। केवल मनोरंजन और सांस्कृतिक रुचि के लिए, सलाह नहीं।",
+  privacy:"🔒 आप जो भी लिखते हैं वह आपके डिवाइस से बाहर नहीं जाता। हम कोई जानकारी सहेजते या रखते नहीं।",
+  freeTools:"मुफ़्त ऑनलाइन टूल", copied:"कॉपी हो गया!"
+ }
+};
+let L = LANG.en;   // current language
+function applyText(){
+  document.querySelectorAll("[data-t]").forEach(el=>{ if(L[el.dataset.t]!=null) el.textContent = L[el.dataset.t]; });
+  $("y").placeholder = L.yearPh;
+}
+
+const MONTHS = ["जनवरी","फ़रवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितंबर","अक्टूबर","नवंबर","दिसंबर"];
+const DAYS = ["रविवार","सोमवार","मंगलवार","बुधवार","गुरुवार","शुक्रवार","शनिवार"];
+
+// Chaldean (Cheiro) letter values
+const CHALDEAN = {A:1,I:1,J:1,Q:1,Y:1, B:2,K:2,R:2, C:3,G:3,L:3,S:3, D:4,M:4,T:4,
+  E:5,H:5,N:5,X:5, U:6,V:6,W:6, O:7,Z:7, F:8,P:8};
+
+const DATA = {
+ 1:{planet:"सूर्य", lucky:[1,2,3,4,9], avoid:[8], days:[0,1], colors:[["सुनहरा","#d4a017"],["पीला","#f2c40f"],["नारंगी","#ef7d1a"]], gem:"माणिक"},
+ 2:{planet:"चंद्र", lucky:[1,2,7], avoid:[8,9], days:[1,0,5], colors:[["सफ़ेद","#ffffff"],["क्रीम","#f3e7c9"],["हल्का हरा","#9fd89f"]], gem:"मोती"},
+ 3:{planet:"गुरु (बृहस्पति)", lucky:[3,6,9], avoid:[5], days:[4,2,5], colors:[["पीला","#f2c40f"],["बैंगनी","#7b3fa0"],["गुलाबी","#f29bb5"]], gem:"पुखराज"},
+ 4:{planet:"राहु", lucky:[1,5,6], avoid:[4,8], days:[0,6,1], colors:[["नीला","#2f6fb3"],["स्लेटी","#9a9a9a"],["खाकी","#bfae7a"]], gem:"गोमेद"},
+ 5:{planet:"बुध", lucky:[1,5,6], avoid:[3], days:[3,5], colors:[["हरा","#2e9d4f"],["हल्का स्लेटी","#cfcfcf"],["सफ़ेद","#ffffff"]], gem:"पन्ना"},
+ 6:{planet:"शुक्र", lucky:[3,5,6,9], avoid:[4], days:[5,2,4], colors:[["हल्का नीला","#8cc4ec"],["गुलाबी","#f29bb5"],["सफ़ेद","#ffffff"]], gem:"हीरा"},
+ 7:{planet:"केतु", lucky:[1,2,7], avoid:[8,9], days:[1,0], colors:[["हरा","#2e9d4f"],["सफ़ेद","#ffffff"],["हल्का पीला","#f7e78a"]], gem:"लहसुनिया"},
+ 8:{planet:"शनि", lucky:[1,4,5,6], avoid:[8], days:[6,5,3], colors:[["गहरा नीला","#1d2f6f"],["काला","#222222"],["बैंगनी","#5a2e7a"]], gem:"नीलम"},
+ 9:{planet:"मंगल", lucky:[1,3,6,9], avoid:[5], days:[2,4,5], colors:[["लाल","#c62828"],["गुलाबी","#f29bb5"],["मैरून","#7a1f1f"]], gem:"मूंगा"}
+};
+
+const ROLE_TEXT = {
+ birth:{
+  1:"आप स्वतंत्र रूप से काम करना पसंद करते हैं और पीछे चलने के बजाय आगे रहना चाहते हैं। आत्मसम्मान और इच्छाशक्ति प्रबल है।",
+  2:"कोमल मन और भावुक स्वभाव; परिवार और मित्रों से गहरा लगाव। मन जल्दी बदल सकता है।",
+  3:"अनुशासित और सिद्धांतों वाले; हमेशा सीखते रहते हैं और दूसरों को अच्छी सलाह देते हैं।",
+  4:"आप दूसरों से अलग सोचते हैं और बहुत मेहनत करते हैं, हालाँकि लोग आपको शुरू में हमेशा समझ नहीं पाते।",
+  5:"तेज़ दिमाग और जल्दी फ़ैसले; नई चीज़ें, यात्रा और लोगों से मिलना आपको पसंद है।",
+  6:"आपको सुंदरता, आराम और सजा-सँवरा घर पसंद है; स्नेही स्वभाव, लोग सहज ही आकर्षित होते हैं।",
+  7:"शांत और विचारशील, अंतर्ज्ञान प्रबल; सोचने के लिए आपको अकेले शांत समय चाहिए।",
+  8:"धैर्यवान और ज़िम्मेदार; बाहर से गंभीर दिखते हैं पर भीतर से कोमल हैं।",
+  9:"साहसी और ऊर्जावान; अन्याय सहन नहीं होता। गुस्सा जल्दी आता है और जल्दी उतर जाता है।"
+ },
+ dest:{
+  1:"जीवन आपको नेतृत्व की ओर ले जाता है। अपने व्यापार, सरकारी या प्रबंधन के काम में अच्छे नतीजे मिलते हैं।",
+  2:"सफलता साझेदारी और मिलकर काम करने से मिलती है। कला, सेवा, भोजन और तरल पदार्थों से जुड़े काम अनुकूल हैं।",
+  3:"सम्मान ज्ञान से मिलता है। शिक्षण, सलाह, क़ानून, वित्त और आध्यात्मिक काम अनुकूल हैं।",
+  4:"जीवन में अचानक मोड़ आते हैं। तकनीक, इलेक्ट्रॉनिक्स और नए या अलग तरह के व्यापार सफलता देते हैं।",
+  5:"व्यापार, बिक्री और संचार में तेज़ बढ़त; पैसे का प्रवाह अच्छा रहता है।",
+  6:"जीवन आराम देता है। कला, सौंदर्य, फ़ैशन, होटल-रेस्तराँ और विलासिता की चीज़ों के काम अनुकूल हैं; परिवार केंद्र में रहता है।",
+  7:"शोध, अध्यात्म या विदेश से जुड़ाव से प्रगति; रास्ते में उतार-चढ़ाव आते हैं।",
+  8:"सफलता धीरे आती है पर टिकती है। ज़मीन, निर्माण, उद्योग और क़ानून से जुड़े काम अनुकूल हैं।",
+  9:"आप मेहनत और साहस से जीतते हैं। पुलिस, सेना, चिकित्सा, इंजीनियरिंग और खेल अनुकूल हैं।"
+ },
+ name:{
+  1:"आपका नाम अधिकार की छवि देता है — लोग आपको नेता की तरह देखते हैं।",
+  2:"आपका नाम मित्रवत और भरोसेमंद लगता है — लोग आपसे आसानी से बात कर पाते हैं।",
+  3:"आपका नाम समझदारी और ईमानदारी का संकेत देता है — लोग सलाह के लिए आपके पास आते हैं।",
+  4:"आपका नाम अलग दिखता है; परंपरा के अनुसार इससे देरी हो सकती है, इसलिए कई लोग वर्तनी बदलते हैं।",
+  5:"माना जाता है कि आपका नाम प्रसिद्धि और धन खींचता है — व्यापार के लिए सबसे अच्छे अंकों में से एक।",
+  6:"आपका नाम आकर्षण और आराम लाता है — लोग जल्दी अपनापन महसूस करते हैं।",
+  7:"आपका नाम गहरी, निजी छवि देता है — अध्यात्म या शोध के लिए अच्छा, बिक्री के लिए कम।",
+  8:"आपका नाम गंभीर और दृढ़ छवि देता है; परंपरा में इसे सावधानी से देखा जाता है।",
+  9:"आपका नाम साहस और जोश दिखाता है — प्रतिस्पर्धा वाले क्षेत्रों के लिए अनुकूल।"
+ }
+};
+const COMBO = {
+  same:"एक ही अंक — आपका स्वभाव और जीवन की राह एक ही दिशा में चलते हैं, इसलिए गुण और कमज़ोरियाँ दोनों दोगुनी हो जाती हैं।",
+  friend:"मित्र अंक — आपका स्वभाव आपकी जीवन-राह का साथ देता है, इसलिए मेहनत का फल आसानी से मिलता है।",
+  neutral:"सामान्य संबंध — दोनों अलग दिशाओं में खींच सकते हैं; माना जाता है कि अच्छा मेल खाता नामांक संतुलन लाता है।",
+  enemy:"विरोधी अंक — मन की चाह और जीवन की घटनाएँ कभी-कभी टकराती हैं; कई लोग इसे नामांक से संतुलित करते हैं।"
+};
+
+// Lucky and harmful full totals (traditional Tamil numerology)
+const COMPOUND_GOOD = [10,19,21,23,24,27,32,33,37,41,42,45,46,68];
+const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47];
+const GOOD_FLOOR = 55;            // a lucky total never shows red, unless a birth-date rule says it does not suit
+let CUR_DAY = 0, CUR_DEST = 0;    // set on each calculation, used by the birth-date rules
+// Rules that depend on the birth date. adj below 0 means "tradition advises against this total".
+function dateRule(total){
+  const d=CUR_DAY, nine=[9,18,27].includes(d), six=[6,15,24].includes(d)||CUR_DEST===6;
+  if(total===46 && nine) return {adj:-25, en:"46 ऊँचे पद का संकेत है, पर परंपरा के अनुसार मूलांक 9 वालों के लिए यह जोड़ ठीक नहीं है।"};
+  if(total===37 && nine) return {adj:-25, en:"37 सुख-सुविधा का संकेत है, पर परंपरा के अनुसार 9, 18 या 27 तारीख को जन्मे लोगों के लिए यह जोड़ ठीक नहीं है।"};
+  if(total===45 && (d===9||d===27)) return {adj:10, en:"परंपरा के अनुसार 9 या 27 तारीख को जन्मे लोगों के लिए 45 अच्छा है।"};
+  if((total===45||total===44) && d===18) return {adj:-25, en:"परंपरा के अनुसार 18 तारीख को जन्मे लोगों के लिए यह जोड़ ठीक नहीं है।"};
+  if(total===42 && six) return {adj:10, en:"परंपरा में 6, 15 या 24 तारीख को जन्मे या भाग्यांक 6 वाले लोगों के लिए 42 की सलाह दी जाती है।"};
+  if(total===33 && six) return {adj:-10, en:"6, 15 या 24 तारीख को जन्मे या भाग्यांक 6 वाले लोगों के लिए परंपरा इस जोड़ की जगह 42 को बेहतर मानती है।"};
+  return null;
+}
+const HARM = "परंपरा में यह नाम के लिए अशुभ जोड़ है। नाम बदलकर शुभ जोड़ पर लाने की सलाह दी जाती है।";
+const TOTAL_NOTES = {
+  23:"साफ़ योजना से काम करें तो बड़ी सफलता। लक्ष्य न हो तो बस आरामदायक जीवन।",
+  32:"तेज़ दिमाग, अचानक नए विचार और लोकप्रियता, पर पैसा ऊपर-नीचे हो सकता है।",
+  41:"बहुत शुभ: लोगों का साथ और धन। धैर्य से काम करने पर सबसे अच्छा।",
+  46:"अक्सर नेताओं और ऊँचे पद वालों में देखा जाता है। यह अंक 1 के अच्छे फल देता है।",
+  68:"धन के लिए बहुत शुभ, पर मन बेचैन रह सकता है और हमेशा और चाहता है।",
+  37:"बहुत सुख और आनंद देता है।",
+  42:"अच्छा जोड़, और अंक 6 वालों के लिए ख़ास तौर पर अच्छा।",
+  45:"आम तौर पर अच्छा जोड़। कितना अच्छा, यह जन्म की तारीख पर निर्भर है।",
+  12:"त्याग और संघर्ष का संकेत देता है।",
+  29:"प्रगति केवल कड़ी मेहनत से मिलती है। " + HARM,
+  16:HARM, 17:HARM, 26:HARM, 31:HARM, 35:HARM, 38:HARM, 44:HARM, 47:HARM
+};
+const NAME_DIGIT_NOTES = {
+  2:"जो नाम 2 पर आता है वह उलझनें ला सकता है।",
+  4:"जो नाम 4 पर आता है वह अचानक विरोध ला सकता है।",
+  7:"जो नाम 7 पर आता है वह बार-बार रुकावटें ला सकता है।",
+  8:"परंपरा चेताती है कि जो नाम 8 पर आता है वह व्यापार के लिए ठीक नहीं।",
+  5:"5 सबको आकर्षित करता है: यह हर अंक के लोगों को खींचता है।"
+};
+function totalNotesHTML(total, n){
+  const out=[];
+  if(TOTAL_NOTES[total]) out.push(`📘 ${total}: ${TOTAL_NOTES[total]}`);
+  const dr = dateRule(total);
+  if(dr) out.push(`${dr.adj<0?"⚠️":"✅"} ${dr.en}`);
+  if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"📘":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
+  return out.length ? `<div class="totalnote">${out.join("<hr>")}</div>` : "";
+}
+function goodCompoundNote(total, n, birth, dest){
+  if(!COMPOUND_GOOD.includes(total) || dateRule(total)?.adj<0) return "";
+  if(rel(n,birth)>=0.8 || rel(n,dest)>=0.8) return "";
+  return `<div class="gcn">🌟 पूरा जोड़ ${total} शुभ है। एक अंक ${n} आपके अंकों का सीधा मित्र नहीं है, पर पूरा जोड़ शुभ होने के कारण इस नाम को कमज़ोर नहीं दिखाया गया।</div>`;
+}
+// Titles are not counted
+const TITLES = /^(MR|MRS|MS|MISS|DR|PROF|SRI|SHRI|SMT|THIRU|THIRUMATHI|SELVI|SELVAN)\.?\s+/i;
+function compoundTag(t){
+  if(COMPOUND_GOOD.includes(t)) return `<span class="chip good">${t} · ${L.compGood}</span>`;
+  if(COMPOUND_BAD.includes(t))  return `<span class="chip bad">${t} · ${L.compBad}</span>`;
+  return `<span class="chip">${t} · ${L.compNeutral}</span>`;
+}
+const digitSum = n => String(n).split("").reduce((a,c)=>a+(+c||0),0);
+function reduceSteps(n){ const s=[n]; while(n>9){ n=digitSum(n); s.push(n); } return s; }
+function stepText(digits, steps){
+  let t = digits.join(" + ") + " = " + steps[0];
+  for(let i=1;i<steps.length;i++) t += " → " + String(steps[i-1]).split("").join("+") + " = " + steps[i];
+  return t;
+}
+function valueOf(str){
+  const vals = str.toUpperCase().split("").map(c=>/[0-9]/.test(c)?+c:(CHALDEAN[c]||null)).filter(v=>v!==null);
+  const total = vals.reduce((a,b)=>a+b,0);
+  return {vals,total,single: total ? reduceSteps(total).at(-1) : null};
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function rel(n, base){
+  if(n===base) return 1;
+  if(DATA[base].avoid.includes(n)) return 0;
+  if(DATA[base].lucky.includes(n)) return 0.8;
+  return 0.35;
+}
+// Under 30 the birth number leads; from 30 the destiny number leads
+let W = {b:50, d:30};
+const SWITCH_AGE = 30;
+function matchPct(n, birth, dest, opt={}){
+  let pts = W.b*rel(n,birth) + W.d*rel(n,dest), max = 80;
+  if(opt.nameN!=null){ pts += 20*rel(n,opt.nameN); max += 20; }
+  let pct = pts/max*100;
+  if(opt.business && [1,5,6].includes(n)) pct += 8;
+  if(opt.total!=null){                       // names and business names only
+    if([2,4,7,8].includes(n)) pct -= 8;
+    if(n===5) pct += 8;
+    const r = dateRule(opt.total);
+    if(r) pct = r.adj<0 ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
+    if(COMPOUND_GOOD.includes(opt.total)) pct = (r && r.adj<0) ? pct : Math.max(pct + 7, GOOD_FLOOR);
+    if(COMPOUND_BAD.includes(opt.total)) pct -= 12;
+  }
+  return Math.max(5, Math.min(100, Math.round(pct)));
+}
+function bestTotalsHTML(birth, dest, opt, current, title){
+  const list=[];
+  for(let t=10;t<=68;t++){ if(!COMPOUND_GOOD.includes(t) || dateRule(t)?.adj<0) continue; const s=reduceSteps(t).at(-1); list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
+  const digits=[...new Set(list.sort((a,b)=>b.p-a.p).map(x=>x.s))].slice(0,3);
+  const top=digits.flatMap(s=>list.filter(x=>x.s===s).sort((a,b)=>a.t-b.t).slice(0,3)).filter(x=>x.p>=50);
+  const curP = matchPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
+  const inList = top.some(x=>x.t===current) || (COMPOUND_GOOD.includes(current) && top.length && curP>=Math.min(...top.map(x=>x.p)));
+  const cur = inList
+    ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ आपका जोड़ <b>${current}</b> पहले से ही सबसे अच्छे जोड़ों में है।</div>`
+    : `<div class="plain" style="font-size:13px;margin-top:6px">अभी: <b>${current}</b>। वर्तनी थोड़ी बदलें (एक अक्षर जोड़ें या बदलें) ताकि जोड़ इनमें से एक बन जाए।</div>`;
+  return `<div style="margin-top:12px;font-weight:600;color:var(--ink)">⭐ ${title}</div>
+    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.p}%</span>`).join("")}</div>${cur}`;
+}
+const stars = p => { const s=Math.max(1,Math.round(p/20)); return "★".repeat(s)+"☆".repeat(5-s); };
+const level = p => p>=75 ? "ok" : p>=50 ? "mid" : "no";
+
+// Fill the form
+applyText();
+$("d").innerHTML = `<option value="">${L.day}</option>` + Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+$("m").innerHTML = `<option value="">${L.monthPh}</option>` + MONTHS.map((m,i)=>`<option value="${i+1}">${i+1} · ${m}</option>`).join("");
+$("chart").innerHTML = Array.from({length:9},(_,i)=>{ const n=i+1; return `<div><b>${n}</b>${Object.keys(CHALDEAN).filter(k=>CHALDEAN[k]===n).join(" ")||"—"}</div>`; }).join("");
+
+let lastText = "";
+
+$("form").addEventListener("submit", e=>{
+  e.preventDefault();
+  $("err").textContent = "";
+  const d=+$("d").value, m=+$("m").value, y=+$("y").value;
+  if(!d||!m||!y){ $("err").textContent=L.errDate; return; }
+  if(y<1900||y>2100){ $("err").textContent=L.errYear; return; }
+  const dt = new Date(y, m-1, d);
+  if(dt.getMonth()!==m-1){ $("err").textContent=L.errNoDate; return; }
+  const NEED = {name:["name","कृपया नाम डालें।"],
+                biz:["biz","कृपया व्यापार का नाम डालें।"],
+                house:["hNum","कृपया घर या यूनिट नंबर डालें।"],
+                vehicle:["plate","कृपया वाहन का नंबर डालें।"],
+                phone:["phone","कृपया फ़ोन नंबर डालें।"]}[TAB];
+  if(NEED && !$(NEED[0]).value.trim()){ $("err").textContent=NEED[1]; $("results").style.display="none"; return; }
+
+  const dS=reduceSteps(d), mS=reduceSteps(m), yS=reduceSteps(digitSum(y));
+  $("tD").textContent=dS.at(-1); $("tDc").textContent = d>9 ? stepText(String(d).split(""), reduceSteps(digitSum(d))) : d;
+  $("tM").textContent=mS.at(-1); $("tMc").textContent = m>9 ? stepText(String(m).split(""), reduceSteps(digitSum(m))) : m;
+  $("tY").textContent=yS.at(-1); $("tYc").textContent = stepText(String(y).split(""), yS);
+
+  const birth = dS.at(-1);
+  $("birthNum").textContent = birth;
+  $("birthCalc").textContent = d>9 ? `${d} → ${String(d).split("").join("+")} = ${digitSum(d)}${digitSum(d)>9?" → "+birth:""}` : `${d}`;
+
+  const allDigits = (String(d).padStart(2,"0")+String(m).padStart(2,"0")+String(y)).split("").filter(c=>c!=="0");
+  const destS = reduceSteps(allDigits.reduce((a,c)=>a+ +c,0)), dest = destS.at(-1);
+  $("destNum").textContent = dest;
+  CUR_DAY = d; CUR_DEST = dest;
+  $("destCalc").textContent = stepText(allDigits, destS);
+
+  // Which number is stronger now (age rule)
+  const now = new Date();
+  let age = now.getFullYear() - y;
+  if(now.getMonth() < m-1 || (now.getMonth()===m-1 && now.getDate() < d)) age--;
+  const destLeads = age >= SWITCH_AGE;
+  W = destLeads ? {b:30, d:50} : {b:50, d:30};
+  $("ageNote").innerHTML = age < 0 ? "" : destLeads
+    ? `🔆 उम्र ${age}: 30 साल से आपका <b>भाग्यांक ${dest}</b> ज़्यादा असर करता है। नीचे नाम, व्यापार और फ़ोन के मेल % में इसे ज़्यादा वज़न दिया गया है।`
+    : `🔆 उम्र ${age}: 30 साल तक आपका <b>मूलांक ${birth}</b> ज़्यादा असर करता है। 30 के बाद भाग्यांक ${dest} आगे आ जाता है।`;
+  $("birthNum").parentElement.classList.toggle("strong", !destLeads && age >= 0);
+  $("destNum").parentElement.classList.toggle("strong", destLeads);
+  $("weekday").innerHTML = `${L.bornOn} <b>${DAYS[dt.getDay()]}</b>`;
+
+  // Name number
+  const typedName = (TAB==="my" || TAB==="name") ? $("name").value.trim() : "";
+  let rawName = typedName, droppedTitle = "";
+  while(TITLES.test(rawName)){ droppedTitle += rawName.match(TITLES)[0]; rawName = rawName.replace(TITLES,""); }
+  const nm = valueOf(rawName.replace(/[^A-Za-z]/g,""));
+  const nameN = nm.single, nameTotal = nm.total;
+  const nmParts = rawName.toUpperCase().replace(/\./g," ").split(/\s+/).filter(Boolean);
+  const initials = nmParts.filter(w=>w.replace(/[^A-Z]/g,"").length===1).map(w=>w.replace(/[^A-Z]/g,"")).join("");
+  const mainName = nmParts.filter(w=>w.replace(/[^A-Z]/g,"").length>1).join(" ");
+  if(nameN!==null){
+    const nS = reduceSteps(nameTotal);
+    $("nameNum").textContent = nameN;
+    $("nameCalc").textContent = `${nameTotal}${nS.length>1?" → "+nS.slice(1).join(" → "):""}`;
+    $("nameBox").style.opacity = 1;
+  } else {
+    $("nameNum").textContent="–"; $("nameCalc").textContent=L.enterName; $("nameBox").style.opacity=.6;
+  }
+
+  // Lucky details
+  const D = DATA[birth];
+  $("lkBase").textContent = `${L.basedOn}: ${birth}`;
+  $("lkPlanet").textContent = D.planet;
+  $("lkNums").innerHTML = D.lucky.map(n=>`<span class="chip good">${n}</span>`).join("");
+  $("lkAvoid").innerHTML = D.avoid.map(n=>`<span class="chip bad">${n}</span>`).join("");
+  $("lkDays").textContent = D.days.map(i=>DAYS[i]).join(", ");
+  $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ");
+  $("lkGem").textContent = D.gem;
+  const luckyDates=[]; for(let i=1;i<=31;i++) if(D.lucky.includes(reduceSteps(i).at(-1))) luckyDates.push(i);
+  const eightBad = [1,2,4,7,8].includes(birth) || [1,2,4,7,8].includes(dest);
+  $("lkDates").textContent = (eightBad ? luckyDates.filter(x=>reduceSteps(x).at(-1)!==8) : luckyDates).join(", ");
+  $("avoidDatesRow").style.display = eightBad ? "" : "none";
+  $("lkAvoidDates").innerHTML = eightBad ? `<div class="chips"><span class="chip bad">8</span><span class="chip bad">17</span><span class="chip bad">26</span></div><div class="calc" style="margin-top:4px">जिनका मूलांक या भाग्यांक 1, 2, 4, 7 या 8 है, उनके लिए परंपरा इन तारीखों पर नया काम शुरू न करने की सलाह देती है।</div>` : "";
+  const ageNums = [...new Set([birth, dest, ...D.lucky])].filter(n=>!D.avoid.includes(n));
+  const nextAges = []; for(let a=Math.max(age,1); a<=110 && nextAges.length<8; a++) if(ageNums.includes(reduceSteps(a).at(-1))) nextAges.push(a);
+  $("lkAges").innerHTML = `<div class="chips">` + nextAges.map(a=>`<span class="chip${a===age?" good":""}">${a}${a===age?" · अभी":""}</span>`).join("") + `</div><div class="calc" style="margin-top:4px">परंपरा के अनुसार, अनुकूल नाम हो तो इन उम्रों में प्रगति होती है।</div>`;
+
+  // Name match
+  const v = $("verdict");
+  if(nameN===null){ $("nameCard").style.display="none"; }
+  else {
+    $("nameCard").style.display="";
+    const p = matchPct(nameN, birth, dest, {total:nameTotal});
+    $("nmPct").textContent = p+"%"; $("nmStars").textContent = stars(p); $("nmBox").className = "big pct "+level(p);
+    const withBirth = rel(nameN,birth)>=0.8;
+    if(level(p)==="ok"){ v.className="verdict ok"; v.innerHTML=`✅ बहुत अच्छा मेल — नामांक ${nameN} आपके मूलांक (${birth}) और भाग्यांक (${dest}) दोनों के अनुकूल है।`; }
+    else if(level(p)==="mid"){ v.className="verdict mid"; v.innerHTML=`🙂 अच्छा मेल — नामांक ${nameN} आपके ${withBirth?"मूलांक":"भाग्यांक"} के अनुकूल है।`; }
+    else { v.className="verdict no"; v.innerHTML=`⚠️ नामांक ${nameN} का मेल मज़बूत नहीं है।<br><span class="plain">वर्तनी में छोटा बदलाव करके नीचे दिए सबसे अच्छे जोड़ों में से एक पर लाने की सलाह दी जाती है।</span>`; }
+    const ruleOut = dateRule(nameTotal)?.adj<0;
+    if(ruleOut){ v.className="verdict no"; v.innerHTML=`⚠️ परंपरा के अनुसार इस जन्म तिथि के लिए जोड़ ${nameTotal} ठीक नहीं है।<br><span class="plain">वर्तनी में छोटा बदलाव करके नीचे दिए सबसे अच्छे जोड़ों में से एक पर लाने की सलाह दी जाती है।</span>`; }
+    else if(level(p)==="mid" && !withBirth && rel(nameN,dest)<0.8 && COMPOUND_GOOD.includes(nameTotal)) v.innerHTML=`🙂 अच्छा नाम — पूरा जोड़ ${nameTotal} शुभ है।`;
+    v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + goodCompoundNote(nameTotal, nameN, birth, dest) + totalNotesHTML(nameTotal, nameN);
+    if(droppedTitle){
+      const wt = valueOf(typedName.replace(/[^A-Za-z]/g,""));
+      v.innerHTML += `<div class="splitname">उपाधि "${esc(droppedTitle.trim())}" नहीं गिनी जाती। इसके बिना: <b>${nameTotal}</b>${nameTotal>9?" → "+nameN:""}। इसके साथ: <b>${wt.total}</b>${wt.total>9?" → "+wt.single:""} ${compoundTag(wt.total)}<br><span style="color:var(--muted)">अगर आप हमेशा उपाधि के साथ हस्ताक्षर करते हैं, तो उपाधि वाला जोड़ भी मायने रखता है।</span></div>`;
+    }
+    if(initials && mainName){
+      const iv=valueOf(initials), mv=valueOf(mainName);
+      v.innerHTML += `<div class="splitname"><b>शुरुआती अक्षर ${esc(initials.split("").join(".")+".")}</b> = ${iv.total}${iv.total>9?" → "+iv.single:""} ${compoundTag(iv.total)}<br><b>नाम ${esc(mainName)}</b> = ${mv.total}${mv.total>9?" → "+mv.single:""} ${compoundTag(mv.total)}<br><span style="color:var(--muted)">दोनों मिलकर पूरा जोड़ ${nameTotal} बनाते हैं।</span></div>`;
+    }
+    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "आपके नाम के लिए सबसे अच्छे जोड़");
+  }
+
+  // Business name match
+  const rawBiz = $("biz").value.trim();
+  const bz = rawBiz ? valueOf(rawBiz) : {single:null};
+  let bzScore = 0;
+  if(bz.single!==null){
+    const b = bz.single, bS = reduceSteps(bz.total);
+    $("bzNum").textContent = b;
+    $("bzCalc").textContent = `${rawBiz} → ${bz.vals.filter(x=>x).join(" + ")} = ${bz.total}${bS.length>1?" → "+bS.slice(1).join(" → "):""}`;
+    $("bzCompound").innerHTML = compoundTag(bz.total) + goodCompoundNote(bz.total, b, birth, dest) + totalNotesHTML(bz.total, b);
+    bzScore = matchPct(b, birth, dest, {business:true, total:bz.total});
+    $("bzStars").textContent = stars(bzScore); $("bzPct").textContent = bzScore+"%"; $("bzBox").className = "big pct "+level(bzScore);
+    const bestBiz = [1,5,6,3,9].filter(n=>(D.lucky.includes(n)||n===birth||n===dest) && !D.avoid.includes(n) && !DATA[dest].avoid.includes(n));
+    const bv = $("bzVerdict");
+    if(level(bzScore)==="ok"){ bv.className="verdict ok"; bv.innerHTML=`✅ मज़बूत व्यापार नाम — अंक ${b} मालिक के मूलांक (${birth}) और भाग्यांक (${dest}) के साथ अच्छा बैठता है।`; }
+    else if(level(bzScore)==="mid"){ bv.className="verdict mid"; bv.innerHTML=`🙂 अच्छा नाम।<br><span class="plain">व्यापार अंक ${b} ठीक है। जोड़ <b>${bestBiz.join(", ")||birth}</b> हो तो और मज़बूत होगा।</span>`; }
+    else { bv.className="verdict no"; bv.innerHTML=`⚠️ मालिक के लिए मेल कमज़ोर है।<br><span class="plain">वर्तनी थोड़ी बदलें, या "&amp; Co", "Ltd" या "Limited" जैसा शब्द जोड़ें, ताकि जोड़ <b>${bestBiz.join(", ")||birth}</b> बन जाए।</span>`; }
+    const extras = ["& Co","Ltd","Limited","Inc","Store","Shop","Services","Group","Plus","Pro","Centre","Solutions"];
+    const tweaks = extras.map(x=>({x, r:valueOf(rawBiz+" "+x)}))
+      .map(t=>({...t, p:matchPct(t.r.single, birth, dest, {business:true, total:t.r.total})}))
+      .filter(t=>t.p>bzScore).sort((a,b)=>b.p-a.p).slice(0,4);
+    $("bzTip").innerHTML = (tweaks.length && bzScore<90 ? `💡 सुझाव: ` + tweaks.map(t=>`<b>${esc(rawBiz)} ${esc(t.x)}</b> (+${valueOf(t.x).total}: ${t.r.total} → ${t.r.single}, ${t.p}%)`).join(" · ") : "")
+      + bestTotalsHTML(birth, dest, {business:true}, bz.total, "व्यापार के नाम के लिए सबसे अच्छे जोड़");
+  }
+  $("bizCard").style.display = bz.single===null ? "none" : "";
+
+  // Phone / vehicle number
+  const rawPhone = (TAB==="vehicle" ? $("plate").value : TAB==="phone" ? $("phone").value : "").trim();
+  const ph = rawPhone ? valueOf(rawPhone) : {single:null};
+  let phScore = 0;
+  if(ph.single!==null){
+    const phN = ph.single, pS = reduceSteps(ph.total);
+    $("phNum").textContent = phN;
+    $("phCalc").textContent = `${ph.vals.filter(v=>v!==0).join(" + ")} = ${ph.total}${pS.length>1?" → "+pS.slice(1).join(" → "):""}`;
+    phScore = matchPct(phN, birth, dest, {nameN});
+    $("phStars").textContent = stars(phScore); $("phPct").textContent = phScore+"%"; $("phBox").className = "big pct "+level(phScore);
+    const best = [1,2,3,4,5,6,7,8,9].map(n=>({n,p:matchPct(n,birth,dest,{nameN})})).sort((a,b)=>b.p-a.p).filter(x=>x.n!==phN).slice(0,3).map(x=>`${x.n} (${x.p}%)`);
+    const pv = $("phVerdict");
+    if(level(phScore)==="ok"){ pv.className="verdict ok"; pv.innerHTML=`✅ आपके लिए बहुत शुभ — यह अंक (${phN}) आपके मूलांक (${birth}) और भाग्यांक (${dest}) के साथ अच्छा बैठता है।${phScore<100?`<br><span class="plain">दूसरे मज़बूत जोड़: <b>${best.join(", ")}</b>।</span>`:""}`; }
+    else if(level(phScore)==="mid"){ pv.className="verdict mid"; pv.innerHTML=`🙂 अच्छा नंबर।<br><span class="plain">अंक ${phN} आपके लिए अच्छा है${phN===birth?" — यह आपका मूलांक भी है":""}। दूसरे मज़बूत जोड़: <b>${best.join(", ")}</b>।</span>`; }
+    else { pv.className="verdict no"; pv.innerHTML=`⚠️ अंक ${phN} का मेल कमज़ोर है।<br><span class="plain">नया फ़ोन या वाहन नंबर चुनते समय ऐसा नंबर देखें जिसका जोड़ <b>${best.join(", ")}</b> हो।</span>`; }
+  }
+  $("phoneCard").style.display = ph.single===null ? "none" : "";
+
+  // Nature
+  const tr = [["birth",birth,L.birthNumber,L.innerNature],["dest",dest,L.destinyNumber,L.lifePath]];
+  if(nameN!==null) tr.push(["name",nameN,L.nameNumber,L.howOthers]);
+  let html = tr.map(([role,n,label,what],idx)=>{
+    const same = tr.slice(0,idx).filter(t=>t[1]===n).map(t=>t[2].toLowerCase());
+    return `<div class="trait"><b>${label} ${n} — ${DATA[n].planet}</b><div class="role">${what}</div>${ROLE_TEXT[role][n]}`
+      + (same.length ? `<div style="margin-top:6px;font-size:13px;color:var(--brand);font-weight:600">↺ आपका ${same.join(", ")} भी यही है, इसलिए ये गुण और प्रबल हैं।</div>` : "") + `</div>`;
+  }).join("");
+  const r = rel(dest, birth);
+  const combo = r===1 ? COMBO.same : r>=0.8 ? COMBO.friend : r===0 ? COMBO.enemy : COMBO.neutral;
+  html += `<div class="trait" style="background:#fff;border:1px dashed var(--line)"><b>${L.together}: ${birth} + ${dest}</b><br>${combo}</div>`;
+  $("traits").innerHTML = html;
+
+  lastText =
+`🔢 अंक ज्योतिष का नतीजा
+${rawName?"नाम: "+rawName+"\n":""}जन्म तिथि: ${d} ${MONTHS[m-1]} ${y} (${DAYS[dt.getDay()]})
+मूलांक: ${birth}${destLeads?"":" (अभी ज़्यादा असरदार, उम्र "+age+")"}
+भाग्यांक: ${dest}${destLeads?" (अभी ज़्यादा असरदार, उम्र "+age+")":""}
+${nameN!==null?"नामांक: "+nameN+" ("+nameTotal+")\n":""}ग्रह: ${D.planet}
+शुभ अंक: ${D.lucky.join(", ")}
+शुभ दिन: ${D.days.map(i=>DAYS[i]).join(", ")}
+रत्न: ${D.gem}${bz.single!==null?"\nव्यापार का नाम: "+rawBiz+" = "+bz.single+" ("+bzScore+"% मेल)":""}${ph.single!==null?"\n"+(TAB==="vehicle"?"वाहन":"फ़ोन")+" नंबर: "+ph.single+" ("+phScore+"% मेल)":""}
+मुफ़्त: freenetsave.com`;
+  $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(lastText);
+  if(TAB==="house") houseCheck({d,m,y,birth,dest,label:""});
+  applyTab();
+  $("results").style.display = "block";
+  $("results").scrollIntoView({behavior:"smooth", block:"start"});
+});
+$("copyBtn").addEventListener("click", ()=> copyText(lastText));
+
+/* ---------- Tabs ---------- */
+let TAB = "my";
+const TAB_INFO = {
+  my:"अपना मूलांक, भाग्यांक, शुभ विवरण और स्वभाव देखने के लिए जन्म तिथि डालें।",
+  name:"नाम उस व्यक्ति के कितना अनुकूल है यह देखने के लिए नाम और उसकी जन्म तिथि डालें।",
+  biz:"व्यापार का नाम और मालिक की जन्म तिथि डालें।",
+  house:"घर या यूनिट नंबर और परिवार के मुखिया (या दुकान के मालिक) की जन्म तिथि डालें। घर के लिए परिवार के अन्य सदस्य भी जोड़ सकते हैं।",
+  vehicle:"वाहन का नंबर और मुख्य चालक या मालिक की जन्म तिथि डालें।",
+  phone:"फ़ोन नंबर और उसे इस्तेमाल करने वाले की जन्म तिथि डालें।"
+};
+function applyTab(){
+  document.querySelectorAll("#tabs button").forEach(b=>{ const on=b.dataset.tab===TAB; b.classList.toggle("on",on); b.setAttribute("aria-selected",on); });
+  document.querySelectorAll("[data-tab]").forEach(el=>{ if(el.closest("#tabs")) return; el.classList.toggle("hidetab", !el.dataset.tab.split(" ").includes(TAB)); });
+  $("tabIntro").textContent = TAB_INFO[TAB];
+  const shop = $("hType").value==="shop";
+  $("dobLbl").textContent = TAB==="house" ? (shop ? "मालिक – जन्म तिथि" : "परिवार के मुखिया – जन्म तिथि")
+    : TAB==="biz" ? "मालिक – जन्म तिथि"
+    : TAB==="vehicle" ? "चालक या मालिक – जन्म तिथि"
+    : "जन्म तिथि";
+  $("nameLbl").textContent = TAB==="name" ? "जाँचने वाला नाम" : "आपका नाम";
+  $("nameOpt").textContent = TAB==="name" ? "(अंग्रेज़ी अक्षरों में)" : "(वैकल्पिक)";
+  $("famWrap").style.display = shop ? "none" : "";
+  $("phTitle").textContent = TAB==="vehicle" ? "वाहन नंबर का मेल" : "फ़ोन नंबर का मेल";
+}
+document.querySelectorAll("#tabs button").forEach(b=>b.addEventListener("click",()=>{
+  TAB=b.dataset.tab; $("err").textContent=""; $("results").style.display="none"; applyTab();
+}));
+$("hType").addEventListener("change",()=>{ $("results").style.display="none"; applyTab(); });
+$("addFam").addEventListener("click",()=>{
+  if($("famList").children.length>=6) return;
+  const n=$("famList").children.length+1;
+  const r=document.createElement("div"); r.className="famrow";
+  r.innerHTML=`<input placeholder="नाम या रिश्ता" aria-label="Family member ${n} name"><input type="date" min="1900-01-01" max="2100-12-31" aria-label="Family member ${n} date of birth"><button type="button" title="Remove" aria-label="Remove">✕</button>`;
+  r.querySelector("button").onclick=()=>r.remove();
+  $("famList").appendChild(r);
+});
+
+/* ---------- House & shop ---------- */
+function personFrom(d,m,y,label){
+  const birth = reduceSteps(d).at(-1);
+  const all = (String(d).padStart(2,"0")+String(m).padStart(2,"0")+String(y)).split("").filter(c=>c!=="0");
+  const dest = reduceSteps(all.reduce((a,c)=>a+ +c,0)).at(-1);
+  const now=new Date(); let age=now.getFullYear()-y;
+  if(now.getMonth()<m-1 || (now.getMonth()===m-1 && now.getDate()<d)) age--;
+  return {label, birth, dest, age, W: age>=SWITCH_AGE ? {b:30,d:50} : {b:50,d:30}};
+}
+function pctFor(p, n){ const keep=W; W=p.W; const r=matchPct(n,p.birth,p.dest); W=keep; return r; }
+function houseCheck(head){
+  const shop = $("hType").value==="shop";
+  const people = [personFrom(head.d,head.m,head.y, head.label || (shop?"मालिक":"मुखिया"))];
+  if(!shop) [...$("famList").children].forEach((r,i)=>{
+    const [lab,dt]=r.querySelectorAll("input");
+    if(!dt.value) return;
+    const [yy,mm,dd]=dt.value.split("-").map(Number);
+    people.push(personFrom(dd,mm,yy, lab.value.trim() || ("सदस्य "+(i+1))));
+  });
+  const base = $("hNum").value.trim().toUpperCase();
+  const street = $("hStreet").value.trim();
+  const opts = [{door:base, note:"अभी"}];
+  if(street) opts.push({door:street+" / "+base, note:"पूरा पता", full:true});
+  [["A",1],["B",2],["C",3],["D",4],["E",5],["U",6],["O",7],["F",8]].forEach(([Lt])=>opts.push({door:base+Lt, note:"दरवाज़े पर"}));
+  opts.forEach(o=>{
+    const v=valueOf(o.door.replace(/\//g,""));
+    o.total=v.total; o.n=v.single;
+    o.pcts=people.map(p=>pctFor(p,o.n));
+    const others=o.pcts.slice(1);
+    o.score = shop || !others.length ? o.pcts[0] : 0.6*o.pcts[0] + 0.4*Math.min(...others);
+    o.bad = o.pcts.some(x=>x<35);
+  });
+  const ranked = opts.slice(1).filter(o=>!o.bad).sort((a,b)=>b.score-a.score);
+  const cur = opts[0];
+  const curGood = !cur.bad && cur.pcts[0]>=50;
+  const best = (ranked[0] && (!curGood || ranked[0].score > cur.score+10)) ? ranked[0] : cur;
+  $("hTitle").textContent = shop ? "दुकान / दफ़्तर के नंबर का मेल (केवल मालिक)" : "घर के नंबर का मेल (परिवार)";
+  $("hCalc").textContent = `${base} → ${valueOf(base).vals.filter(x=>x).join(" + ")} = ${cur.total}${cur.total>9?" → "+cur.n:""}` + (people.length>1?` · ${people.length} लोग देखे गए`:"") + " · ★ = भाग्यांक ज़्यादा असरदार (उम्र 30+)";
+  const thRow = people.map(p=>`<th>${esc(p.label)}<br><span class="sm">मूलांक ${p.birth} · भाग्यांक ${p.dest}${p.age>=SWITCH_AGE?"★":""}</span></th>`).join("");
+  $("hTable").innerHTML = `<tr><th>दरवाज़ा</th><th>जोड़</th>${thRow}</tr>` +
+    opts.map(o=>`<tr class="${o===best?"best":""}"><td>${esc(o.door)}<br><span class="sm">${o===best?"⭐ सबसे अच्छा":o.note}</span></td><td>${o.total}${o.total>9?" → "+o.n:""}</td>${o.pcts.map(x=>`<td class="${level(x)}">${x}%</td>`).join("")}</tr>`).join("");
+  const v=$("hVerdict");
+  const full = opts.find(o=>o.full);
+  const fullNote = full && !full.bad && full.pcts[0]>=75
+    ? `<div class="plain" style="margin-top:8px">🏢 पूरे पते (${esc(full.door)}) से गिनें तो यह पहले से ${full.pcts[0]}% है — यूनिट के लिए कई लोग पूरा पता ही गिनते हैं।</div>` : "";
+  if(best!==cur){
+    v.className="verdict "+(curGood?"mid":"no");
+    v.innerHTML = (curGood ? `🙂 ${esc(cur.door)} ठीक है, पर` : `⚠️ ${esc(cur.door)} का मेल कमज़ोर है।`) +
+      ` दरवाज़े या नेमप्लेट पर <b>${esc(best.door)}</b> लिखने से अंक ${best.n} बनता है` +
+      (shop||people.length===1 ? ` — मालिक के लिए ${best.pcts[0]}%।` : `: मुखिया के लिए ${best.pcts[0]}% और बाक़ी सबके लिए कम से कम ${Math.min(...best.pcts.slice(1))}%।`) +
+      `<br><span class="plain">आपका सरकारी पता नहीं बदलता।</span>` + fullNote;
+  } else {
+    v.className="verdict ok";
+    v.innerHTML = `✅ ${esc(cur.door)} पहले से${shop||people.length===1?" मालिक के लिए":" परिवार के लिए"} अच्छा है — बदलाव की ज़रूरत नहीं।`;
+  }
+}
+applyTab();
+</script>
+</body>
+</html>

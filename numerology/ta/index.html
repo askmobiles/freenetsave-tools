@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="ta" translate="no">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>எண் கணிதம் கால்குலேட்டர் (இலவசம்): பிறவி எண், விதி எண், பெயர் எண்</title>
+<meta name="google" content="notranslate">
+<meta name="description" content="இலவச தமிழ் எண் கணிதம்: பிறவி எண், விதி எண், பெயர் எண், அதிர்ஷ்ட எண்கள், தொழில் பெயர், வீடு, வாகனம், தொலைபேசி எண் பொருத்தம். உங்கள் சாதனத்திலேயே இயங்கும்; எதுவும் சேமிக்கப்படாது.">
+<link rel="canonical" href="https://tools.freenetsave.com/numerology/ta/">
+<link rel="alternate" hreflang="en" href="https://tools.freenetsave.com/numerology/">
+<link rel="alternate" hreflang="ta" href="https://tools.freenetsave.com/numerology/ta/">
+<link rel="alternate" hreflang="hi" href="https://tools.freenetsave.com/numerology/hi/">
+<link rel="stylesheet" href="../../assets/style.css?v=6">
+<style>
+  .big3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .big{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .big .t{font-weight:700;font-size:15px;color:var(--brand)}
+  .num{font-size:52px;font-weight:800;line-height:1.1;color:var(--brand2);margin:6px 0}
+  .calc{font-size:13px;color:var(--muted);word-break:break-word}
+  h2{font-size:20px;margin:0 0 12px;color:var(--ink)}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .tot{border:1px dashed var(--line);border-radius:12px;padding:10px;text-align:center}
+  .tot b{display:block;font-size:26px}
+  .tot span{font-size:13px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  td:first-child{font-weight:600;width:40%}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{white-space:nowrap;display:inline-block;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-weight:600}
+  .chip.good{background:#e9f6ec;border-color:#bfe3c7;color:#1e6b35}
+  .chip.bad{background:#fdecea;border-color:#f5c6c1;color:#9b2c22}
+  .sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px;border:1px solid rgba(0,0,0,.15)}
+  .verdict{border-radius:12px;padding:14px 16px;font-weight:600}
+  .verdict.ok{background:#e9f6ec;color:#1e6b35}
+  .verdict.mid{background:#fff4dc;color:#7a5200}
+  .verdict.no{background:#fdecea;color:#9b2c22}
+  .verdict .plain{font-weight:400}
+  .trait{background:var(--soft);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+  .trait .role{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:2px 0 4px}
+  .pct{min-width:120px;margin-left:auto}
+  .pct .num{font-size:40px}
+  .pct.ok{background:#e9f6ec}.pct.ok .num{color:#1e6b35}
+  .pct.mid{background:#fff4dc}.pct.mid .num{color:#9a6a00}
+  .pct.no{background:#fdecea}.pct.no .num{color:#9b2c22}
+  .flex{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .stars{font-size:20px;letter-spacing:2px}
+  .chart{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;font-size:12px;text-align:center}
+  .chart div{background:var(--soft);border-radius:6px;padding:4px 0}
+  .chart b{display:block;font-size:15px;color:var(--brand)}
+  #results{display:none}
+  .agenote{margin-top:12px;background:#fff7ed;border:1.5px solid #fed7aa;border-radius:12px;padding:12px 14px;font-size:16px}
+  .agenote:empty{display:none}
+  .big.strong{outline:3px solid var(--accent,#f97316);outline-offset:-1px;background:#fff7ed}
+  .big.strong .t:after{content:" · இப்போது வலுவானது";color:#c2410c;font-weight:700}
+  .tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:0 0 4px}
+  .tabs button{font:inherit;font-weight:700;font-size:14px;border:1.5px solid var(--line);background:#fff;color:var(--brand2);border-radius:12px;padding:10px 4px;cursor:pointer;line-height:1.25}
+  .tabs button .ic{display:block;font-size:18px}
+  .tabs button.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .tabs button:focus-visible{outline:3px solid var(--accent,#f97316);outline-offset:2px}
+  .tabintro{margin:0 0 12px;color:var(--muted);font-size:14px}
+  .hidetab{display:none !important}
+  .explain p{margin:0;font-size:15px;color:var(--muted)}
+  .htable{width:100%;border-collapse:collapse;font-size:14px;text-align:center}
+  .htable th,.htable td{padding:8px 6px;border-bottom:1px solid var(--line);width:auto}
+  .htable th{color:var(--brand2);font-size:13px;vertical-align:bottom}
+  .htable td:first-child,.htable th:first-child{text-align:left;font-weight:700;color:var(--ink);width:auto}
+  .htable td.ok{background:#e9f6ec;color:#1e6b35;font-weight:700}
+  .htable td.mid{background:#fff4dc;color:#9a6a00;font-weight:700}
+  .htable td.no{background:#fdecea;color:#9b2c22;font-weight:700}
+  .htable tr.best td{box-shadow:inset 0 -3px 0 var(--accent,#f97316)}
+  .htable .sm{font-weight:400;font-size:12px;color:var(--muted)}
+  .famrow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px}
+  .famrow button{border:0;background:#fdecea;color:#9b2c22;border-radius:10px;padding:0 14px;cursor:pointer;font-size:16px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .totalnote{margin-top:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:400;font-size:15px;color:var(--ink)}
+  .totalnote hr{border:0;border-top:1px dashed var(--line);margin:8px 0}
+  .totalnote small{display:block;margin-top:8px;color:var(--muted);font-size:12px}
+  .splitname,.gcn{margin-top:10px;font-weight:400;font-size:14px;color:var(--ink);background:rgba(255,255,255,.6);border-radius:10px;padding:8px 10px;line-height:1.7}
+  .inlang{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;font-size:14px;color:var(--muted)}
+  .inlang span{font-weight:700;margin-right:2px}
+  .inlang a{text-decoration:none;font:inherit;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
+  .inlang a:hover,.inlang a:focus-visible,.inlang a.on{border-color:var(--brand);color:var(--brand)}
+  .hint{font-size:13px;color:var(--muted);margin:-4px 0 12px}
+  @media (max-width:700px){ .tabs{grid-template-columns:repeat(3,1fr)} }
+  @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1 data-t="title"></h1>
+    <p class="sub" data-t="subtitle"></p>
+  </div>
+
+  <div class="inlang" translate="no"><span>படிக்க:</span><a href="https://tools.freenetsave.com/numerology/" target="_top">English</a><a href="https://tools.freenetsave.com/numerology/ta/" target="_top" aria-current="page" class="on">தமிழ்</a><a href="https://tools.freenetsave.com/numerology/hi/" target="_top">हिन्दी</a></div>
+
+  <nav class="tabs" id="tabs" role="tablist" aria-label="What to check">
+    <button type="button" role="tab" data-tab="my" class="on"><span class="ic">🔢</span>என் எண்கள்</button>
+    <button type="button" role="tab" data-tab="name"><span class="ic">✍️</span>பெயர்</button>
+    <button type="button" role="tab" data-tab="biz"><span class="ic">🏪</span>தொழில்</button>
+    <button type="button" role="tab" data-tab="house"><span class="ic">🏠</span>வீடு &amp; கடை</button>
+    <button type="button" role="tab" data-tab="vehicle"><span class="ic">🚗</span>வாகனம்</button>
+    <button type="button" role="tab" data-tab="phone"><span class="ic">📱</span>தொலைபேசி</button>
+  </nav>
+
+  <form class="card" id="form" autocomplete="off">
+    <p class="tabintro" id="tabIntro"></p>
+    <div class="field" data-tab="my name">
+      <label for="name"><span id="nameLbl">உங்கள் பெயர்</span> <small id="nameOpt">(விருப்பம்)</small></label>
+      <input id="name" placeholder="பெயரை ஆங்கில எழுத்துகளில் எழுதவும்">
+    </div>
+    <label id="dobLbl">பிறந்த தேதி</label>
+    <div class="row3 field">
+      <select id="d" aria-label="Day"></select>
+      <select id="m" aria-label="Month"></select>
+      <input id="y" type="number" inputmode="numeric" min="1900" max="2100" aria-label="Year">
+    </div>
+    <p class="hint" data-tab="my name">நள்ளிரவு 12 மணிக்குப் பிறகு பிறந்தவரா? மரபுப்படி அது அடுத்த தேதியாகக் கணக்கிடப்படும்; அடுத்த தேதியை உள்ளிடவும்.</p>
+    <div class="field" data-tab="biz">
+      <label for="biz">தொழில் அல்லது கடையின் பெயர்</label>
+      <input id="biz" placeholder="பெயர்ப்பலகையில் உள்ளபடி (ஆங்கில எழுத்துகளில்)">
+    </div>
+    <div data-tab="house">
+      <div class="field">
+        <label for="hType">இது எது?</label>
+        <select id="hType">
+          <option value="house">🏠 வீடு (முழு குடும்பம்)</option>
+          <option value="shop">🏪 கடை அல்லது அலுவலகம் (உரிமையாளர் மட்டும்)</option>
+        </select>
+      </div>
+      <div class="row2 field">
+        <div><label for="hNum">வீடு அல்லது யூனிட் எண்</label><input id="hNum" placeholder="கதவில் உள்ள எண்"></div>
+        <div><label for="hStreet">கட்டிட எண் <small>(விருப்பம், யூனிட் என்றால்)</small></label><input id="hStreet" inputmode="numeric" placeholder="கட்டிட எண்"></div>
+      </div>
+      <div class="field" id="famWrap">
+        <label>மற்ற குடும்ப உறுப்பினர்கள் <small>(விருப்பம், 6 பேர் வரை)</small></label>
+        <div id="famList"></div>
+        <button type="button" class="btn ghost" id="addFam" style="margin-top:6px">➕ குடும்ப உறுப்பினரைச் சேர்க்க</button>
+      </div>
+    </div>
+    <div class="field" data-tab="vehicle">
+      <label for="plate">வாகனப் பதிவு எண்</label>
+      <input id="plate" placeholder="நம்பர் பிளேட்டில் உள்ள எழுத்துகளும் எண்களும்">
+    </div>
+    <div class="field" data-tab="phone">
+      <label for="phone">தொலைபேசி எண்</label>
+      <input id="phone" inputmode="tel" placeholder="முழு தொலைபேசி எண்">
+    </div>
+    <button class="btn" type="submit" data-t="calculate"></button>
+    <div class="err" id="err"></div>
+  </form>
+
+  <section id="results">
+    <div class="card" data-tab="my name biz house vehicle phone">
+      <h2 data-t="coreTitle"></h2>
+      <div class="big3">
+        <div class="big"><div class="t" data-t="birthNumber"></div><div class="num" id="birthNum">–</div><div class="calc" id="birthCalc"></div></div>
+        <div class="big"><div class="t" data-t="destinyNumber"></div><div class="num" id="destNum">–</div><div class="calc" id="destCalc"></div></div>
+        <div class="big" id="nameBox"><div class="t" data-t="nameNumber"></div><div class="num" id="nameNum">–</div><div class="calc" id="nameCalc"></div></div>
+      </div>
+      <div class="agenote" id="ageNote"></div>
+    </div>
+
+    <div class="card" data-tab="my">
+      <h2 data-t="totalsTitle"></h2>
+      <div class="totals">
+        <div class="tot"><span data-t="date"></span><b id="tD">–</b><span id="tDc"></span></div>
+        <div class="tot"><span data-t="month"></span><b id="tM">–</b><span id="tMc"></span></div>
+        <div class="tot"><span data-t="year"></span><b id="tY">–</b><span id="tYc"></span></div>
+      </div>
+      <p class="calc" style="margin:12px 0 0;text-align:center" id="weekday"></p>
+    </div>
+
+    <div class="card" data-tab="my">
+      <h2 data-t="luckyTitle"></h2>
+      <p class="calc" style="margin:-6px 0 10px" id="lkBase"></p>
+      <table>
+        <tr><td data-t="planet"></td><td id="lkPlanet"></td></tr>
+        <tr><td data-t="luckyNumbers"></td><td><div class="chips" id="lkNums"></div></td></tr>
+        <tr><td data-t="avoidNumbers"></td><td><div class="chips" id="lkAvoid"></div></td></tr>
+        <tr><td data-t="luckyDays"></td><td id="lkDays"></td></tr>
+        <tr><td data-t="luckyColours"></td><td id="lkColors"></td></tr>
+        <tr><td data-t="luckyGem"></td><td id="lkGem"></td></tr>
+        <tr><td data-t="luckyDates"></td><td id="lkDates"></td></tr>
+        <tr id="avoidDatesRow"><td>தவிர்க்க வேண்டிய தேதிகள்</td><td id="lkAvoidDates"></td></tr>
+        <tr><td>அதிர்ஷ்ட வயதுகள்</td><td id="lkAges"></td></tr>
+      </table>
+    </div>
+
+    <div class="card" data-tab="name" id="nameCard">
+      <h2 data-t="nameMatchTitle"></h2>
+      <div class="flex">
+        <div class="verdict" id="verdict" style="flex:1;min-width:240px"></div>
+        <div class="big pct" id="nmBox"><div class="t" data-t="match"></div><div class="num" id="nmPct">–</div><div class="stars" id="nmStars"></div></div>
+      </div>
+    </div>
+
+    <div class="card" data-tab="biz" id="bizCard">
+      <h2 data-t="bizMatchTitle"></h2>
+      <div class="flex" style="margin-bottom:12px">
+        <div class="big" style="min-width:130px"><div class="t" data-t="bizNumber"></div><div class="num" id="bzNum">–</div></div>
+        <div style="flex:1;min-width:200px">
+          <div class="calc" id="bzCalc"></div>
+          <div style="margin-top:6px" id="bzCompound"></div>
+          <div class="stars" style="margin-top:6px" id="bzStars"></div>
+        </div>
+        <div class="big pct" id="bzBox"><div class="t" data-t="match"></div><div class="num" id="bzPct">–</div></div>
+      </div>
+      <div class="verdict" id="bzVerdict"></div>
+      <div class="calc" style="margin-top:10px" id="bzTip"></div>
+    </div>
+
+    <div class="card" data-tab="vehicle phone" id="phoneCard">
+      <h2 id="phTitle">தொலைபேசி எண் பொருத்தம்</h2>
+      <div class="flex" style="margin-bottom:12px">
+        <div class="big" style="min-width:130px"><div class="t" data-t="numberValue"></div><div class="num" id="phNum">–</div></div>
+        <div style="flex:1;min-width:200px">
+          <div class="calc" id="phCalc"></div>
+          <div class="stars" style="margin-top:8px" id="phStars"></div>
+        </div>
+        <div class="big pct" id="phBox"><div class="t" data-t="match"></div><div class="num" id="phPct">–</div></div>
+      </div>
+      <div class="verdict" id="phVerdict"></div>
+    </div>
+
+    <div class="card" data-tab="my">
+      <h2 data-t="natureTitle"></h2>
+      <div id="traits"></div>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="copyBtn" data-t="copy"></button>
+        <a class="btn ghost" id="waBtn" href="#" target="_blank" rel="noopener" style="text-decoration:none" data-t="whatsapp"></a>
+      </div>
+    </div>
+
+    <div class="card" data-tab="name biz vehicle">
+      <h2 data-t="chartTitle"></h2>
+      <div class="chart" id="chart" translate="no"></div>
+    </div>
+
+    <div class="card" data-tab="house" id="houseCard">
+      <h2 id="hTitle">வீட்டு எண் பொருத்தம்</h2>
+      <div class="calc" id="hCalc"></div>
+      <div style="overflow-x:auto;margin-top:10px"><table class="htable" id="hTable"></table></div>
+      <div class="verdict" id="hVerdict" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card explain" data-tab="my">
+      <h2>📖 உங்கள் எண்கள் எப்படி கணக்கிடப்படுகின்றன</h2>
+      <p><b>பிறவி எண்</b> = பிறந்த தேதியின் இலக்கங்களைக் கூட்டினால் வருவது (27 → 2+7 = 9). <b>விதி எண்</b> = முழு பிறந்த தேதியின் எல்லா இலக்கங்களையும் கூட்டினால் வருவது. 30 வயது வரை பிறவி எண் வலுவானது; 30 வயது முதல் விதி எண் முன்னிலை பெறும். அதிர்ஷ்ட எண்கள், நாட்கள், நிறங்கள் உங்கள் பிறவி எண்ணை ஆளும் கிரகத்தைப் பொறுத்தவை. நள்ளிரவு 12 மணிக்குப் பிறகு பிறந்தால் அடுத்த தேதியாகக் கணக்கிடப்படும்.</p>
+    </div>
+    <div class="card explain" data-tab="name">
+      <h2>📖 பெயர் பொருத்தம் எப்படி பார்க்கப்படுகிறது</h2>
+      <p>ஒவ்வொரு ஆங்கில எழுத்துக்கும் ஒரு மதிப்பு உண்டு (அட்டவணையைப் பார்க்கவும்). பெயர் இரண்டு வகையில் பார்க்கப்படுகிறது: <b>கூட்டு எண்</b> (எ.கா. 37) மற்றும் அது குறையும் ஒற்றை இலக்கம் (3+7 = 10 → 1). ஒற்றை இலக்கம் உங்கள் எண்களுக்கு நட்பாகவும், கூட்டு எண் அதிர்ஷ்டமானதாகவும் இருந்தால் சிறப்பு. இல்லையென்றால் ஒரு எழுத்தைச் சேர்த்தோ மாற்றியோ சிறந்த கூட்டு எண்ணுக்குக் கொண்டு வரலாம். Mr, Mrs, Dr போன்ற பட்டங்கள் கணக்கில் சேராது; இனிஷியல்கள் தனியாகவும் காட்டப்படும்.</p>
+    </div>
+    <div class="card explain" data-tab="biz">
+      <h2>📖 தொழில் பெயர் பொருத்தம் எப்படி பார்க்கப்படுகிறது</h2>
+      <p>தொழில் பெயர் <b>உரிமையாளரின்</b> எண்களுடன் மட்டுமே பொருத்திப் பார்க்கப்படுகிறது. 1, 5, 6 ஆகிய எண்கள் தொழிலுக்கு மரபுப்படி வலுவானவை. <b>எல்லா இடத்திலும் ஒரே முழுப் பெயரையே</b> பயன்படுத்துங்கள் (பெயர்ப்பலகை, ரசீது, Google, தொலைபேசி), ஏனெனில் சுருக்கிய பெயருக்கு வேறு எண் வரும்.</p>
+    </div>
+    <div class="card explain" data-tab="house">
+      <h2>📖 வீடு &amp; கடை எண் பொருத்தம் எப்படி பார்க்கப்படுகிறது</h2>
+      <p><b>வீடு:</b> குடும்பத் தலைவருக்குப் பொருந்த வேண்டும்; மற்றவர்களுக்குக் கெடுதலாக இருக்கக் கூடாது. <b>கடை:</b> உரிமையாளர் மட்டுமே கணக்கு. எண் பொருந்தவில்லை என்றால் கதவிலோ பெயர்ப்பலகையிலோ ஒரு எழுத்தைச் சேர்க்கலாம் (எ.கா. 23 → 23E). உங்கள் அதிகாரப்பூர்வ முகவரி மாறாது.</p>
+    </div>
+    <div class="card explain" data-tab="vehicle">
+      <h2>📖 வாகன எண் பொருத்தம் எப்படி பார்க்கப்படுகிறது</h2>
+      <p>நம்பர் பிளேட்டின் எண்களும் எழுத்துகளும் (எழுத்து அட்டவணைப்படி) கூட்டப்படுகின்றன. அதிகம் ஓட்டுபவர் அல்லது உரிமையாளரின் பிறந்த தேதியை உள்ளிடவும். புதிய எண்ணைத் தேர்வு செய்யும்போது காட்டப்படும் வலுவான எண்களில் ஒன்றைத் தேர்ந்தெடுங்கள்.</p>
+    </div>
+    <div class="card explain" data-tab="phone">
+      <h2>📖 தொலைபேசி எண் பொருத்தம் எப்படி பார்க்கப்படுகிறது</h2>
+      <p>தொலைபேசி எண்ணின் எல்லா இலக்கங்களும் கூட்டப்படுகின்றன. அந்த எண்ணைப் பயன்படுத்துபவரின் பிறந்த தேதியை உள்ளிடவும். புதிய எண் வாங்கும்போது, காட்டப்படும் வலுவான எண்களில் ஒன்று வரும் எண்ணைத் தேர்ந்தெடுங்கள்.</p>
+    </div>
+  </section>
+
+  <p class="note"><span data-t="disclaimer"></span><br><span data-t="privacy"></span><br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · <span data-t="freeTools"></span></p>
+</div>
+
+<script src="../../assets/embed.js?v=6"></script>
+<script>
+/* ---------- All words on this page. To add a language later, copy "en" and translate. ---------- */
+const LANG = {
+ en:{
+  title:"எண் கணிதம்", subtitle:"உங்கள் பிறவி எண், விதி எண், பெயர் எண், அதிர்ஷ்ட எண்களைக் கண்டறியுங்கள்.",
+  nameLabel:"Your name", optional:"(optional)", dobLabel:"Date of birth", day:"நாள்", monthPh:"மாதம்", yearPh:"ஆண்டு",
+  bizLabel:"Business or shop name", phoneLabel:"Phone, car or house number", calculate:"✨ கணக்கிடு",
+  errDate:"முழு பிறந்த தேதியை உள்ளிடவும்.", errYear:"1900 முதல் 2100 வரையிலான ஆண்டை உள்ளிடவும்.", errNoDate:"இந்தத் தேதி இல்லை.",
+  coreTitle:"உங்கள் முக்கிய எண்கள்", birthNumber:"பிறவி எண்", destinyNumber:"விதி எண்", nameNumber:"பெயர் எண்",
+  enterName:"இதைப் பார்க்க பெயரை உள்ளிடவும்", totalsTitle:"தேதி, மாதம், ஆண்டு எண்கள்", date:"தேதி", month:"மாதம்", year:"ஆண்டு",
+  bornOn:"நீங்கள் பிறந்த கிழமை:", luckyTitle:"உங்கள் அதிர்ஷ்ட விவரங்கள்", basedOn:"உங்கள் பிறவி எண்ணின் அடிப்படையில்",
+  planet:"ஆளும் கிரகம்", luckyNumbers:"அதிர்ஷ்ட எண்கள்", avoidNumbers:"தவிர்க்க வேண்டிய எண்கள்", luckyDays:"அதிர்ஷ்ட நாட்கள்",
+  luckyColours:"அதிர்ஷ்ட நிறங்கள்", luckyGem:"அதிர்ஷ்ட ரத்தினம்", luckyDates:"ஒவ்வொரு மாதமும் அதிர்ஷ்ட தேதிகள்",
+  nameMatchTitle:"பெயர் பொருத்தம்", match:"பொருத்தம்", bizMatchTitle:"தொழில் பெயர் பொருத்தம்", bizNumber:"தொழில் எண்",
+  phoneMatchTitle:"Phone / vehicle number match", numberValue:"எண்ணின் மதிப்பு",
+  natureTitle:"உங்கள் இயல்பு", copy:"📋 முடிவை நகலெடு", whatsapp:"💬 WhatsApp-ல் பகிர்", chartTitle:"பயன்படுத்திய எழுத்து அட்டவணை",
+  innerNature:"உங்கள் உள் இயல்பு", lifePath:"வாழ்க்கைப் பாதை & ஏற்ற தொழில்", howOthers:"பிறர் உங்களைப் பார்க்கும் விதம்",
+  together:"பிறவி எண்ணும் விதி எண்ணும் சேர்ந்து செயல்படும் விதம்",
+  compGood:"அதிர்ஷ்டமான கூட்டு எண்", compBad:"தீமை தரும் கூட்டு எண்", compNeutral:"சாதாரண கூட்டு எண்",
+  disclaimer:"பாரம்பரிய கல்தேய மற்றும் தமிழ் எண் கணிதத்தின் அடிப்படையில். பொழுதுபோக்கு மற்றும் கலாச்சார ஆர்வத்திற்காக மட்டுமே; ஆலோசனை அல்ல.",
+  privacy:"🔒 நீங்கள் தட்டச்சு செய்யும் எதுவும் உங்கள் சாதனத்தை விட்டு வெளியேறாது. நாங்கள் எந்தத் தகவலையும் சேமிப்பதில்லை.",
+  freeTools:"இலவச ஆன்லைன் கருவிகள்", copied:"நகலெடுக்கப்பட்டது!"
+ }
+};
+let L = LANG.en;   // current language
+function applyText(){
+  document.querySelectorAll("[data-t]").forEach(el=>{ if(L[el.dataset.t]!=null) el.textContent = L[el.dataset.t]; });
+  $("y").placeholder = L.yearPh;
+}
+
+const MONTHS = ["ஜனவரி","பிப்ரவரி","மார்ச்","ஏப்ரல்","மே","ஜூன்","ஜூலை","ஆகஸ்ட்","செப்டம்பர்","அக்டோபர்","நவம்பர்","டிசம்பர்"];
+const DAYS = ["ஞாயிறு","திங்கள்","செவ்வாய்","புதன்","வியாழன்","வெள்ளி","சனி"];
+
+// Chaldean (Cheiro) letter values
+const CHALDEAN = {A:1,I:1,J:1,Q:1,Y:1, B:2,K:2,R:2, C:3,G:3,L:3,S:3, D:4,M:4,T:4,
+  E:5,H:5,N:5,X:5, U:6,V:6,W:6, O:7,Z:7, F:8,P:8};
+
+const DATA = {
+ 1:{planet:"சூரியன்", lucky:[1,2,3,4,9], avoid:[8], days:[0,1], colors:[["தங்க நிறம்","#d4a017"],["மஞ்சள்","#f2c40f"],["ஆரஞ்சு","#ef7d1a"]], gem:"மாணிக்கம்"},
+ 2:{planet:"சந்திரன்", lucky:[1,2,7], avoid:[8,9], days:[1,0,5], colors:[["வெள்ளை","#ffffff"],["கிரீம்","#f3e7c9"],["இளம் பச்சை","#9fd89f"]], gem:"முத்து"},
+ 3:{planet:"குரு (வியாழன்)", lucky:[3,6,9], avoid:[5], days:[4,2,5], colors:[["மஞ்சள்","#f2c40f"],["ஊதா","#7b3fa0"],["இளஞ்சிவப்பு","#f29bb5"]], gem:"புஷ்பராகம்"},
+ 4:{planet:"ராகு", lucky:[1,5,6], avoid:[4,8], days:[0,6,1], colors:[["நீலம்","#2f6fb3"],["சாம்பல்","#9a9a9a"],["காக்கி","#bfae7a"]], gem:"கோமேதகம்"},
+ 5:{planet:"புதன்", lucky:[1,5,6], avoid:[3], days:[3,5], colors:[["பச்சை","#2e9d4f"],["இளம் சாம்பல்","#cfcfcf"],["வெள்ளை","#ffffff"]], gem:"மரகதம்"},
+ 6:{planet:"சுக்கிரன்", lucky:[3,5,6,9], avoid:[4], days:[5,2,4], colors:[["இளம் நீலம்","#8cc4ec"],["இளஞ்சிவப்பு","#f29bb5"],["வெள்ளை","#ffffff"]], gem:"வைரம்"},
+ 7:{planet:"கேது", lucky:[1,2,7], avoid:[8,9], days:[1,0], colors:[["பச்சை","#2e9d4f"],["வெள்ளை","#ffffff"],["இளம் மஞ்சள்","#f7e78a"]], gem:"வைடூரியம்"},
+ 8:{planet:"சனி", lucky:[1,4,5,6], avoid:[8], days:[6,5,3], colors:[["கருநீலம்","#1d2f6f"],["கருப்பு","#222222"],["ஊதா","#5a2e7a"]], gem:"நீலக்கல்"},
+ 9:{planet:"செவ்வாய்", lucky:[1,3,6,9], avoid:[5], days:[2,4,5], colors:[["சிவப்பு","#c62828"],["இளஞ்சிவப்பு","#f29bb5"],["மெரூன்","#7a1f1f"]], gem:"பவளம்"}
+};
+
+const ROLE_TEXT = {
+ birth:{
+  1:"சுதந்திரமாக செயல்பட விரும்புவீர்கள். பிறர் சொல்வதைப் பின்பற்றுவதை விட நீங்களே வழிநடத்த விரும்புவீர்கள்; சுயமரியாதை அதிகம்.",
+  2:"மென்மையான, உணர்ச்சிமிக்க மனம். குடும்பம், நண்பர்களிடம் மிகுந்த பாசம்; சில நேரம் மனம் அலைபாயும்.",
+  3:"ஒழுக்கமும் கட்டுப்பாடும் கொண்டவர். எப்போதும் கற்றுக்கொள்ள விரும்புவீர்கள்; பிறருக்கு அறிவுரை சொல்வதில் வல்லவர்.",
+  4:"வழக்கத்திற்கு மாறாக சிந்திப்பவர். கடின உழைப்பாளி; ஆனால் பிறர் உங்களை எளிதில் புரிந்துகொள்வதில்லை.",
+  5:"சுறுசுறுப்பான மூளை, வேகமான முடிவுகள். புதிய விஷயங்கள், பயணம், மக்களுடன் பழகுவது பிடிக்கும்.",
+  6:"அழகு, சுத்தம், வசதியான வாழ்க்கை பிடிக்கும். அன்பானவர்; மற்றவர்களை எளிதில் கவர்வீர்கள்.",
+  7:"அமைதியானவர், ஆழ்ந்த சிந்தனையாளர். உள்ளுணர்வு வலுவானது; தனிமையில் சிந்திக்க நேரம் தேவை.",
+  8:"பொறுமையும் பொறுப்புணர்வும் கொண்டவர். வெளியே கடுமையாகத் தெரிந்தாலும் உள்ளே மென்மையானவர்.",
+  9:"தைரியமும் வேகமும் கொண்டவர். அநீதியைக் கண்டால் பொறுக்க மாட்டீர்கள்; கோபம் விரைவில் வந்து விரைவில் போகும்."
+ },
+ dest:{
+  1:"வாழ்க்கை உங்களை தலைமைப் பொறுப்புக்கு அழைத்துச் செல்லும். சொந்தத் தொழில், அரசு, நிர்வாகப் பணிகளில் உயர்வு.",
+  2:"கூட்டு முயற்சி, பங்குதாரர்கள் மூலம் வெற்றி. கலை, சேவை, உணவு, நீர் சார்ந்த தொழில்கள் ஏற்றவை.",
+  3:"கல்வி, ஆலோசனை, ஆன்மீகம் மூலம் மதிப்பும் மரியாதையும் கிடைக்கும். ஆசிரியர், வழக்கறிஞர், நிதி ஆலோசகர் பணிகள் ஏற்றவை.",
+  4:"திடீர் மாற்றங்கள் நிறைந்த வாழ்க்கை. தொழில்நுட்பம், மின்னணு, புதுமையான தொழில்களில் வெற்றி.",
+  5:"வியாபாரம், விற்பனை, தொடர்பு சார்ந்த துறைகளில் விரைவான வளர்ச்சி. பணப்புழக்கம் நன்றாக இருக்கும்.",
+  6:"வசதியான வாழ்க்கை. கலை, அழகு, ஆடை, உணவகம், ஆடம்பரப் பொருட்கள் சார்ந்த துறைகள் ஏற்றவை; குடும்பம் முக்கியம்.",
+  7:"ஆராய்ச்சி, ஆன்மீகம், வெளிநாட்டுத் தொடர்புகள் மூலம் முன்னேற்றம். வாழ்க்கையில் ஏற்ற இறக்கங்கள் இருக்கும்.",
+  8:"தாமதமான ஆனால் நிலையான வெற்றி. நிலம், கட்டுமானம், தொழிற்சாலை, சட்டம் சார்ந்த துறைகள் ஏற்றவை.",
+  9:"உழைப்பு, போராட்டம் மூலம் வெற்றி. காவல், ராணுவம், மருத்துவம், பொறியியல், விளையாட்டு துறைகள் ஏற்றவை."
+ },
+ name:{
+  1:"உங்கள் பெயர் அதிகாரத்தையும் மதிப்பையும் தருகிறது; மக்கள் உங்களை தலைவராகப் பார்ப்பார்கள்.",
+  2:"உங்கள் பெயர் அன்பையும் நம்பிக்கையையும் தருகிறது; மக்கள் உங்களை எளிதில் அணுகுவார்கள்.",
+  3:"உங்கள் பெயர் அறிவாளி, நேர்மையானவர் என்ற தோற்றத்தைத் தருகிறது; ஆலோசனைக்கு உங்களை நாடுவார்கள்.",
+  4:"உங்கள் பெயர் வித்தியாசமானவர் என்ற தோற்றம் தருகிறது; வெற்றி தாமதமாகலாம் என பாரம்பரியம் கூறுகிறது.",
+  5:"உங்கள் பெயர் புகழையும் பணப்புழக்கத்தையும் தரும் என நம்பப்படுகிறது; வியாபாரத்திற்கு மிகவும் ஏற்றது.",
+  6:"உங்கள் பெயர் கவர்ச்சியையும் வசதியையும் தருகிறது; மக்கள் உங்களை விரும்புவார்கள்.",
+  7:"உங்கள் பெயர் ஆழ்ந்த, அமைதியான தோற்றம் தருகிறது; ஆன்மீக, ஆராய்ச்சி துறைகளுக்கு ஏற்றது, விற்பனைக்கு குறைவு.",
+  8:"உங்கள் பெயர் கடுமையான, உறுதியான தோற்றம் தருகிறது; பாரம்பரியமாக கவனத்துடன் பார்க்கப்படும் எண்.",
+  9:"உங்கள் பெயர் தைரியம், வேகத்தின் தோற்றம் தருகிறது; போட்டி நிறைந்த துறைகளுக்கு ஏற்றது."
+ }
+};
+const COMBO = {
+  same:"இரண்டும் ஒரே எண் — உங்கள் இயல்பும் வாழ்க்கைப் பாதையும் ஒரே திசையில் செல்லும்; பலமும் பலவீனமும் இரட்டிப்பாகும்.",
+  friend:"நட்பு எண்கள் — உங்கள் இயல்பு உங்கள் வாழ்க்கைப் பாதைக்கு உதவும்; முயற்சிகள் எளிதில் பலன் தரும்.",
+  neutral:"சாதாரண உறவு — இரண்டும் வேறு திசைகளில் இழுக்கலாம்; பொருத்தமான பெயர் எண் சமநிலை தரும் என நம்பப்படுகிறது.",
+  enemy:"எதிர் எண்கள் — உள் மனதும் வாழ்க்கைச் சூழலும் சில நேரம் முரண்படும்; பலர் பெயர் எண் மூலம் சமநிலை தேடுவர்."
+};
+
+// Lucky and harmful full totals (traditional Tamil numerology)
+const COMPOUND_GOOD = [10,19,21,23,24,27,32,33,37,41,42,45,46,68];
+const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47];
+const GOOD_FLOOR = 55;            // a lucky total never shows red, unless a birth-date rule says it does not suit
+let CUR_DAY = 0, CUR_DEST = 0;    // set on each calculation, used by the birth-date rules
+// Rules that depend on the birth date. adj below 0 means "tradition advises against this total".
+function dateRule(total){
+  const d=CUR_DAY, nine=[9,18,27].includes(d), six=[6,15,24].includes(d)||CUR_DEST===6;
+  if(total===46 && nine) return {adj:-25, en:"46 உயர்ந்த அந்தஸ்தைக் குறிக்கும்; ஆனால் பிறவி எண் 9 உள்ளவர்களுக்கு இந்தக் கூட்டு எண் ஏற்றதல்ல என மரபு கூறுகிறது."};
+  if(total===37 && nine) return {adj:-25, en:"37 சுகபோகத்தைக் குறிக்கும்; ஆனால் 9, 18, 27 தேதிகளில் பிறந்தவர்களுக்கு இந்தக் கூட்டு எண் ஏற்றதல்ல என மரபு கூறுகிறது."};
+  if(total===45 && (d===9||d===27)) return {adj:10, en:"9, 27 தேதிகளில் பிறந்தவர்களுக்கு 45 நன்மை தரும் என மரபு கூறுகிறது."};
+  if((total===45||total===44) && d===18) return {adj:-25, en:"18-ம் தேதி பிறந்தவர்களுக்கு இந்தக் கூட்டு எண் ஏற்றதல்ல என மரபு கூறுகிறது."};
+  if(total===42 && six) return {adj:10, en:"6, 15, 24 தேதிகளில் பிறந்தவர்களுக்கும் விதி எண் 6 உள்ளவர்களுக்கும் 42 சிறந்தது என மரபு கூறுகிறது."};
+  if(total===33 && six) return {adj:-10, en:"6, 15, 24 தேதிகளில் பிறந்தவர்களுக்கும் விதி எண் 6 உள்ளவர்களுக்கும் இந்தக் கூட்டு எண்ணை விட 42 சிறந்தது என மரபு கூறுகிறது."};
+  return null;
+}
+const HARM = "மரபுப்படி இது தீமை தரும் பெயர் எண். அதிர்ஷ்டமான கூட்டு எண் வரும்படி பெயரை மாற்றுவது நல்லது.";
+const TOTAL_NOTES = {
+  23:"தெளிவான திட்டத்துடன் செயல்பட்டால் பெரிய வெற்றி. இலக்கு இல்லாவிட்டால் வசதியான வாழ்க்கை மட்டும்.",
+  32:"கூர்மையான அறிவு, திடீர் புதிய யோசனைகள், மக்கள் ஆதரவு; ஆனால் பண நிலை ஏறி இறங்கலாம்.",
+  41:"மிகவும் அதிர்ஷ்டமானது: மக்கள் ஆதரவும் செல்வமும். பொறுமையாக நடந்தால் இன்னும் சிறப்பு.",
+  46:"தலைவர்களிடமும் உயர் பதவியில் இருப்பவர்களிடமும் அடிக்கடி காணப்படும் எண். 1-ன் நல்ல பலன்களைத் தரும்.",
+  68:"செல்வத்திற்கு மிகவும் அதிர்ஷ்டமானது; ஆனால் எப்போதும் இன்னும் வேண்டும் என்ற அமைதியற்ற மனதைத் தரலாம்.",
+  37:"மிகுந்த சுகபோகத்தைத் தரும்.",
+  42:"நல்ல கூட்டு எண்; 6 எண்காரர்களுக்கு மிகவும் சிறப்பு.",
+  45:"பொதுவாக நல்ல கூட்டு எண். எவ்வளவு நல்லது என்பது பிறந்த தேதியைப் பொறுத்தது.",
+  12:"தியாகத்தையும் போராட்டத்தையும் குறிக்கும்.",
+  29:"கடின உழைப்பால் மட்டுமே முன்னேற்றம். " + HARM,
+  16:HARM, 17:HARM, 26:HARM, 31:HARM, 35:HARM, 38:HARM, 44:HARM, 47:HARM
+};
+const NAME_DIGIT_NOTES = {
+  2:"2-ல் முடியும் பெயர் சிக்கல்களைத் தரலாம்.",
+  4:"4-ல் முடியும் பெயர் எதிர்பாராத எதிர்ப்புகளைத் தரலாம்.",
+  7:"7-ல் முடியும் பெயர் அடிக்கடி தடைகளைத் தரலாம்.",
+  8:"8-ல் முடியும் பெயர் தொழிலுக்கு ஏற்றதல்ல என மரபு எச்சரிக்கிறது.",
+  5:"5 எல்லோரையும் ஈர்க்கும்: எல்லா எண்காரர்களையும் கவரும் சக்தி கொண்டது."
+};
+function totalNotesHTML(total, n){
+  const out=[];
+  if(TOTAL_NOTES[total]) out.push(`📘 ${total}: ${TOTAL_NOTES[total]}`);
+  const dr = dateRule(total);
+  if(dr) out.push(`${dr.adj<0?"⚠️":"✅"} ${dr.en}`);
+  if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"📘":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
+  return out.length ? `<div class="totalnote">${out.join("<hr>")}</div>` : "";
+}
+function goodCompoundNote(total, n, birth, dest){
+  if(!COMPOUND_GOOD.includes(total) || dateRule(total)?.adj<0) return "";
+  if(rel(n,birth)>=0.8 || rel(n,dest)>=0.8) return "";
+  return `<div class="gcn">🌟 கூட்டு எண் ${total} அதிர்ஷ்டமானது. ஒற்றை இலக்கம் ${n} உங்கள் எண்களுக்கு நேரடி நட்பு இல்லை; ஆனால் கூட்டு எண் அதிர்ஷ்டமானது என்பதால் இந்தப் பெயர் பலவீனமானதாகக் காட்டப்படவில்லை.</div>`;
+}
+// Titles are not counted
+const TITLES = /^(MR|MRS|MS|MISS|DR|PROF|SRI|SHRI|SMT|THIRU|THIRUMATHI|SELVI|SELVAN)\.?\s+/i;
+function compoundTag(t){
+  if(COMPOUND_GOOD.includes(t)) return `<span class="chip good">${t} · ${L.compGood}</span>`;
+  if(COMPOUND_BAD.includes(t))  return `<span class="chip bad">${t} · ${L.compBad}</span>`;
+  return `<span class="chip">${t} · ${L.compNeutral}</span>`;
+}
+const digitSum = n => String(n).split("").reduce((a,c)=>a+(+c||0),0);
+function reduceSteps(n){ const s=[n]; while(n>9){ n=digitSum(n); s.push(n); } return s; }
+function stepText(digits, steps){
+  let t = digits.join(" + ") + " = " + steps[0];
+  for(let i=1;i<steps.length;i++) t += " → " + String(steps[i-1]).split("").join("+") + " = " + steps[i];
+  return t;
+}
+function valueOf(str){
+  const vals = str.toUpperCase().split("").map(c=>/[0-9]/.test(c)?+c:(CHALDEAN[c]||null)).filter(v=>v!==null);
+  const total = vals.reduce((a,b)=>a+b,0);
+  return {vals,total,single: total ? reduceSteps(total).at(-1) : null};
+}
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function rel(n, base){
+  if(n===base) return 1;
+  if(DATA[base].avoid.includes(n)) return 0;
+  if(DATA[base].lucky.includes(n)) return 0.8;
+  return 0.35;
+}
+// Under 30 the birth number leads; from 30 the destiny number leads
+let W = {b:50, d:30};
+const SWITCH_AGE = 30;
+function matchPct(n, birth, dest, opt={}){
+  let pts = W.b*rel(n,birth) + W.d*rel(n,dest), max = 80;
+  if(opt.nameN!=null){ pts += 20*rel(n,opt.nameN); max += 20; }
+  let pct = pts/max*100;
+  if(opt.business && [1,5,6].includes(n)) pct += 8;
+  if(opt.total!=null){                       // names and business names only
+    if([2,4,7,8].includes(n)) pct -= 8;
+    if(n===5) pct += 8;
+    const r = dateRule(opt.total);
+    if(r) pct = r.adj<0 ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
+    if(COMPOUND_GOOD.includes(opt.total)) pct = (r && r.adj<0) ? pct : Math.max(pct + 7, GOOD_FLOOR);
+    if(COMPOUND_BAD.includes(opt.total)) pct -= 12;
+  }
+  return Math.max(5, Math.min(100, Math.round(pct)));
+}
+function bestTotalsHTML(birth, dest, opt, current, title){
+  const list=[];
+  for(let t=10;t<=68;t++){ if(!COMPOUND_GOOD.includes(t) || dateRule(t)?.adj<0) continue; const s=reduceSteps(t).at(-1); list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
+  const digits=[...new Set(list.sort((a,b)=>b.p-a.p).map(x=>x.s))].slice(0,3);
+  const top=digits.flatMap(s=>list.filter(x=>x.s===s).sort((a,b)=>a.t-b.t).slice(0,3)).filter(x=>x.p>=50);
+  const curP = matchPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
+  const inList = top.some(x=>x.t===current) || (COMPOUND_GOOD.includes(current) && top.length && curP>=Math.min(...top.map(x=>x.p)));
+  const cur = inList
+    ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ உங்கள் கூட்டு எண் <b>${current}</b> ஏற்கனவே சிறந்தவற்றில் ஒன்று.</div>`
+    : `<div class="plain" style="font-size:13px;margin-top:6px">இப்போது: <b>${current}</b>. எழுத்துகளைச் சிறிது மாற்றி (ஒரு எழுத்தைச் சேர்த்தோ மாற்றியோ) இவற்றில் ஒன்று வரும்படி செய்யலாம்.</div>`;
+  return `<div style="margin-top:12px;font-weight:600;color:var(--ink)">⭐ ${title}</div>
+    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.p}%</span>`).join("")}</div>${cur}`;
+}
+const stars = p => { const s=Math.max(1,Math.round(p/20)); return "★".repeat(s)+"☆".repeat(5-s); };
+const level = p => p>=75 ? "ok" : p>=50 ? "mid" : "no";
+
+// Fill the form
+applyText();
+$("d").innerHTML = `<option value="">${L.day}</option>` + Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+$("m").innerHTML = `<option value="">${L.monthPh}</option>` + MONTHS.map((m,i)=>`<option value="${i+1}">${i+1} · ${m}</option>`).join("");
+$("chart").innerHTML = Array.from({length:9},(_,i)=>{ const n=i+1; return `<div><b>${n}</b>${Object.keys(CHALDEAN).filter(k=>CHALDEAN[k]===n).join(" ")||"—"}</div>`; }).join("");
+
+let lastText = "";
+
+$("form").addEventListener("submit", e=>{
+  e.preventDefault();
+  $("err").textContent = "";
+  const d=+$("d").value, m=+$("m").value, y=+$("y").value;
+  if(!d||!m||!y){ $("err").textContent=L.errDate; return; }
+  if(y<1900||y>2100){ $("err").textContent=L.errYear; return; }
+  const dt = new Date(y, m-1, d);
+  if(dt.getMonth()!==m-1){ $("err").textContent=L.errNoDate; return; }
+  const NEED = {name:["name","பெயரை உள்ளிடவும்."],
+                biz:["biz","தொழில் பெயரை உள்ளிடவும்."],
+                house:["hNum","வீடு அல்லது யூனிட் எண்ணை உள்ளிடவும்."],
+                vehicle:["plate","வாகன எண்ணை உள்ளிடவும்."],
+                phone:["phone","தொலைபேசி எண்ணை உள்ளிடவும்."]}[TAB];
+  if(NEED && !$(NEED[0]).value.trim()){ $("err").textContent=NEED[1]; $("results").style.display="none"; return; }
+
+  const dS=reduceSteps(d), mS=reduceSteps(m), yS=reduceSteps(digitSum(y));
+  $("tD").textContent=dS.at(-1); $("tDc").textContent = d>9 ? stepText(String(d).split(""), reduceSteps(digitSum(d))) : d;
+  $("tM").textContent=mS.at(-1); $("tMc").textContent = m>9 ? stepText(String(m).split(""), reduceSteps(digitSum(m))) : m;
+  $("tY").textContent=yS.at(-1); $("tYc").textContent = stepText(String(y).split(""), yS);
+
+  const birth = dS.at(-1);
+  $("birthNum").textContent = birth;
+  $("birthCalc").textContent = d>9 ? `${d} → ${String(d).split("").join("+")} = ${digitSum(d)}${digitSum(d)>9?" → "+birth:""}` : `${d}`;
+
+  const allDigits = (String(d).padStart(2,"0")+String(m).padStart(2,"0")+String(y)).split("").filter(c=>c!=="0");
+  const destS = reduceSteps(allDigits.reduce((a,c)=>a+ +c,0)), dest = destS.at(-1);
+  $("destNum").textContent = dest;
+  CUR_DAY = d; CUR_DEST = dest;
+  $("destCalc").textContent = stepText(allDigits, destS);
+
+  // Which number is stronger now (age rule)
+  const now = new Date();
+  let age = now.getFullYear() - y;
+  if(now.getMonth() < m-1 || (now.getMonth()===m-1 && now.getDate() < d)) age--;
+  const destLeads = age >= SWITCH_AGE;
+  W = destLeads ? {b:30, d:50} : {b:50, d:30};
+  $("ageNote").innerHTML = age < 0 ? "" : destLeads
+    ? `🔆 வயது ${age}: 30 வயது முதல் உங்கள் <b>விதி எண் ${dest}</b> அதிகம் செயல்படும். கீழே உள்ள பெயர், தொழில், தொலைபேசி பொருத்த % இதற்கு அதிக முக்கியத்துவம் தருகிறது.`
+    : `🔆 வயது ${age}: 30 வயது வரை உங்கள் <b>பிறவி எண் ${birth}</b> அதிகம் செயல்படும். 30 வயதுக்குப் பிறகு விதி எண் ${dest} முன்னிலை பெறும்.`;
+  $("birthNum").parentElement.classList.toggle("strong", !destLeads && age >= 0);
+  $("destNum").parentElement.classList.toggle("strong", destLeads);
+  $("weekday").innerHTML = `${L.bornOn} <b>${DAYS[dt.getDay()]}</b>`;
+
+  // Name number
+  const typedName = (TAB==="my" || TAB==="name") ? $("name").value.trim() : "";
+  let rawName = typedName, droppedTitle = "";
+  while(TITLES.test(rawName)){ droppedTitle += rawName.match(TITLES)[0]; rawName = rawName.replace(TITLES,""); }
+  const nm = valueOf(rawName.replace(/[^A-Za-z]/g,""));
+  const nameN = nm.single, nameTotal = nm.total;
+  const nmParts = rawName.toUpperCase().replace(/\./g," ").split(/\s+/).filter(Boolean);
+  const initials = nmParts.filter(w=>w.replace(/[^A-Z]/g,"").length===1).map(w=>w.replace(/[^A-Z]/g,"")).join("");
+  const mainName = nmParts.filter(w=>w.replace(/[^A-Z]/g,"").length>1).join(" ");
+  if(nameN!==null){
+    const nS = reduceSteps(nameTotal);
+    $("nameNum").textContent = nameN;
+    $("nameCalc").textContent = `${nameTotal}${nS.length>1?" → "+nS.slice(1).join(" → "):""}`;
+    $("nameBox").style.opacity = 1;
+  } else {
+    $("nameNum").textContent="–"; $("nameCalc").textContent=L.enterName; $("nameBox").style.opacity=.6;
+  }
+
+  // Lucky details
+  const D = DATA[birth];
+  $("lkBase").textContent = `${L.basedOn}: ${birth}`;
+  $("lkPlanet").textContent = D.planet;
+  $("lkNums").innerHTML = D.lucky.map(n=>`<span class="chip good">${n}</span>`).join("");
+  $("lkAvoid").innerHTML = D.avoid.map(n=>`<span class="chip bad">${n}</span>`).join("");
+  $("lkDays").textContent = D.days.map(i=>DAYS[i]).join(", ");
+  $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ");
+  $("lkGem").textContent = D.gem;
+  const luckyDates=[]; for(let i=1;i<=31;i++) if(D.lucky.includes(reduceSteps(i).at(-1))) luckyDates.push(i);
+  const eightBad = [1,2,4,7,8].includes(birth) || [1,2,4,7,8].includes(dest);
+  $("lkDates").textContent = (eightBad ? luckyDates.filter(x=>reduceSteps(x).at(-1)!==8) : luckyDates).join(", ");
+  $("avoidDatesRow").style.display = eightBad ? "" : "none";
+  $("lkAvoidDates").innerHTML = eightBad ? `<div class="chips"><span class="chip bad">8</span><span class="chip bad">17</span><span class="chip bad">26</span></div><div class="calc" style="margin-top:4px">பிறவி எண் அல்லது விதி எண் 1, 2, 4, 7, 8 உள்ளவர்கள் இந்தத் தேதிகளில் புதிய காரியங்களைத் தொடங்க வேண்டாம் என மரபு கூறுகிறது.</div>` : "";
+  const ageNums = [...new Set([birth, dest, ...D.lucky])].filter(n=>!D.avoid.includes(n));
+  const nextAges = []; for(let a=Math.max(age,1); a<=110 && nextAges.length<8; a++) if(ageNums.includes(reduceSteps(a).at(-1))) nextAges.push(a);
+  $("lkAges").innerHTML = `<div class="chips">` + nextAges.map(a=>`<span class="chip${a===age?" good":""}">${a}${a===age?" · இப்போது":""}</span>`).join("") + `</div><div class="calc" style="margin-top:4px">பொருத்தமான பெயர் இருந்தால் இந்த வயதுகளில் முன்னேற்றம் வரும் என மரபு கூறுகிறது.</div>`;
+
+  // Name match
+  const v = $("verdict");
+  if(nameN===null){ $("nameCard").style.display="none"; }
+  else {
+    $("nameCard").style.display="";
+    const p = matchPct(nameN, birth, dest, {total:nameTotal});
+    $("nmPct").textContent = p+"%"; $("nmStars").textContent = stars(p); $("nmBox").className = "big pct "+level(p);
+    const withBirth = rel(nameN,birth)>=0.8;
+    if(level(p)==="ok"){ v.className="verdict ok"; v.innerHTML=`✅ சிறப்பான பொருத்தம் — பெயர் எண் ${nameN} உங்கள் பிறவி எண் (${birth}), விதி எண் (${dest}) இரண்டுக்கும் ஏற்றது.`; }
+    else if(level(p)==="mid"){ v.className="verdict mid"; v.innerHTML=`🙂 நல்ல பொருத்தம் — பெயர் எண் ${nameN} உங்கள் ${withBirth?"பிறவி":"விதி"} எண்ணுக்கு ஏற்றது.`; }
+    else { v.className="verdict no"; v.innerHTML=`⚠️ பெயர் எண் ${nameN} அதிகம் பொருந்தவில்லை.<br><span class="plain">எழுத்துகளைச் சிறிது மாற்றி, கீழே உள்ள சிறந்த கூட்டு எண்களில் ஒன்று வரும்படி செய்யலாம்.</span>`; }
+    const ruleOut = dateRule(nameTotal)?.adj<0;
+    if(ruleOut){ v.className="verdict no"; v.innerHTML=`⚠️ இந்தப் பிறந்த தேதிக்கு கூட்டு எண் ${nameTotal} ஏற்றதல்ல என மரபு கூறுகிறது.<br><span class="plain">எழுத்துகளைச் சிறிது மாற்றி, கீழே உள்ள சிறந்த கூட்டு எண்களில் ஒன்று வரும்படி செய்யலாம்.</span>`; }
+    else if(level(p)==="mid" && !withBirth && rel(nameN,dest)<0.8 && COMPOUND_GOOD.includes(nameTotal)) v.innerHTML=`🙂 நல்ல பெயர் — கூட்டு எண் ${nameTotal} அதிர்ஷ்டமானது.`;
+    v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + goodCompoundNote(nameTotal, nameN, birth, dest) + totalNotesHTML(nameTotal, nameN);
+    if(droppedTitle){
+      const wt = valueOf(typedName.replace(/[^A-Za-z]/g,""));
+      v.innerHTML += `<div class="splitname">"${esc(droppedTitle.trim())}" என்ற பட்டம் கணக்கில் சேராது. அது இல்லாமல்: <b>${nameTotal}</b>${nameTotal>9?" → "+nameN:""}. அதனுடன்: <b>${wt.total}</b>${wt.total>9?" → "+wt.single:""} ${compoundTag(wt.total)}<br><span style="color:var(--muted)">எப்போதும் பட்டத்துடன் கையெழுத்திட்டால், பட்டத்துடன் வரும் கூட்டு எண்ணும் முக்கியம்.</span></div>`;
+    }
+    if(initials && mainName){
+      const iv=valueOf(initials), mv=valueOf(mainName);
+      v.innerHTML += `<div class="splitname"><b>இனிஷியல் ${esc(initials.split("").join(".")+".")}</b> = ${iv.total}${iv.total>9?" → "+iv.single:""} ${compoundTag(iv.total)}<br><b>பெயர் ${esc(mainName)}</b> = ${mv.total}${mv.total>9?" → "+mv.single:""} ${compoundTag(mv.total)}<br><span style="color:var(--muted)">இரண்டும் சேர்ந்து கூட்டு எண் ${nameTotal} ஆகிறது.</span></div>`;
+    }
+    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "உங்கள் பெயருக்கு சிறந்த கூட்டு எண்கள்");
+  }
+
+  // Business name match
+  const rawBiz = $("biz").value.trim();
+  const bz = rawBiz ? valueOf(rawBiz) : {single:null};
+  let bzScore = 0;
+  if(bz.single!==null){
+    const b = bz.single, bS = reduceSteps(bz.total);
+    $("bzNum").textContent = b;
+    $("bzCalc").textContent = `${rawBiz} → ${bz.vals.filter(x=>x).join(" + ")} = ${bz.total}${bS.length>1?" → "+bS.slice(1).join(" → "):""}`;
+    $("bzCompound").innerHTML = compoundTag(bz.total) + goodCompoundNote(bz.total, b, birth, dest) + totalNotesHTML(bz.total, b);
+    bzScore = matchPct(b, birth, dest, {business:true, total:bz.total});
+    $("bzStars").textContent = stars(bzScore); $("bzPct").textContent = bzScore+"%"; $("bzBox").className = "big pct "+level(bzScore);
+    const bestBiz = [1,5,6,3,9].filter(n=>(D.lucky.includes(n)||n===birth||n===dest) && !D.avoid.includes(n) && !DATA[dest].avoid.includes(n));
+    const bv = $("bzVerdict");
+    if(level(bzScore)==="ok"){ bv.className="verdict ok"; bv.innerHTML=`✅ சிறந்த தொழில் பெயர் — எண் ${b} உரிமையாளரின் பிறவி எண் (${birth}), விதி எண் (${dest}) இரண்டுக்கும் நன்கு பொருந்துகிறது.`; }
+    else if(level(bzScore)==="mid"){ bv.className="verdict mid"; bv.innerHTML=`🙂 நல்ல பெயர்.<br><span class="plain">தொழில் எண் ${b} பரவாயில்லை. <b>${bestBiz.join(", ")||birth}</b> வரும்படி அமைந்தால் இன்னும் வலுவாகும்.</span>`; }
+    else { bv.className="verdict no"; bv.innerHTML=`⚠️ உரிமையாளருக்குப் பொருத்தம் குறைவு.<br><span class="plain">எழுத்துகளைச் சிறிது மாற்றலாம், அல்லது "&amp; Co", "Ltd", "Limited" போன்ற சொல்லைச் சேர்த்து <b>${bestBiz.join(", ")||birth}</b> வரும்படி செய்யலாம்.</span>`; }
+    const extras = ["& Co","Ltd","Limited","Inc","Store","Shop","Services","Group","Plus","Pro","Centre","Solutions"];
+    const tweaks = extras.map(x=>({x, r:valueOf(rawBiz+" "+x)}))
+      .map(t=>({...t, p:matchPct(t.r.single, birth, dest, {business:true, total:t.r.total})}))
+      .filter(t=>t.p>bzScore).sort((a,b)=>b.p-a.p).slice(0,4);
+    $("bzTip").innerHTML = (tweaks.length && bzScore<90 ? `💡 பரிந்துரைகள்: ` + tweaks.map(t=>`<b>${esc(rawBiz)} ${esc(t.x)}</b> (+${valueOf(t.x).total}: ${t.r.total} → ${t.r.single}, ${t.p}%)`).join(" · ") : "")
+      + bestTotalsHTML(birth, dest, {business:true}, bz.total, "தொழில் பெயருக்கு சிறந்த கூட்டு எண்கள்");
+  }
+  $("bizCard").style.display = bz.single===null ? "none" : "";
+
+  // Phone / vehicle number
+  const rawPhone = (TAB==="vehicle" ? $("plate").value : TAB==="phone" ? $("phone").value : "").trim();
+  const ph = rawPhone ? valueOf(rawPhone) : {single:null};
+  let phScore = 0;
+  if(ph.single!==null){
+    const phN = ph.single, pS = reduceSteps(ph.total);
+    $("phNum").textContent = phN;
+    $("phCalc").textContent = `${ph.vals.filter(v=>v!==0).join(" + ")} = ${ph.total}${pS.length>1?" → "+pS.slice(1).join(" → "):""}`;
+    phScore = matchPct(phN, birth, dest, {nameN});
+    $("phStars").textContent = stars(phScore); $("phPct").textContent = phScore+"%"; $("phBox").className = "big pct "+level(phScore);
+    const best = [1,2,3,4,5,6,7,8,9].map(n=>({n,p:matchPct(n,birth,dest,{nameN})})).sort((a,b)=>b.p-a.p).filter(x=>x.n!==phN).slice(0,3).map(x=>`${x.n} (${x.p}%)`);
+    const pv = $("phVerdict");
+    if(level(phScore)==="ok"){ pv.className="verdict ok"; pv.innerHTML=`✅ உங்களுக்கு மிகவும் அதிர்ஷ்டமானது — இந்த எண் (${phN}) உங்கள் பிறவி எண் (${birth}), விதி எண் (${dest}) இரண்டுக்கும் நன்கு பொருந்துகிறது.${phScore<100?`<br><span class="plain">மற்ற வலுவான எண்கள்: <b>${best.join(", ")}</b>.</span>`:""}`; }
+    else if(level(phScore)==="mid"){ pv.className="verdict mid"; pv.innerHTML=`🙂 நல்ல எண்.<br><span class="plain">எண் ${phN} உங்களுக்கு நல்லது${phN===birth?" — இது உங்கள் பிறவி எண்ணும் கூட":""}. மற்ற வலுவான எண்கள்: <b>${best.join(", ")}</b>.</span>`; }
+    else { pv.className="verdict no"; pv.innerHTML=`⚠️ எண் ${phN} அதிகம் பொருந்தவில்லை.<br><span class="plain">புதிய தொலைபேசி அல்லது வாகன எண் தேர்வு செய்யும்போது <b>${best.join(", ")}</b> வரும் எண்ணைப் பாருங்கள்.</span>`; }
+  }
+  $("phoneCard").style.display = ph.single===null ? "none" : "";
+
+  // Nature
+  const tr = [["birth",birth,L.birthNumber,L.innerNature],["dest",dest,L.destinyNumber,L.lifePath]];
+  if(nameN!==null) tr.push(["name",nameN,L.nameNumber,L.howOthers]);
+  let html = tr.map(([role,n,label,what],idx)=>{
+    const same = tr.slice(0,idx).filter(t=>t[1]===n).map(t=>t[2].toLowerCase());
+    return `<div class="trait"><b>${label} ${n} — ${DATA[n].planet}</b><div class="role">${what}</div>${ROLE_TEXT[role][n]}`
+      + (same.length ? `<div style="margin-top:6px;font-size:13px;color:var(--brand);font-weight:600">↺ உங்கள் ${same.join(", ")} எண்ணும் இதுவே; எனவே இந்தக் குணங்கள் இன்னும் வலுவாக இருக்கும்.</div>` : "") + `</div>`;
+  }).join("");
+  const r = rel(dest, birth);
+  const combo = r===1 ? COMBO.same : r>=0.8 ? COMBO.friend : r===0 ? COMBO.enemy : COMBO.neutral;
+  html += `<div class="trait" style="background:#fff;border:1px dashed var(--line)"><b>${L.together}: ${birth} + ${dest}</b><br>${combo}</div>`;
+  $("traits").innerHTML = html;
+
+  lastText =
+`🔢 எண் கணித முடிவு
+${rawName?"பெயர்: "+rawName+"\n":""}பிறந்த தேதி: ${d} ${MONTHS[m-1]} ${y} (${DAYS[dt.getDay()]})
+பிறவி எண்: ${birth}${destLeads?"":" (இப்போது வலுவானது, வயது "+age+")"}
+விதி எண்: ${dest}${destLeads?" (இப்போது வலுவானது, வயது "+age+")":""}
+${nameN!==null?"பெயர் எண்: "+nameN+" ("+nameTotal+")\n":""}கிரகம்: ${D.planet}
+அதிர்ஷ்ட எண்கள்: ${D.lucky.join(", ")}
+அதிர்ஷ்ட நாட்கள்: ${D.days.map(i=>DAYS[i]).join(", ")}
+ரத்தினம்: ${D.gem}${bz.single!==null?"\nதொழில் பெயர்: "+rawBiz+" = "+bz.single+" ("+bzScore+"% பொருத்தம்)":""}${ph.single!==null?"\n"+(TAB==="vehicle"?"வாகன":"தொலைபேசி")+" எண்: "+ph.single+" ("+phScore+"% பொருத்தம்)":""}
+இலவசம்: freenetsave.com`;
+  $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(lastText);
+  if(TAB==="house") houseCheck({d,m,y,birth,dest,label:""});
+  applyTab();
+  $("results").style.display = "block";
+  $("results").scrollIntoView({behavior:"smooth", block:"start"});
+});
+$("copyBtn").addEventListener("click", ()=> copyText(lastText));
+
+/* ---------- Tabs ---------- */
+let TAB = "my";
+const TAB_INFO = {
+  my:"உங்கள் பிறவி எண், விதி எண், அதிர்ஷ்ட விவரங்கள், இயல்பு ஆகியவற்றைப் பார்க்க பிறந்த தேதியை உள்ளிடவும்.",
+  name:"பெயர் அந்த நபருக்கு எவ்வளவு பொருந்துகிறது என்று பார்க்க, பெயரையும் அவரது பிறந்த தேதியையும் உள்ளிடவும்.",
+  biz:"தொழில் பெயரையும் உரிமையாளரின் பிறந்த தேதியையும் உள்ளிடவும்.",
+  house:"வீடு அல்லது யூனிட் எண்ணையும், குடும்பத் தலைவரின் (அல்லது கடை உரிமையாளரின்) பிறந்த தேதியையும் உள்ளிடவும். வீடு என்றால் மற்ற குடும்ப உறுப்பினர்களையும் சேர்க்கலாம்.",
+  vehicle:"வாகன எண்ணையும், அதிகம் ஓட்டுபவர் அல்லது உரிமையாளரின் பிறந்த தேதியையும் உள்ளிடவும்.",
+  phone:"தொலைபேசி எண்ணையும், அதைப் பயன்படுத்துபவரின் பிறந்த தேதியையும் உள்ளிடவும்."
+};
+function applyTab(){
+  document.querySelectorAll("#tabs button").forEach(b=>{ const on=b.dataset.tab===TAB; b.classList.toggle("on",on); b.setAttribute("aria-selected",on); });
+  document.querySelectorAll("[data-tab]").forEach(el=>{ if(el.closest("#tabs")) return; el.classList.toggle("hidetab", !el.dataset.tab.split(" ").includes(TAB)); });
+  $("tabIntro").textContent = TAB_INFO[TAB];
+  const shop = $("hType").value==="shop";
+  $("dobLbl").textContent = TAB==="house" ? (shop ? "உரிமையாளர் – பிறந்த தேதி" : "குடும்பத் தலைவர் – பிறந்த தேதி")
+    : TAB==="biz" ? "உரிமையாளர் – பிறந்த தேதி"
+    : TAB==="vehicle" ? "ஓட்டுநர் அல்லது உரிமையாளர் – பிறந்த தேதி"
+    : "பிறந்த தேதி";
+  $("nameLbl").textContent = TAB==="name" ? "பார்க்க வேண்டிய பெயர்" : "உங்கள் பெயர்";
+  $("nameOpt").textContent = TAB==="name" ? "(ஆங்கில எழுத்துகளில்)" : "(விருப்பம்)";
+  $("famWrap").style.display = shop ? "none" : "";
+  $("phTitle").textContent = TAB==="vehicle" ? "வாகன எண் பொருத்தம்" : "தொலைபேசி எண் பொருத்தம்";
+}
+document.querySelectorAll("#tabs button").forEach(b=>b.addEventListener("click",()=>{
+  TAB=b.dataset.tab; $("err").textContent=""; $("results").style.display="none"; applyTab();
+}));
+$("hType").addEventListener("change",()=>{ $("results").style.display="none"; applyTab(); });
+$("addFam").addEventListener("click",()=>{
+  if($("famList").children.length>=6) return;
+  const n=$("famList").children.length+1;
+  const r=document.createElement("div"); r.className="famrow";
+  r.innerHTML=`<input placeholder="பெயர் அல்லது உறவு" aria-label="Family member ${n} name"><input type="date" min="1900-01-01" max="2100-12-31" aria-label="Family member ${n} date of birth"><button type="button" title="Remove" aria-label="Remove">✕</button>`;
+  r.querySelector("button").onclick=()=>r.remove();
+  $("famList").appendChild(r);
+});
+
+/* ---------- House & shop ---------- */
+function personFrom(d,m,y,label){
+  const birth = reduceSteps(d).at(-1);
+  const all = (String(d).padStart(2,"0")+String(m).padStart(2,"0")+String(y)).split("").filter(c=>c!=="0");
+  const dest = reduceSteps(all.reduce((a,c)=>a+ +c,0)).at(-1);
+  const now=new Date(); let age=now.getFullYear()-y;
+  if(now.getMonth()<m-1 || (now.getMonth()===m-1 && now.getDate()<d)) age--;
+  return {label, birth, dest, age, W: age>=SWITCH_AGE ? {b:30,d:50} : {b:50,d:30}};
+}
+function pctFor(p, n){ const keep=W; W=p.W; const r=matchPct(n,p.birth,p.dest); W=keep; return r; }
+function houseCheck(head){
+  const shop = $("hType").value==="shop";
+  const people = [personFrom(head.d,head.m,head.y, head.label || (shop?"உரிமையாளர்":"தலைவர்"))];
+  if(!shop) [...$("famList").children].forEach((r,i)=>{
+    const [lab,dt]=r.querySelectorAll("input");
+    if(!dt.value) return;
+    const [yy,mm,dd]=dt.value.split("-").map(Number);
+    people.push(personFrom(dd,mm,yy, lab.value.trim() || ("உறுப்பினர் "+(i+1))));
+  });
+  const base = $("hNum").value.trim().toUpperCase();
+  const street = $("hStreet").value.trim();
+  const opts = [{door:base, note:"இப்போது"}];
+  if(street) opts.push({door:street+" / "+base, note:"முழு முகவரி", full:true});
+  [["A",1],["B",2],["C",3],["D",4],["E",5],["U",6],["O",7],["F",8]].forEach(([Lt])=>opts.push({door:base+Lt, note:"கதவில்"}));
+  opts.forEach(o=>{
+    const v=valueOf(o.door.replace(/\//g,""));
+    o.total=v.total; o.n=v.single;
+    o.pcts=people.map(p=>pctFor(p,o.n));
+    const others=o.pcts.slice(1);
+    o.score = shop || !others.length ? o.pcts[0] : 0.6*o.pcts[0] + 0.4*Math.min(...others);
+    o.bad = o.pcts.some(x=>x<35);
+  });
+  const ranked = opts.slice(1).filter(o=>!o.bad).sort((a,b)=>b.score-a.score);
+  const cur = opts[0];
+  const curGood = !cur.bad && cur.pcts[0]>=50;
+  const best = (ranked[0] && (!curGood || ranked[0].score > cur.score+10)) ? ranked[0] : cur;
+  $("hTitle").textContent = shop ? "கடை / அலுவலக எண் பொருத்தம் (உரிமையாளர் மட்டும்)" : "வீட்டு எண் பொருத்தம் (குடும்பம்)";
+  $("hCalc").textContent = `${base} → ${valueOf(base).vals.filter(x=>x).join(" + ")} = ${cur.total}${cur.total>9?" → "+cur.n:""}` + (people.length>1?` · ${people.length} பேர் பார்க்கப்பட்டனர்`:"") + " · ★ = விதி எண் வலுவானது (வயது 30+)";
+  const thRow = people.map(p=>`<th>${esc(p.label)}<br><span class="sm">பிறவி ${p.birth} · விதி ${p.dest}${p.age>=SWITCH_AGE?"★":""}</span></th>`).join("");
+  $("hTable").innerHTML = `<tr><th>கதவு</th><th>கூட்டு</th>${thRow}</tr>` +
+    opts.map(o=>`<tr class="${o===best?"best":""}"><td>${esc(o.door)}<br><span class="sm">${o===best?"⭐ சிறந்தது":o.note}</span></td><td>${o.total}${o.total>9?" → "+o.n:""}</td>${o.pcts.map(x=>`<td class="${level(x)}">${x}%</td>`).join("")}</tr>`).join("");
+  const v=$("hVerdict");
+  const full = opts.find(o=>o.full);
+  const fullNote = full && !full.bad && full.pcts[0]>=75
+    ? `<div class="plain" style="margin-top:8px">🏢 முழு முகவரியுடன் (${esc(full.door)}) கணக்கிட்டால் ஏற்கனவே ${full.pcts[0]}% — யூனிட்டுக்கு முழு முகவரியையே பலர் கணக்கில் எடுப்பர்.</div>` : "";
+  if(best!==cur){
+    v.className="verdict "+(curGood?"mid":"no");
+    v.innerHTML = (curGood ? `🙂 ${esc(cur.door)} பரவாயில்லை. ஆனால்` : `⚠️ ${esc(cur.door)} பொருத்தம் குறைவு.`) +
+      ` கதவிலோ பெயர்ப்பலகையிலோ <b>${esc(best.door)}</b> என எழுதினால் எண் ${best.n} வரும்` +
+      (shop||people.length===1 ? ` — உரிமையாளருக்கு ${best.pcts[0]}%.` : `: தலைவருக்கு ${best.pcts[0]}%, மற்ற அனைவருக்கும் குறைந்தது ${Math.min(...best.pcts.slice(1))}%.`) +
+      `<br><span class="plain">உங்கள் அதிகாரப்பூர்வ முகவரி மாறாது.</span>` + fullNote;
+  } else {
+    v.className="verdict ok";
+    v.innerHTML = `✅ ${esc(cur.door)} ஏற்கனவே${shop||people.length===1?" உரிமையாளருக்கு":" குடும்பத்திற்கு"} நன்கு பொருந்துகிறது — மாற்றம் தேவையில்லை.`;
+  }
+}
+applyTab();
+</script>
+</body>
+</html>
