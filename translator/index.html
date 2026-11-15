@@ -50,27 +50,32 @@
 const L=[["en","English"],["ta","Tamil"],["hi","Hindi"],["fr","French"],["es","Spanish"],["ar","Arabic"],["bn","Bengali"],["zh","Chinese"],["zh-Hant","Chinese (Traditional)"],["nl","Dutch"],["de","German"],["el","Greek"],["he","Hebrew"],["id","Indonesian"],["it","Italian"],["ja","Japanese"],["kn","Kannada"],["ko","Korean"],["mr","Marathi"],["pl","Polish"],["pt","Portuguese"],["ro","Romanian"],["ru","Russian"],["sv","Swedish"],["te","Telugu"],["th","Thai"],["tr","Turkish"],["uk","Ukrainian"],["vi","Vietnamese"]];
 const HAS="Translator" in self, cache={};
 ["from","to"].forEach((id,i)=>{$(id).innerHTML=L.map(l=>'<option value="'+l[0]+'">'+l[1]+"</option>").join("");$(id).selectedIndex=i;});
-$("how").textContent=HAS?"On this browser the translating happens on your own device. Your text is not sent anywhere. The first time you use a language, your browser downloads it, which can take a minute.":"This browser cannot translate on the device yet (that works in Chrome and Edge on a computer). Tap \"Open in Google Translate\" to translate your text there instead.";
+$("how").textContent=HAS?"On this browser the translating happens on your own device. Your text is not sent anywhere. It translates as you type. The first time you use a language, your browser downloads it once, which can take a minute.":"This browser cannot translate on the device yet (that works in Chrome and Edge on a computer). Tap \"Open in Google Translate\" to translate your text there instead.";
 if(!HAS){$("go").hidden=true;$("g").className="btn";}
 const msg=t=>$("msg").textContent=t;
 function gUrl(){return "https://translate.google.com/?sl="+$("from").value.replace("zh-Hant","zh-TW").replace(/^zh$/,"zh-CN")+"&tl="+$("to").value.replace("zh-Hant","zh-TW").replace(/^zh$/,"zh-CN")+"&text="+encodeURIComponent($("src").value)+"&op=translate";}
 $("g").addEventListener("click",()=>{if(!$("src").value.trim()){toast("Type some text first");return;}window.open(gUrl(),"_blank","noopener");});
-async function run(){const text=$("src").value.trim(),a=$("from").value,b=$("to").value;
-  if(!text){toast("Type some text first");return;}
+let seq=0,timer=0;
+function ready(a,b){const key=a+">"+b;
+  if(!cache[key])cache[key]=(async()=>{const av=await Translator.availability({sourceLanguage:a,targetLanguage:b});
+    if(av==="unavailable")return null;
+    if(av!=="available")msg("Getting the language ready. This happens only once…");
+    return Translator.create({sourceLanguage:a,targetLanguage:b,monitor(m){m.addEventListener("downloadprogress",e=>{if(e.loaded<1)msg("Downloading the language: "+Math.round(e.loaded*100)+"%");});}});})().catch(e=>{delete cache[key];throw e;});
+  return cache[key];}
+async function run(quiet){const text=$("src").value.trim(),a=$("from").value,b=$("to").value,me=++seq;
+  if(!text){$("out").textContent="";msg("");if(quiet!==true)toast("Type some text first");return;}
   if(a===b){$("out").textContent=text;msg("Both languages are the same.");return;}
-  $("go").disabled=true;msg("Translating…");
-  try{const key=a+">"+b;
-    if(!cache[key]){const av=await Translator.availability({sourceLanguage:a,targetLanguage:b});
-      if(av==="unavailable"){msg("Your browser cannot translate between these two languages. Use \"Open in Google Translate\" instead.");return;}
-      if(av!=="available")msg("Getting the language ready. This happens only once…");
-      cache[key]=await Translator.create({sourceLanguage:a,targetLanguage:b,monitor(m){m.addEventListener("downloadprogress",e=>msg("Downloading the language: "+Math.round(e.loaded*100)+"%"));}});}
-    const parts=text.split("\n"),res=[];for(const p of parts)res.push(p.trim()?await cache[key].translate(p):"");
-    $("out").textContent=res.join("\n");msg("Done. Translated on your device.");}
-  catch(e){msg("Sorry, that did not work on this browser. Use \"Open in Google Translate\" instead.");}
-  finally{$("go").disabled=false;}}
-$("go").addEventListener("click",run);
-$("src").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&HAS)run();});
-$("swap").addEventListener("click",()=>{const a=$("from").value;$("from").value=$("to").value;$("to").value=a;if($("out").textContent){$("src").value=$("out").textContent;$("out").textContent="";}msg("");});
+  try{const tr=await ready(a,b);if(me!==seq)return;
+    if(!tr){msg("Your browser cannot translate between these two languages. Use \"Open in Google Translate\" instead.");return;}
+    const parts=text.split("\n"),res=[];
+    for(const p of parts){res.push(p.trim()?await tr.translate(p):"");if(me!==seq)return;}
+    $("out").textContent=res.join("\n");msg("Translated on your device as you type.");}
+  catch(e){if(me===seq)msg("Sorry, that did not work on this browser. Use \"Open in Google Translate\" instead.");}}
+function live(){if(!HAS)return;clearTimeout(timer);timer=setTimeout(()=>run(true),300);}
+$("go").addEventListener("click",()=>run());
+$("src").addEventListener("input",live);
+$("from").addEventListener("change",live);$("to").addEventListener("change",live);
+$("swap").addEventListener("click",()=>{const a=$("from").value;$("from").value=$("to").value;$("to").value=a;if($("out").textContent){$("src").value=$("out").textContent;$("out").textContent="";}msg("");live();});
 $("copy").addEventListener("click",()=>$("out").textContent?copyText($("out").textContent):toast("Nothing to copy yet"));
 </script>
 </body>
