@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Translator — type in one language, read it in another</title>
+<meta name="description" content="Free translator. Type or paste text and read it in another language. On Chrome and Edge on a computer it translates on your own device, so your text is not sent anywhere.">
+<link rel="canonical" href="https://tools.freenetsave.com/translator/">
+<link rel="stylesheet" href="../assets/style.css?v=6">
+<style>
+  [hidden]{display:none !important}
+  .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
+  .box.main b{font-size:clamp(24px,7vw,30px)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .wrap{max-width:980px}
+  .tl{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end;margin-bottom:12px}
+  .tl .field{margin:0}
+  #swap{height:50px;width:50px;border:1.5px solid var(--line);background:#fff;border-radius:12px;font-size:20px;cursor:pointer;color:var(--brand)}
+  .panes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .panes textarea,#out{min-height:240px;font-size:18px;line-height:1.5}
+  #out{border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--soft);white-space:pre-wrap;overflow-wrap:anywhere}
+  #out:empty:before{content:"The translation shows here";color:var(--muted)}
+  #msg{font-size:15px;color:var(--muted);margin:10px 0 0;min-height:1.4em}
+  @media (max-width:700px){.panes{grid-template-columns:1fr}.panes textarea,#out{min-height:150px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Translator</h1>
+    <p class="sub">Type in one language, read it in another.</p>
+  </div>
+  <div class="card">
+    <div class="tl"><div class="field"><label for="from">From</label><select id="from"></select></div>
+      <button type="button" id="swap" aria-label="Swap languages">⇄</button>
+      <div class="field"><label for="to">To</label><select id="to"></select></div></div>
+    <div class="panes"><textarea id="src" maxlength="5000" placeholder="Type or paste text here" aria-label="Text to translate"></textarea><div id="out" aria-live="polite" translate="no"></div></div>
+    <p id="msg"></p>
+    <div class="btnrow"><button class="btn" id="go" type="button">Translate</button><button class="btn line" id="copy" type="button">Copy translation</button><button class="btn line" id="g" type="button">Open in Google Translate</button></div>
+    <p class="lead" id="how" style="margin-top:14px"></p>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=6"></script>
+<script>
+const L=[["en","English"],["ta","Tamil"],["hi","Hindi"],["fr","French"],["es","Spanish"],["ar","Arabic"],["bn","Bengali"],["zh","Chinese"],["zh-Hant","Chinese (Traditional)"],["nl","Dutch"],["de","German"],["el","Greek"],["he","Hebrew"],["id","Indonesian"],["it","Italian"],["ja","Japanese"],["kn","Kannada"],["ko","Korean"],["mr","Marathi"],["pl","Polish"],["pt","Portuguese"],["ro","Romanian"],["ru","Russian"],["sv","Swedish"],["te","Telugu"],["th","Thai"],["tr","Turkish"],["uk","Ukrainian"],["vi","Vietnamese"]];
+const HAS="Translator" in self, cache={};
+["from","to"].forEach((id,i)=>{$(id).innerHTML=L.map(l=>'<option value="'+l[0]+'">'+l[1]+"</option>").join("");$(id).selectedIndex=i;});
+$("how").textContent=HAS?"On this browser the translating happens on your own device. Your text is not sent anywhere. The first time you use a language, your browser downloads it, which can take a minute.":"This browser cannot translate on the device yet (that works in Chrome and Edge on a computer). Tap \"Open in Google Translate\" to translate your text there instead.";
+if(!HAS){$("go").hidden=true;$("g").className="btn";}
+const msg=t=>$("msg").textContent=t;
+function gUrl(){return "https://translate.google.com/?sl="+$("from").value.replace("zh-Hant","zh-TW").replace(/^zh$/,"zh-CN")+"&tl="+$("to").value.replace("zh-Hant","zh-TW").replace(/^zh$/,"zh-CN")+"&text="+encodeURIComponent($("src").value)+"&op=translate";}
+$("g").addEventListener("click",()=>{if(!$("src").value.trim()){toast("Type some text first");return;}window.open(gUrl(),"_blank","noopener");});
+async function run(){const text=$("src").value.trim(),a=$("from").value,b=$("to").value;
+  if(!text){toast("Type some text first");return;}
+  if(a===b){$("out").textContent=text;msg("Both languages are the same.");return;}
+  $("go").disabled=true;msg("Translating…");
+  try{const key=a+">"+b;
+    if(!cache[key]){const av=await Translator.availability({sourceLanguage:a,targetLanguage:b});
+      if(av==="unavailable"){msg("Your browser cannot translate between these two languages. Use \"Open in Google Translate\" instead.");return;}
+      if(av!=="available")msg("Getting the language ready. This happens only once…");
+      cache[key]=await Translator.create({sourceLanguage:a,targetLanguage:b,monitor(m){m.addEventListener("downloadprogress",e=>msg("Downloading the language: "+Math.round(e.loaded*100)+"%"));}});}
+    const parts=text.split("\n"),res=[];for(const p of parts)res.push(p.trim()?await cache[key].translate(p):"");
+    $("out").textContent=res.join("\n");msg("Done. Translated on your device.");}
+  catch(e){msg("Sorry, that did not work on this browser. Use \"Open in Google Translate\" instead.");}
+  finally{$("go").disabled=false;}}
+$("go").addEventListener("click",run);
+$("src").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)&&HAS)run();});
+$("swap").addEventListener("click",()=>{const a=$("from").value;$("from").value=$("to").value;$("to").value=a;if($("out").textContent){$("src").value=$("out").textContent;$("out").textContent="";}msg("");});
+$("copy").addEventListener("click",()=>$("out").textContent?copyText($("out").textContent):toast("Nothing to copy yet"));
+</script>
+</body>
+</html>
