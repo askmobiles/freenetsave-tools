@@ -69,7 +69,10 @@
   .htable td.no{background:#fdecea;color:#9b2c22;font-weight:700}
   .htable tr.best td{box-shadow:inset 0 -3px 0 var(--accent,#f97316)}
   .htable .sm{font-weight:400;font-size:12px;color:var(--muted)}
-  .famrow{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px}
+  .famrow{display:grid;grid-template-columns:1.3fr .8fr 1.2fr .9fr auto;gap:8px;margin-bottom:8px}
+  .famrow input,.famrow select{min-width:0}
+  .famrow button{min-height:44px}
+  @media (max-width:640px){.famrow{grid-template-columns:1fr 1fr 1fr auto}.famrow input:first-child{grid-column:1/-1}}
   .famrow button{border:0;background:#fdecea;color:#9b2c22;border-radius:10px;padding:0 14px;cursor:pointer;font-size:16px}
   .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .totalnote{margin-top:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;font-weight:400;font-size:15px;color:var(--ink)}
@@ -782,7 +785,7 @@ $("addFam").addEventListener("click",()=>{
   if($("famList").children.length>=6) return;
   const n=$("famList").children.length+1;
   const r=document.createElement("div"); r.className="famrow";
-  r.innerHTML=`<input placeholder="Name or relation" aria-label="Family member ${n} name"><input type="date" min="1900-01-01" max="2100-12-31" aria-label="Family member ${n} date of birth"><button type="button" title="Remove" aria-label="Remove">✕</button>`;
+  r.innerHTML=`<input placeholder="Name or relation" aria-label="Family member ${n} name"><select class="fd" aria-label="Family member ${n} day of birth"><option value="">${L.day}</option>${Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("")}</select><select class="fm" aria-label="Family member ${n} month of birth"><option value="">${L.monthPh}</option>${MONTHS.map((m,i)=>`<option value="${i+1}">${m}</option>`).join("")}</select><input class="fy" type="number" inputmode="numeric" min="1900" max="2100" placeholder="${L.yearPh}" aria-label="Family member ${n} year of birth"><button type="button" title="Remove" aria-label="Remove">✕</button>`;
   r.querySelector("button").onclick=()=>r.remove();
   $("famList").appendChild(r);
 });
@@ -801,9 +804,9 @@ function houseCheck(head){
   const shop = $("hType").value==="shop";
   const people = [personFrom(head.d,head.m,head.y, head.label || (shop?"Owner":"Head"))];
   if(!shop) [...$("famList").children].forEach((r,i)=>{
-    const [lab,dt]=r.querySelectorAll("input");
-    if(!dt.value) return;
-    const [yy,mm,dd]=dt.value.split("-").map(Number);
+    const lab=r.querySelector("input"), dd=+r.querySelector(".fd").value, mm=+r.querySelector(".fm").value, yy=+r.querySelector(".fy").value;
+    if(!dd||!mm||!yy||yy<1900||yy>2100) return;
+    if(new Date(yy,mm-1,dd).getMonth()!==mm-1) return;
     people.push(personFrom(dd,mm,yy, lab.value.trim() || ("Member "+(i+1))));
   });
   const base = $("hNum").value.trim().toUpperCase();
