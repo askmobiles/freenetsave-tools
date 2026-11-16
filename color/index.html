@@ -4,85 +4,133 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Colour Picker — HEX code, RGB and colour name finder (free)</title>
-<meta name="description" content="Free colour picker. Pick a colour and get its HEX code, RGB, HSL and closest colour name. Search 140 colour names, pick a colour from a photo, see lighter and darker shades and check text contrast.">
+<meta name="description" content="Free colour picker. Pick a colour and get its HEX code, RGB, HSL and closest colour name. Search 140 colour names, pick a colour from a photo, see shades, matching colour palettes and check text contrast.">
 <link rel="canonical" href="https://freenetsave.com/color-picker/">
 <link rel="stylesheet" href="../assets/style.css?v=5">
 <style>
-  .top{display:grid;grid-template-columns:180px 1fr;gap:16px;align-items:stretch}
-  .sw{position:relative;border-radius:16px;min-height:180px;border:1px solid var(--line);overflow:hidden;cursor:pointer}
+  .wrap{max-width:1180px}
+  svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+  .hero{display:flex;align-items:center;gap:20px;padding:26px 28px;border-radius:24px;background:linear-gradient(120deg,#eaf2ff,#d6e6ff 55%,#eef5ff);margin-bottom:18px}
+  .hero .ic{flex:none;width:76px;height:76px;border-radius:20px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;display:grid;place-items:center;box-shadow:0 8px 18px rgba(37,99,235,.3)}
+  .hero .ic svg{width:42px;height:42px}
+  .hero h1{margin:0;font-size:clamp(32px,5vw,52px);line-height:1;letter-spacing:-.035em}
+  .hero h1 b{color:#2563eb}
+  .hero .sub{margin:8px 0 0;font-size:18px;color:var(--ink)}
+  .ticks{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+  .ticks li{background:rgba(255,255,255,.75);border-radius:99px;padding:6px 14px 6px 32px;position:relative;font-weight:650;font-size:14.5px}
+  .ticks li:before{content:"✓";position:absolute;left:8px;top:6px;width:18px;height:18px;border-radius:50%;background:#16a34a;color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center}
+  .hero .art{flex:none;width:250px;margin-left:auto}
+  .card{padding:20px}
+  .g3{display:grid;grid-template-columns:1.05fr 1.4fr 1.1fr;gap:16px}
+  .pn{border:1px solid var(--line);border-radius:18px;padding:18px;background:#fff;box-shadow:0 1px 3px rgba(23,32,51,.05);min-width:0}
+  .pn h2{display:flex;align-items:center;gap:10px;font-size:19px;margin:0 0 12px}
+  .pn h2 svg{width:24px;height:24px;color:#2563eb;flex:none}
+  .sw{position:relative;border-radius:18px;min-height:230px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;padding:20px;margin:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
   .sw input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;padding:0}
-  .sw span{position:absolute;left:10px;bottom:10px;font-size:13px;font-weight:700;padding:4px 9px;border-radius:99px;background:rgba(255,255,255,.85);color:#172033;pointer-events:none}
-  .nm{font-size:24px;font-weight:800;margin:0;line-height:1.2}
-  .nm small{display:block;font-size:14px;font-weight:500;color:var(--muted);margin-top:2px}
-  .codes{display:grid;gap:8px;margin-top:12px}
-  .code{display:flex;align-items:center;gap:8px;background:var(--soft);border-radius:10px;padding:6px 6px 6px 12px}
-  .code b{width:52px;font-size:13px;color:var(--muted)}
-  .code input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-weight:700;font-size:17px;padding:6px 0;font-family:ui-monospace,Consolas,monospace}
-  .code input:focus{outline:2px solid var(--brand);border-radius:6px}
-  .code button,.mini{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink)}
-  .code button:hover,.mini:hover{border-color:var(--brand);color:var(--brand)}
-  h2{font-size:17px;margin:20px 0 8px}
-  .shades{display:grid;grid-template-columns:repeat(11,1fr);gap:4px}
-  .shades button{height:46px;border:0;border-radius:8px;cursor:pointer;position:relative}
-  .shades button.cur{outline:3px solid var(--ink);outline-offset:2px}
-  .shades + p{font-size:13px;color:var(--muted);margin:6px 0 0}
-  .contrast{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .contrast div{border-radius:12px;padding:14px;border:1px solid var(--line)}
-  .contrast b{display:block;font-size:20px}
-  .contrast small{font-size:13px}
-  .names{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;max-height:360px;overflow:auto;margin-top:10px;padding:2px}
-  .names button{display:flex;align-items:center;gap:8px;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:6px;cursor:pointer;font:inherit;font-size:13px;color:var(--ink)}
+  .sw b{font-size:24px;line-height:1.15;pointer-events:none}
+  .sw span{font-size:18px;font-weight:650;pointer-events:none;font-family:ui-monospace,Consolas,monospace}
+  .sw em{position:absolute;right:16px;top:14px;font-style:normal;font-size:13px;font-weight:700;padding:4px 10px;border-radius:99px;background:rgba(255,255,255,.85);color:#172033;pointer-events:none}
+  .sw small{font-size:13px;font-weight:500;opacity:.9;pointer-events:none}
+  .codes{display:grid;gap:9px}
+  .code{display:flex;align-items:center;background:var(--soft);border-radius:12px;padding:5px 6px 5px 0}
+  .code b{width:66px;text-align:center;font-size:14px;color:#1e3a8a}
+  .code input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-weight:700;font-size:18px;padding:7px 4px;border-radius:6px}
+  .code input:focus{outline:2px solid var(--brand)}
+  .code button{flex:none;width:38px;height:38px;border:1px solid var(--line);background:#fff;border-radius:10px;cursor:pointer;color:#2563eb;display:grid;place-items:center;padding:0}
+  .code button svg{width:20px;height:20px}
+  .code button:hover{border-color:var(--brand)}
+  .ct{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .ct div{border-radius:14px;padding:16px 8px 12px;text-align:center;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+  .ct b{display:block;font-size:34px;line-height:1}
+  .ct span{display:block;font-size:15px;font-weight:650;margin:4px 0 10px}
+  .ct i{display:inline-block;font-style:normal;font-size:12.5px;font-weight:800;border-radius:99px;padding:3px 9px;margin:2px}
+  .ct i.y{background:#dcfce7;color:#166534}.ct i.n{background:#fee2e2;color:#991b1b}
+  .ratio{margin:12px 0 0;text-align:center;font-size:15px}
+  .acts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}
+  .acts button,.acts label{display:flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px 10px;font:inherit;font-size:16px;font-weight:650;cursor:pointer;color:var(--ink);margin:0;box-shadow:0 1px 3px rgba(23,32,51,.06)}
+  .acts svg{width:24px;height:24px;color:#2563eb;flex:none}
+  .acts button:hover,.acts label:hover{border-color:var(--brand)}
+  .acts #save svg{color:#9333ea}
+  #pic{max-width:100%;border-radius:12px;margin:0 0 16px;cursor:crosshair;display:none}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .strip{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+  .strip button,.pal button{height:50px;border:0;border-radius:10px;cursor:pointer;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+  .strip button.cur{outline:3px solid var(--ink);outline-offset:2px}
+  .ld{display:flex;justify-content:space-between;font-size:13.5px;color:var(--muted);margin-top:8px}
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+  .tabs button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 4px;font:inherit;font-size:14px;font-weight:600;cursor:pointer;color:var(--ink)}
+  .tabs button[aria-pressed=true]{background:#2563eb;border-color:#2563eb;color:#fff}
+  .pal{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+  .pal div{text-align:center;font-size:11.5px;color:var(--muted);font-family:ui-monospace,Consolas,monospace;min-width:0}
+  .pal button{width:100%;display:block;margin-bottom:4px}
+  .pop{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+  .pop button{border:0;background:none;padding:0;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
+  .pop i{display:block;height:40px;border-radius:10px;margin-bottom:5px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .names{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;max-height:230px;overflow:auto;margin-top:10px;padding:2px}
+  .names button{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px;cursor:pointer;font:inherit;font-size:13px;color:var(--ink)}
   .names button:hover{border-color:var(--brand)}
   .names i{flex:none;width:26px;height:26px;border-radius:6px;border:1px solid rgba(0,0,0,.12)}
-  .names span{line-height:1.2}
   .names span small{display:block;color:var(--muted);font-family:ui-monospace,Consolas,monospace}
-  .tools{display:flex;gap:8px;flex-wrap:wrap}
-  #pic{max-width:100%;border-radius:12px;margin-top:10px;cursor:crosshair;display:none}
-  @media (max-width:560px){ .top{grid-template-columns:1fr} .sw{min-height:120px} .shades{grid-template-columns:repeat(11,1fr)} .shades button{height:36px} }
+  .savedc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+  .savedc:empty{display:none}
+  .savedc button{display:flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:99px;padding:4px 10px 4px 4px;font:inherit;font-size:13px;cursor:pointer;font-family:ui-monospace,Consolas,monospace}
+  .savedc i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .hero h1{color:#172033}
+  .sw small{color:inherit;display:block;margin-top:4px}
+  @media (max-width:1000px){.pop{grid-template-columns:repeat(5,1fr);row-gap:12px}.tabs{grid-template-columns:1fr 1fr}.pal div{font-size:10.5px}.g3{grid-template-columns:1fr 1.3fr}.g3 .pn:last-child{grid-column:1/-1}.hero .art{display:none}.acts{grid-template-columns:1fr 1fr}}
+  @media (max-width:700px){.g2{grid-template-columns:1fr}.pop{grid-template-columns:repeat(5,1fr)}}
+  @media (max-width:560px){.g3{grid-template-columns:1fr}.sw{min-height:150px}.hero{padding:18px}.hero .ic{width:54px;height:54px;border-radius:14px}.hero .ic svg{width:30px;height:30px}.card{padding:12px}.pn{padding:14px}.strip button,.pal button{height:40px}.acts button,.acts label{font-size:14.5px;padding:11px 6px;gap:6px}.pal{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="hide-embed">
-    <h1>Colour Picker</h1>
-    <p class="sub">Pick a colour to get its HEX code, RGB and name — or find a colour by name.</p>
+  <div class="hide-embed hero">
+    <span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l4 4 M12.5 7.5l4 4L9 19H5v-4z M15 5l1.5-1.5a2.12 2.12 0 0 1 3 3L18 8"/></svg></span>
+    <div>
+      <h1>Colour <b>Picker</b></h1>
+      <p class="sub">Pick, convert and explore colours in seconds.</p>
+      <ul class="ticks"><li>HEX, RGB, HSL and CMYK</li><li>Contrast checker</li><li>Colour palettes</li><li>Pick from screen or photo</li></ul>
+    </div>
+    <svg class="art" viewBox="0 0 250 150" aria-hidden="true" style="stroke:none"><g transform="translate(95 140)"><path d="M0 0L-88-48A100 100 0 0 1-62-79z" fill="#facc15"/><path d="M0 0L-62-79A100 100 0 0 1-26-97z" fill="#fb923c"/><path d="M0 0L-26-97A100 100 0 0 1 14-99z" fill="#f43f5e"/><path d="M0 0L14-99A100 100 0 0 1 52-85z" fill="#c026d3"/><path d="M0 0L52-85A100 100 0 0 1 82-57z" fill="#7c3aed"/><path d="M0 0L82-57A100 100 0 0 1 98-20z" fill="#38bdf8"/><circle r="9" fill="#fff"/><circle r="4" fill="#1e3a8a"/></g><g transform="translate(205 30) rotate(40)"><rect x="-9" y="-28" width="18" height="24" rx="8" fill="#172033"/><rect x="-12" y="-6" width="24" height="7" rx="3" fill="#172033"/><path d="M-7 1h14v34l-7 12-7-12z" fill="#bfdbfe" stroke="#fff" stroke-width="2"/><path d="M-7 18h14v17l-7 12-7-12z" fill="#2563eb"/></g></svg>
   </div>
   <div class="card">
-    <div class="top">
-      <label class="sw" id="sw" title="Tap to pick a colour"><input type="color" id="pick" aria-label="Pick a colour"><span>Tap to pick</span></label>
-      <div>
-        <p class="nm" id="nm">–</p>
+    <div class="g3">
+      <label class="sw" id="sw" title="Tap to pick a colour"><input type="color" id="pick" aria-label="Pick a colour"><em>Tap to pick</em><b id="nm">–</b><span id="nh"></span><small id="ns"></small></label>
+      <div class="pn"><h2>Colour values</h2>
         <div class="codes">
-          <div class="code"><b>HEX</b><input id="hex" spellcheck="false" aria-label="HEX code"><button type="button" data-c="hex">Copy</button></div>
-          <div class="code"><b>RGB</b><input id="rgb" spellcheck="false" aria-label="RGB"><button type="button" data-c="rgb">Copy</button></div>
-          <div class="code"><b>HSL</b><input id="hsl" spellcheck="false" aria-label="HSL"><button type="button" data-c="hsl">Copy</button></div>
-          <div class="code"><b>CMYK</b><input id="cmyk" readonly aria-label="CMYK"><button type="button" data-c="cmyk">Copy</button></div>
+          <div class="code"><b>HEX</b><input id="hex" spellcheck="false" aria-label="HEX code"><button type="button" data-c="hex" aria-label="Copy HEX"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg></button></div>
+          <div class="code"><b>RGB</b><input id="rgb" spellcheck="false" aria-label="RGB"><button type="button" data-c="rgb" aria-label="Copy RGB"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg></button></div>
+          <div class="code"><b>HSL</b><input id="hsl" spellcheck="false" aria-label="HSL"><button type="button" data-c="hsl" aria-label="Copy HSL"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg></button></div>
+          <div class="code"><b>CMYK</b><input id="cmyk" readonly aria-label="CMYK"><button type="button" data-c="cmyk" aria-label="Copy CMYK"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg></button></div>
         </div>
+        <p class="err" id="err"></p>
+      </div>
+      <div class="pn"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z M9 12l2 2 4-4"/></svg>Contrast checker</h2>
+        <div class="ct"><div id="cW"><b>Aa</b><span>White text</span><i id="wAA"></i><i id="wAAA"></i></div><div id="cB"><b>Aa</b><span>Dark text</span><i id="bAA"></i><i id="bAAA"></i></div></div>
+        <p class="ratio" id="ratio"></p>
       </div>
     </div>
-    <p class="err" id="err"></p>
-    <div class="tools">
-      <button type="button" class="mini" id="eye" hidden>🎯 Pick from screen</button>
-      <label class="mini" for="file" style="margin:0;font-weight:600">🖼️ Pick from a picture<input type="file" id="file" accept="image/*" hidden></label>
-      <button type="button" class="mini" id="rand">🎲 Random colour</button>
+    <div class="acts">
+      <button type="button" id="eye" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 6l4 4 M12.5 7.5l4 4L9 19H5v-4z M15 5l1.5-1.5a2.12 2.12 0 0 1 3 3L18 8"/></svg>Pick from screen</button>
+      <label for="file"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-8 8"/></svg>Pick from a photo<input type="file" id="file" accept="image/*" hidden></label>
+      <button type="button" id="rand"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h3c5 0 7 10 12 10h3 M3 17h3c2 0 3-1.5 4-3 M14 10c1-1.5 2-3 4-3h3 M18 4l3 3-3 3 M18 14l3 3-3 3"/></svg>Random colour</button>
+      <button type="button" id="save"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg>Save colour</button>
     </div>
     <canvas id="pic" aria-label="Tap the picture to pick a colour"></canvas>
-
-    <h2>Lighter and darker</h2>
-    <div class="shades" id="shades"></div>
-    <p>Tap a shade to use it.</p>
-
-    <h2>Text on this colour</h2>
-    <div class="contrast">
-      <div id="cW"><b>White text</b><small id="cWt"></small></div>
-      <div id="cB"><b>Black text</b><small id="cBt"></small></div>
+    <div class="savedc" id="saved" aria-label="Colours saved for this visit"></div>
+    <div class="g2">
+      <div class="pn"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 4.5-9 4.5-9-4.5z M3 13l9 4.5 9-4.5"/></svg>Shades and tints</h2><div class="strip" id="shades"></div><div class="ld"><span>Lighter</span><span>Tap a shade to use it</span><span>Darker</span></div></div>
+      <div class="pn"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 2-2s-.5-1.5-.5-2.5 1-1.5 2-1.5H18a3 3 0 0 0 3-3c0-5-4-9-9-9z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/></svg>Colour palettes</h2>
+        <div class="tabs" id="tabs"><button type="button" data-p="comp" aria-pressed="true">Complementary</button><button type="button" data-p="ana" aria-pressed="false">Analogous</button><button type="button" data-p="tri" aria-pressed="false">Triadic</button><button type="button" data-p="tet" aria-pressed="false">Tetradic</button></div>
+        <div class="pal" id="pal"></div></div>
     </div>
-
-    <h2>Find a colour by name</h2>
-    <input id="q" type="search" placeholder="Type a name, e.g. navy, coral, mint" aria-label="Search colour names">
-    <div class="names" id="names"></div>
+    <div class="g2" style="margin-bottom:0">
+      <div class="pn"><h2><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Find a colour by name</h2>
+        <input id="q" type="search" placeholder="Type a colour name, like blue, coral, mint" aria-label="Search colour names"><div class="names" id="names"></div></div>
+      <div class="pn"><h2>Popular colours</h2><div class="pop" id="pop"></div></div>
+    </div>
   </div>
-  <p class="note">🔒 Works in your browser. Pictures you open are never uploaded.<br>
+  <p class="note">🔒 Works in your browser. Photos you open are never uploaded, and saved colours are only kept until you close the page.<br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
 </div>
 <div class="toast" id="toast"></div>
@@ -108,27 +156,37 @@ function lum(r,g,b){ const c=[r,g,b].map(v=>{v/=255; return v<=0.03928?v/12.92:M
 const ratio = (a,b) => (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
 function grade(x){ return x>=7 ? "✅ Easy to read (AAA)" : x>=4.5 ? "✅ Good for normal text (AA)" : x>=3 ? "⚠️ OK for big text only" : "❌ Hard to read"; }
 
+
 // ---------- show a colour ----------
-let HEX = "";
+let HEX="", PAL="comp";
+const hx=(h,s,l)=>rgb2hex(...hsl2rgb(((h%360)+360)%360,s,l));
+const sw=(h,cls)=>`<button type="button" style="background:#${h}" data-h="${h}" title="#${h}" aria-label="Use #${h}"${cls?' class="'+cls+'"':''}></button>`;
+function palette(h,s,l){ const t=x=>Math.min(92,x+22);
+  if(PAL==="comp") return [hx(h,s,l),hx(h+180,s,l),hx(h,s,t(l)),hx(h,s,t(t(l))),hx(h+180,s,t(l)),hx(h+180,s,t(t(l)))];
+  if(PAL==="ana") return [-60,-30,0,30,60].map(d=>hx(h+d,s,l)).concat(hx(h,s,t(l)));
+  if(PAL==="tri") return [0,120,240].map(d=>hx(h+d,s,l)).concat([0,120,240].map(d=>hx(h+d,s,t(l))));
+  return [0,90,180,270].map(d=>hx(h+d,s,l)).concat([hx(h,s,t(l)),hx(h+180,s,t(l))]); }
+function badge(id,ok,t){ const e=$(id); e.className=ok?"y":"n"; e.textContent=t+(ok?" ✓":" ✗"); }
 function show(hex, from){
   hex = hex.replace(/^#/,"").toUpperCase(); HEX = hex;
   const [r,g,b] = hex2rgb(hex), [h,s,l] = rgb2hsl(r,g,b);
-  $("sw").style.background = "#"+hex; $("pick").value = "#"+hex.toLowerCase();
+  const L0 = lum(r,g,b), w = ratio(1,L0), bk = ratio(lum(23,32,51),L0), on = w>=bk ? "#fff" : "#172033";
+  $("sw").style.background = "#"+hex; $("sw").style.color = on; $("pick").value = "#"+hex.toLowerCase();
   if(from!=="hex") $("hex").value = "#"+hex;
   if(from!=="rgb") $("rgb").value = `rgb(${r}, ${g}, ${b})`;
   if(from!=="hsl") $("hsl").value = `hsl(${h}, ${s}%, ${l}%)`;
   const k = 1-Math.max(r,g,b)/255, cm = x => k===1 ? 0 : Math.round((1-x/255-k)/(1-k)*100);
   $("cmyk").value = `${cm(r)}%, ${cm(g)}%, ${cm(b)}%, ${Math.round(k*100)}%`;
   const [nm, d] = closest(r,g,b);
-  $("nm").innerHTML = d < 0.5 ? `${nm[0]}<small>Exact web colour name: <b>${nm[1]}</b></small>`
-    : `${d<6?"Close to":"Nearest name:"} ${nm[0]}<small>Nearest web colour: ${nm[1]} (#${nm[2]})</small>`;
-  // shades: same hue, lightness 95% -> 10%
-  const steps=[95,88,78,68,58,l,40,32,24,16,9];
-  $("shades").innerHTML = steps.map((L,i)=>{ const hx = i===5 ? hex : rgb2hex(...hsl2rgb(h,s,L));
-    return `<button type="button" style="background:#${hx}" data-h="${hx}" title="#${hx}" aria-label="#${hx}" class="${i===5?"cur":""}"></button>`; }).join("");
-  const L0 = lum(r,g,b), w = ratio(1,L0), bk = ratio(0,L0);
-  $("cW").style.cssText = `background:#${hex};color:#fff`; $("cB").style.cssText = `background:#${hex};color:#000`;
-  $("cWt").textContent = `Contrast ${w.toFixed(1)} : 1 — ${grade(w)}`; $("cBt").textContent = `Contrast ${bk.toFixed(1)} : 1 — ${grade(bk)}`;
+  $("nm").textContent = nm[0]; $("nh").textContent = "#"+hex;
+  $("ns").textContent = d<0.5 ? "Exact web colour name: "+nm[1] : (d<6?"Close to ":"Nearest web colour: ")+nm[1]+" (#"+nm[2]+")";
+  const steps=[94,86,76,66,l,44,36,27,18,10]; let cur=0, bd=999; steps.forEach((x,i)=>{ if(x!==l && Math.abs(x-l)<bd){bd=Math.abs(x-l);} });
+  const ord=[94,86,76,66,56,46,36,27,18,10]; let ci=0, md=999; ord.forEach((x,i)=>{ if(Math.abs(x-l)<md){md=Math.abs(x-l);ci=i;} });
+  $("shades").innerHTML = ord.map((x,i)=> i===ci ? sw(hex,"cur") : sw(hx(h,s,x))).join("");
+  $("pal").innerHTML = palette(h,s,l).map(p=>`<div>${sw(p)}#${p}</div>`).join("");
+  $("cW").style.cssText = `background:#${hex};color:#fff`; $("cB").style.cssText = `background:#${hex};color:#172033`;
+  badge("wAA",w>=4.5,"AA"); badge("wAAA",w>=7,"AAA"); badge("bAA",bk>=4.5,"AA"); badge("bAAA",bk>=7,"AAA");
+  $("ratio").innerHTML = `Contrast ratio: white <b>${w.toFixed(2)} : 1</b> · dark <b>${bk.toFixed(2)} : 1</b>`;
   $("err").textContent = "";
 }
 
@@ -142,20 +200,28 @@ $("rgb").addEventListener("input", e=>{ const m=e.target.value.match(/\d+/g);
 $("hsl").addEventListener("input", e=>{ const m=e.target.value.match(/\d+(\.\d+)?/g);
   if(m && m.length>=3 && +m[0]<=360 && +m[1]<=100 && +m[2]<=100) show(rgb2hex(...hsl2rgb(+m[0],+m[1],+m[2])),"hsl"); else $("err").textContent="HSL is hue 0–360, then two % from 0 to 100."; });
 document.querySelectorAll(".code button").forEach(b=>b.addEventListener("click",()=>copyText($(b.dataset.c).value)));
-$("shades").addEventListener("click", e=>{ const b=e.target.closest("button"); if(b){ show(b.dataset.h); } });
+["shades","pal","pop","saved"].forEach(id=>$(id).addEventListener("click", e=>{ const b=e.target.closest("button"); if(b) show(b.dataset.h); }));
+$("tabs").addEventListener("click", e=>{ const b=e.target.closest("button"); if(!b) return; PAL=b.dataset.p;
+  [...$("tabs").children].forEach(x=>x.setAttribute("aria-pressed",String(x===b))); show(HEX); });
 $("rand").addEventListener("click", ()=> show(rgb2hex(Math.random()*255,Math.random()*255,Math.random()*255)));
+// Saved colours live in this page only. Nothing is stored.
+const SAVED=[];
+$("save").addEventListener("click", ()=>{ if(SAVED.indexOf(HEX)<0){ SAVED.unshift(HEX); if(SAVED.length>12) SAVED.pop(); }
+  $("saved").innerHTML = SAVED.map(h=>`<button type="button" data-h="${h}"><i style="background:#${h}"></i>#${h}</button>`).join(""); toast("Saved for this visit"); });
+$("pop").innerHTML = [["Red","EF4444"],["Orange","F97316"],["Yellow","FACC15"],["Green","22C55E"],["Blue","2563EB"],["Purple","A855F7"],["Pink","F9A8D4"],["Black","111111"],["White","FFFFFF"],["Grey","9CA3AF"]]
+  .map(p=>`<button type="button" data-h="${p[1]}"><i style="background:#${p[1]}"></i>${p[0]}</button>`).join("");
 
 // Pick from screen (Chrome & Edge on computers)
 if(window.EyeDropper){ $("eye").hidden=false;
   $("eye").addEventListener("click", ()=> new EyeDropper().open().then(r=>show(r.sRGBHex)).catch(()=>{})); }
 
-// Pick from a picture — the picture stays on this device
+// Pick from a photo — the photo stays on this device
 const cv=$("pic"), cx=cv.getContext("2d",{willReadFrequently:true});
 $("file").addEventListener("change", e=>{ const f=e.target.files[0]; if(!f) return;
   const img=new Image(); img.onload=()=>{ const sc=Math.min(1, 1400/Math.max(img.width,img.height));
     cv.width=img.width*sc; cv.height=img.height*sc; cx.drawImage(img,0,0,cv.width,cv.height); cv.style.display="block"; URL.revokeObjectURL(img.src);
-    toast("Tap the picture to pick a colour"); };
-  img.onerror=()=>{ $("err").textContent="That picture could not be opened. Try a JPG or PNG."; };
+    toast("Tap the photo to pick a colour"); };
+  img.onerror=()=>{ $("err").textContent="That photo could not be opened. Try a JPG or PNG."; };
   img.src=URL.createObjectURL(f); e.target.value=""; });
 cv.addEventListener("click", e=>{ const r=cv.getBoundingClientRect();
   const x=Math.floor((e.clientX-r.left)*cv.width/r.width), y=Math.floor((e.clientY-r.top)*cv.height/r.height);
