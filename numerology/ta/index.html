@@ -81,6 +81,9 @@
   .inlang span{font-weight:700;margin-right:2px}
   .inlang a{text-decoration:none;font:inherit;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
   .inlang a:hover,.inlang a:focus-visible,.inlang a.on{border-color:var(--brand);color:var(--brand)}
+  .disclaimer{background:#fffaf2;border-color:#ecd9b5}
+  .disclaimer h2{font-size:18px}
+  .disclaimer p{font-size:13.5px;margin:0 0 8px;color:var(--muted)}
   .hint{font-size:13px;color:var(--muted);margin:-4px 0 12px}
   @media (max-width:700px){ .tabs{grid-template-columns:repeat(3,1fr)} }
   @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
@@ -148,6 +151,7 @@
       <input id="phone" inputmode="tel" placeholder="முழு தொலைபேசி எண்">
     </div>
     <button class="btn" type="submit" data-t="calculate"></button>
+      <p class="hint" style="margin:10px 0 0;text-align:center">பொழுதுபோக்கு மற்றும் கலாச்சார ஆர்வத்திற்காக மட்டுமே. அறிவியல் ரீதியாக நிரூபிக்கப்படவில்லை. நீங்கள் தட்டச்சு செய்வது சேமிக்கப்படுவதோ அனுப்பப்படுவதோ இல்லை.</p>
     <div class="err" id="err"></div>
   </form>
 
@@ -170,6 +174,12 @@
         <div class="tot"><span data-t="year"></span><b id="tY">–</b><span id="tYc"></span></div>
       </div>
       <p class="calc" style="margin:12px 0 0;text-align:center" id="weekday"></p>
+    </div>
+
+    <div class="card" data-tab="my" id="todayCard">
+      <h2>இன்று உங்களுக்கு</h2>
+      <div class="verdict" id="todayVerdict"></div>
+      <div class="calc" style="margin-top:8px" id="todayNext"></div>
     </div>
 
     <div class="card" data-tab="my">
@@ -271,6 +281,12 @@
     </div>
   </section>
 
+  <div class="card disclaimer">
+    <h2>⚠️ பொறுப்புத் துறப்பு</h2>
+    <p>இந்தக் கருவி பொழுதுபோக்கு மற்றும் கலாச்சார ஆர்வத்திற்காக மட்டுமே. இது பாரம்பரிய எண் கணித நம்பிக்கைகளை, எங்கள் சொந்த வார்த்தைகளில் சுருக்கமாக, அடிப்படையாகக் கொண்டது. எண் கணிதம் அறிவியல் ரீதியாக நிரூபிக்கப்படவில்லை; முடிவுகள் எதிர்காலத்தைக் கணிக்கவோ உறுதியளிக்கவோ இல்லை.</p>
+    <p>பெயர் மாற்றம், திருமணம், தொழில், பணம், உடல்நலம் போன்ற முக்கிய முடிவுகளை இதை மட்டும் வைத்து எடுக்க வேண்டாம். தேவைப்பட்டால் தகுந்த நிபுணர்களை (மருத்துவர், வழக்கறிஞர், நிதி ஆலோசகர்) அணுகவும். ஒவ்வொரு எண் கணித நிபுணரும் வெவ்வேறு விதிகளைப் பயன்படுத்துவதால் முடிவுகள் மற்ற இடங்களிலிருந்து மாறுபடலாம். நீங்கள் உள்ளிடும் எதுவும் சேமிக்கப்படுவதோ அனுப்பப்படுவதோ இல்லை; எல்லாக் கணக்கீடுகளும் உங்கள் உலாவியிலேயே நடக்கின்றன.</p>
+  </div>
+
   <p class="note"><span data-t="disclaimer"></span><br><span data-t="privacy"></span><br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · <span data-t="freeTools"></span></p>
 </div>
@@ -368,35 +384,30 @@ const COMBO = {
 };
 
 // Lucky and harmful full totals (traditional Tamil numerology)
-const COMPOUND_GOOD = [10,19,21,23,24,27,32,33,37,41,42,45,46,68];
-const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47];
+const COMPOUND_GOOD = [10,14,15,19,21,23,24,27,32,33,37,41,42,45,46,50,51,60,68,69,78,96];
+const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47,87];
+const HARM_TOTALS = [16,17,26,28,29,31,35,38,44,47,87];   // always shown as weak
 const GOOD_FLOOR = 55;            // a lucky total never shows red, unless a birth-date rule says it does not suit
 let CUR_DAY = 0, CUR_DEST = 0;    // set on each calculation, used by the birth-date rules
 // Rules that depend on the birth date. adj below 0 means "tradition advises against this total".
-function dateRule(total){
+function dateRule(total, n){
   const d=CUR_DAY, nine=[9,18,27].includes(d), six=[6,15,24].includes(d)||CUR_DEST===6;
+  const bn = d ? reduceSteps(d).at(-1) : 0;
   if(total===46 && nine) return {adj:-25, en:"46 உயர்ந்த அந்தஸ்தைக் குறிக்கும்; ஆனால் பிறவி எண் 9 உள்ளவர்களுக்கு இந்தக் கூட்டு எண் ஏற்றதல்ல என மரபு கூறுகிறது."};
   if(total===37 && nine) return {adj:-25, en:"37 சுகபோகத்தைக் குறிக்கும்; ஆனால் 9, 18, 27 தேதிகளில் பிறந்தவர்களுக்கு இந்தக் கூட்டு எண் ஏற்றதல்ல என மரபு கூறுகிறது."};
   if(total===45 && (d===9||d===27)) return {adj:10, en:"9, 27 தேதிகளில் பிறந்தவர்களுக்கு 45 நன்மை தரும் என மரபு கூறுகிறது."};
   if((total===45||total===44) && d===18) return {adj:-25, en:"18-ம் தேதி பிறந்தவர்களுக்கு இந்தக் கூட்டு எண் ஏற்றதல்ல என மரபு கூறுகிறது."};
   if(total===42 && six) return {adj:10, en:"6, 15, 24 தேதிகளில் பிறந்தவர்களுக்கும் விதி எண் 6 உள்ளவர்களுக்கும் 42 சிறந்தது என மரபு கூறுகிறது."};
-  if(total===33 && six) return {adj:-10, en:"6, 15, 24 தேதிகளில் பிறந்தவர்களுக்கும் விதி எண் 6 உள்ளவர்களுக்கும் இந்தக் கூட்டு எண்ணை விட 42 சிறந்தது என மரபு கூறுகிறது."};
+  if(total===33 && six) return {adj:-25, en:"6, 15, 24 தேதிகளில் பிறந்தவர்களுக்கும் விதி எண் 6 உள்ளவர்களுக்கும் இந்தக் கூட்டு எண்ணை விட 42 சிறந்தது என மரபு கூறுகிறது."};
+  if(n===1 && d && ![1,4,8].includes(bn) && ![1,4,8].includes(CUR_DEST)) return {adj:-10, en:"1-ல் முடியும் பெயர் பிறவி / விதி எண் 1, 4, 8 உள்ளவர்களுக்கே முழு பலன் தரும்; மற்றவர்களுக்கு முன்னேற்றத்துடன் தேவையற்ற சிக்கல்களும் வரலாம்."};
+  if(n===1 && d) return {adj:5, en:"உங்கள் எண்களுக்கு 1-ல் முடியும் பெயர் முழு பலன் தரும்."};
   return null;
 }
+const notSuit = (total, n) => (dateRule(total, n)?.adj <= -25);   // "does not suit this person"
 const HARM = "மரபுப்படி இது தீமை தரும் பெயர் எண். அதிர்ஷ்டமான கூட்டு எண் வரும்படி பெயரை மாற்றுவது நல்லது.";
-const TOTAL_NOTES = {
-  23:"தெளிவான திட்டத்துடன் செயல்பட்டால் பெரிய வெற்றி. இலக்கு இல்லாவிட்டால் வசதியான வாழ்க்கை மட்டும்.",
-  32:"கூர்மையான அறிவு, திடீர் புதிய யோசனைகள், மக்கள் ஆதரவு; ஆனால் பண நிலை ஏறி இறங்கலாம்.",
-  41:"மிகவும் அதிர்ஷ்டமானது: மக்கள் ஆதரவும் செல்வமும். பொறுமையாக நடந்தால் இன்னும் சிறப்பு.",
-  46:"தலைவர்களிடமும் உயர் பதவியில் இருப்பவர்களிடமும் அடிக்கடி காணப்படும் எண். 1-ன் நல்ல பலன்களைத் தரும்.",
-  68:"செல்வத்திற்கு மிகவும் அதிர்ஷ்டமானது; ஆனால் எப்போதும் இன்னும் வேண்டும் என்ற அமைதியற்ற மனதைத் தரலாம்.",
-  37:"மிகுந்த சுகபோகத்தைத் தரும்.",
-  42:"நல்ல கூட்டு எண்; 6 எண்காரர்களுக்கு மிகவும் சிறப்பு.",
-  45:"பொதுவாக நல்ல கூட்டு எண். எவ்வளவு நல்லது என்பது பிறந்த தேதியைப் பொறுத்தது.",
-  12:"தியாகத்தையும் போராட்டத்தையும் குறிக்கும்.",
-  29:"கடின உழைப்பால் மட்டுமே முன்னேற்றம். " + HARM,
-  16:HARM, 17:HARM, 26:HARM, 31:HARM, 35:HARM, 38:HARM, 44:HARM, 47:HARM
-};
+const TOTAL_NOTES = {"10": "புகழும் மரியாதையும், தன்னம்பிக்கை; அதிர்ஷ்டம் ஏறி இறங்கும். நேர்மை அவசியம்; பணத் தட்டுப்பாடு இருக்காது.", "19": "உதய சூரியன் போல் வாழ்க்கை உயர்ந்துகொண்டே போகும் — பதவி, செல்வம், நல்ல வாழ்க்கைத் துணை.", "28": "தொடக்கத்தில் முன்னேற்றம், பின்னர் இழப்பு; போட்டியும் சிரமமும்; கொடுத்த கடன் திரும்பாது — துரதிர்ஷ்ட எண்.", "14": "வியாபாரத்திற்கு மிகவும் ஏற்றது — எப்போதும் மக்களும் பொருட்களும் சூழ்ந்திருக்கும். பிறரை நம்புவதிலும், வேகமான வாகனங்களிலும் கவனம்.", "15": "எடுத்த காரியம் வெற்றி, எப்போதும் லாபம்; பேச்சு, கலை சார்ந்த தொழில்களில் சிறப்பு. சுயநலம் வளராமல் பார்த்துக்கொள்ளவும்.", "24": "அரசாங்க ஆதரவு; தகுதிக்கு மேல் உயர்ந்த பதவி. சீருடை அணியும் பணிகளில் (போலீஸ், ராணுவம்) வேகமான முன்னேற்றம்.", "33": "குபேரனின் எண் — அருளும் செல்வமும் சேர்ந்து வளரும்; ஐஸ்வர்யம் குறையாது.", "50": "மிகுந்த புத்திசாலித்தனம், ஆழ்ந்த ஆராய்ச்சி; கல்வியில் சிறப்பு, சிலர் புகழ்பெற்ற ஆசிரியர்கள்.", "51": "6 எண்களில் மிக சக்தி வாய்ந்தது — திடீர் முன்னேற்றம், எதிர்பாராத பெரிய பதவி. பிறர் மனதைப் புண்படுத்தாமல் இருக்கவும்.", "60": "அமைதி, செல்வம், கலை ரசனை, ஆழ்ந்த அறிவு, பேச்சுத் திறன்; மகிழ்ச்சியான குடும்ப வாழ்க்கை.", "69": "எத்தொழிலிலும் மன்னனாக விளங்குவார்; நிகரற்ற செல்வம், கம்பீரம், சுகமான வாழ்க்கை.", "78": "6 எண்களில் சிறந்தது — கவித்திறன், கவரும் பேச்சு, சமூக சேவை; பெரும் தொகை எளிதில் வரும், ஆனால் கவனம் தேவை.", "87": "தவறான வழிகளில் பணம் சேர்க்கும் எண் என மரபு கூறுகிறது — தவிர்க்கவும்.", "96": "செல்வமும் கல்வியும் சேர்ந்து அமையும்; நினைத்த காரியம் நடக்கும்.", "23": "எல்லா எண்களிலும் மிக அதிர்ஷ்டமானது — திட்டங்கள் வெற்றி, உயர் அதிகாரிகள் ஆதரவு. பெரிய இலக்கு இல்லாவிட்டால் சாதாரண சுக வாழ்க்கை மட்டும்.", "32": "அறிவின் பீடம் — புதிய யோசனைகள், மக்கள் ஆதரவு; சொந்த மனம் சொல்வதைச் செய்தால் வெற்றி, பிறர் யோசனைப்படி நடந்தால் தோல்வி. ஏற்ற இறக்கம் உண்டு.", "41": "மக்கள் கவர்ச்சி, சொல்லுக்கு மதிப்பு, வெற்றி வீரர், உலகப் புகழ். வெற்றி மயக்கத்தில் சக்திக்கு மீறிய காரியங்களில் இறங்காமல் இருக்கவும்.", "46": "கிரீடம் அணிந்த தலையின் கீழ் உள்ள நெற்றி — அறிவை சரியாகப் பயன்படுத்தினால் எத்தொழிலிலும் உச்சம்; வயது ஏற ஏற செல்வமும் அந்தஸ்தும் கூடும். நேர்மை அவசியம்.", "68": "மிகவும் அதிர்ஷ்டம் — செல்வம் சேரும்; ஆனால் மன திருப்தி குறைவு, எப்போதும் அதிகம் தேடும் மனம்.", "37": "மிக அதிர்ஷ்டமானது — சாதாரண நிலையிலிருந்து உயர்ந்த நிலைக்கு; கவர்ச்சி, நண்பர்கள், கூட்டாளிகள் மூலம் உயர்வு. உயர்ந்த பின் திருப்தியாக இருக்கவும்; பேராசை பலனைக் குறைக்கும்.", "45": "பொதுவாக நல்ல எண்; பிறந்த தேதியைப் பொறுத்தது.", "42": "ஏழையாக இருந்தாலும் பெரிய அதிகாரப் பதவி; பொருள் சேர்ப்பதில் திறமை, சிக்கனம்; மன பலம். 6 எண்காரர்களுக்கு சிறப்பு.", "12": "தியாகமும் போராட்டமும் குறிக்கும் எண்.", "29": "கஷ்டப்பட்டு முன்னேற வேண்டிய எண்."};
+[16,17,26,31,35,38,44,47].forEach(t=>{ TOTAL_NOTES[t]=HARM; }); TOTAL_NOTES[29] += " " + HARM;
+const DAY_TRAITS = {"1": "பிறர் கருத்தைக் கேட்கும் பொறுமை குறைவு; மனதில் உள்ளதை நேராகச் சொல்வார்; மிகுந்த தன்னம்பிக்கை, முன்னேற்றத்தில் தீவிர ஆர்வம்.", "10": "நிதானம், சாதுவான நடத்தை; மனதில் உள்ளதை வெளியிடாமல் வைத்துக்கொள்வார்; புகழ், அன்பு நிறைந்த வாழ்க்கை; பழக இனிமையானவர்.", "19": "மிகுந்த மன உறுதி — பார்த்தால் பசு, பாய்ந்தால் புலி; எளிதில் கருத்தை மாற்ற மாட்டார்; புலமை உண்டு.", "28": "பார்வைக்கு அழகானவர், சிரித்துப் பேசுவார், மென்மையான குணம்; யாரையும் எளிதில் நம்பிவிடுவதால் ஏமாறவும் கூடும்."};
 const NAME_DIGIT_NOTES = {
   2:"2-ல் முடியும் பெயர் சிக்கல்களைத் தரலாம்.",
   4:"4-ல் முடியும் பெயர் எதிர்பாராத எதிர்ப்புகளைத் தரலாம்.",
@@ -407,13 +418,13 @@ const NAME_DIGIT_NOTES = {
 function totalNotesHTML(total, n){
   const out=[];
   if(TOTAL_NOTES[total]) out.push(`📘 ${total}: ${TOTAL_NOTES[total]}`);
-  const dr = dateRule(total);
+  const dr = dateRule(total, n);
   if(dr) out.push(`${dr.adj<0?"⚠️":"✅"} ${dr.en}`);
   if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"📘":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
   return out.length ? `<div class="totalnote">${out.join("<hr>")}</div>` : "";
 }
 function goodCompoundNote(total, n, birth, dest){
-  if(!COMPOUND_GOOD.includes(total) || dateRule(total)?.adj<0) return "";
+  if(!COMPOUND_GOOD.includes(total) || notSuit(total,n)) return "";
   if(rel(n,birth)>=0.8 || rel(n,dest)>=0.8) return "";
   return `<div class="gcn">🌟 கூட்டு எண் ${total} அதிர்ஷ்டமானது. ஒற்றை இலக்கம் ${n} உங்கள் எண்களுக்கு நேரடி நட்பு இல்லை; ஆனால் கூட்டு எண் அதிர்ஷ்டமானது என்பதால் இந்தப் பெயர் பலவீனமானதாகக் காட்டப்படவில்லை.</div>`;
 }
@@ -455,24 +466,26 @@ function matchPct(n, birth, dest, opt={}){
   if(opt.total!=null){                       // names and business names only
     if([2,4,7,8].includes(n)) pct -= 8;
     if(n===5) pct += 8;
-    const r = dateRule(opt.total);
-    if(r) pct = r.adj<0 ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
-    if(COMPOUND_GOOD.includes(opt.total)) pct = (r && r.adj<0) ? pct : Math.max(pct + 7, GOOD_FLOOR);
+    const r = dateRule(opt.total, n), out = r && r.adj <= -25;
+    if(r) pct = out ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
+    if(COMPOUND_GOOD.includes(opt.total) && !out){
+      pct = Math.max(pct + 7, GOOD_FLOOR);
+      const strong = W.d > W.b ? dest : birth;                  // destiny from 30, birth number before 30
+      if(rel(n,strong)>=0.8) pct = Math.max(pct, 75);            // lucky total that suits the stronger number is green
+    }
     if(COMPOUND_BAD.includes(opt.total)) pct -= 12;
-    // A lucky total whose single digit suits the number that is stronger now is always green
-    const strong = W.d > W.b ? dest : birth;
-    if(COMPOUND_GOOD.includes(opt.total) && !(r && r.adj<0) && rel(n,strong)>=0.8) pct = Math.max(pct, 75);
+    if(HARM_TOTALS.includes(opt.total)) pct = Math.min(pct, 35);
   }
   return Math.max(5, Math.min(100, Math.round(pct)));
 }
 function bestTotalsHTML(birth, dest, opt, current, title){
   const list=[];
-  for(let t=10;t<=68;t++){ if(!COMPOUND_GOOD.includes(t) || dateRule(t)?.adj<0) continue; const s=reduceSteps(t).at(-1); list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
+  for(let t=10;t<=70;t++){ const s=reduceSteps(t).at(-1); if(!COMPOUND_GOOD.includes(t) || notSuit(t,s)) continue; list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
   const digits=[...new Set(list.sort((a,b)=>b.p-a.p).map(x=>x.s))].slice(0,3);
   const top=digits.flatMap(s=>list.filter(x=>x.s===s).sort((a,b)=>a.t-b.t).slice(0,3)).filter(x=>x.p>=50);
   const curP = matchPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   const inList = top.some(x=>x.t===current) || (COMPOUND_GOOD.includes(current) && top.length && curP>=Math.min(...top.map(x=>x.p)));
-  const luckyOk = COMPOUND_GOOD.includes(current) && !(dateRule(current)?.adj<0) && curP>=50;
+  const luckyOk = COMPOUND_GOOD.includes(current) && !notSuit(current,reduceSteps(current).at(-1)) && curP>=50;
   const cur = inList
     ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ உங்கள் கூட்டு எண் <b>${current}</b> ஏற்கனவே சிறந்தவற்றில் ஒன்று.</div>`
     : luckyOk ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ உங்கள் கூட்டு எண் <b>${current}</b> அதிர்ஷ்டமானது; எனவே அதை மாற்றத் தேவையில்லை. மேலே உள்ள எண்கள் இன்னும் வலுவான பொருத்தம் வேண்டுமானால் மட்டுமே.</div>`
@@ -489,12 +502,62 @@ function twinPct(n, birth, dest, opt){
 }
 function wholeLifeHTML(birth, dest, opt, current){
   const list=[];
-  for(let t=10;t<=52;t++){ if(!COMPOUND_GOOD.includes(t)) continue; const s=reduceSteps(t).at(-1); list.push({t,s,...twinPct(s,birth,dest,{...opt,total:t})}); }
+  for(let t=10;t<=70;t++){ if(!COMPOUND_GOOD.includes(t)) continue; const s=reduceSteps(t).at(-1); list.push({t,s,...twinPct(s,birth,dest,{...opt,total:t})}); }
   const top=list.filter(x=>x.lo>=60).sort((x,y)=>y.lo-x.lo || y.sum-x.sum || x.t-y.t).slice(0,5);
   const cur=twinPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   return `<div style="margin-top:14px;font-weight:600;color:var(--ink)">🌿 வாழ்நாள் முழுவதும் சிறந்தவை (30 வயதுக்கு முன்னும் பின்னும்)</div>`
     + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.a}% / ${x.b}%</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">முதல் % 30 வயதுக்கு முன்; இரண்டாவது % 30 வயது முதல்.</div>` : "")
     + `<div class="plain" style="font-size:13px;margin-top:6px">உங்கள் கூட்டு எண் ${current}: 30 வயதுக்கு முன் ${cur.a}%, 30 வயது முதல் ${cur.b}% → வாழ்நாள் முழுவதும் ${cur.lo}%</div>`;
+}
+// Spelling ideas: small, common spelling changes that reach a better lucky total
+function spellingIdeasHTML(name, birth, dest){
+  const up=name.toUpperCase().replace(/\./g,". ").replace(/\s+/g," ").trim();
+  if(!up) return "";
+  const words=up.split(" ");
+  const tweaks=w=>{ const c=new Set();
+    for(let i=0;i<w.length;i++){ const ch=w[i];
+      if("AEIOU".includes(ch) && w[i+1]!==ch && w[i-1]!==ch && i<w.length-1) c.add(w.slice(0,i+1)+ch+w.slice(i+1));
+      if("TDKSBGP".includes(ch) && w[i+1]!=="H") c.add(w.slice(0,i+1)+"H"+w.slice(i+1));
+      if("NLRTM".includes(ch) && i>0 && i<w.length-1 && w[i+1]!==ch && w[i-1]!==ch && "AEIOU".includes(w[i-1])) c.add(w.slice(0,i+1)+ch+w.slice(i+1));
+    }
+    if(/[^AEIOU]$/.test(w)) c.add(w+"A");
+    if(/I$/.test(w)) c.add(w.slice(0,-1)+"EE");
+    return [...c]; };
+  const singles=[];
+  words.forEach((w,wi)=>{ if(w.replace(/[^A-Z]/g,"").length>=3) tweaks(w).forEach(nw=>singles.push({wi,nw})); });
+  const cand=new Set();
+  singles.forEach(a=>cand.add(words.map((x,i)=>i===a.wi?a.nw:x).join(" ")));
+  singles.forEach(a=>singles.forEach(b=>{ if(b.wi!==a.wi) cand.add(words.map((x,i)=>i===a.wi?a.nw:i===b.wi?b.nw:x).join(" ")); }));
+  const cur=valueOf(up), curLow=twinPct(cur.single,birth,dest,{total:cur.total}).lo;
+  const out=[], seen={};
+  cand.forEach(full=>{
+    const v=valueOf(full); if(!COMPOUND_GOOD.includes(v.total)) return;
+    const tw=twinPct(v.single,birth,dest,{total:v.total});
+    if(tw.lo<=curLow || tw.lo<55) return;
+    const changes=full.split(" ").filter((x,i)=>x!==words[i]).length;
+    out.push({pretty:full.toLowerCase().replace(/\b\w/g,ch=>ch.toUpperCase()),total:v.total,single:v.single,...tw,changes});
+  });
+  out.sort((x,y)=>y.lo-x.lo || x.changes-y.changes || y.sum-x.sum);
+  const pick=[]; for(const o of out){ if((seen[o.total]||0)>=2) continue; seen[o.total]=(seen[o.total]||0)+1; pick.push(o); if(pick.length>=6) break; }
+  if(!pick.length) return "";
+  return `<div class="splitname">✍️ <b>எழுத்து மாற்ற யோசனைகள்</b><div class="chips" style="margin-top:6px">${pick.map(o=>`<span class="chip good">${esc(o.pretty)} · ${o.total}${o.total>9?" → "+o.single:""} · ${o.a}% / ${o.b}%</span>`).join("")}</div><div style="color:var(--muted);margin-top:4px">பெயர்களில் வழக்கமான சிறு எழுத்து மாற்றங்கள் (aa, ee, th, nn…). முதல் % 30 வயதுக்கு முன்; இரண்டாவது % 30 வயது முதல். வாழ்நாள் பொருத்தம் உயர்ந்தால் மட்டுமே காட்டப்படும்.</div></div>`;
+}
+// Today for you
+function todayCheck(birth, dest){
+  const now=new Date(), td=now.getDate(), tm=now.getMonth()+1, ty=now.getFullYear();
+  const dayN=reduceSteps(td).at(-1);
+  const full=reduceSteps((String(td).padStart(2,"0")+String(tm).padStart(2,"0")+ty).split("").reduce((a,c)=>a+ +c,0)).at(-1);
+  const D=DATA[birth], eightBad=[1,2,4,7,8].includes(birth)||[1,2,4,7,8].includes(dest);
+  const good=n=>n===birth||n===dest||D.lucky.includes(n), bad=n=>D.avoid.includes(n)||(eightBad&&n===8);
+  const score=(good(dayN)?1:0)+(good(full)?1:0)-(bad(dayN)?2:0)-(bad(full)?1:0);
+  const dateStr=`${td} ${MONTHS[tm-1]} ${ty}`, v=$("todayVerdict");
+  if(score>=1 && !bad(dayN)){ v.className="verdict ok"; v.innerHTML=`✅ இன்று (${dateStr}) உங்களுக்கு நல்ல நாள்: தேதி எண் ${dayN}, முழு தேதி எண் ${full}. புதிய காரியம் தொடங்க ஏற்ற நாள்.`; }
+  else if(score<0){ v.className="verdict no"; v.innerHTML=`⚠️ இன்று (${dateStr}) வழக்கமான வேலைகளுக்கு ஏற்றது. முடிந்தால் முக்கிய தொடக்கங்களைத் தள்ளிப்போடுங்கள் (தேதி எண் ${dayN}).`; }
+  else { v.className="verdict mid"; v.innerHTML=`🙂 இன்று (${dateStr}) உங்களுக்கு சாதாரண நாள்: தேதி எண் ${dayN}, முழு தேதி எண் ${full}.`; }
+  const next=[], dt=new Date(ty,tm-1,td);
+  for(let i=1;i<=45 && next.length<4;i++){ const x=new Date(dt); x.setDate(dt.getDate()+i);
+    const n=reduceSteps(x.getDate()).at(-1); if(good(n)&&!bad(n)) next.push(`${x.getDate()} ${MONTHS[x.getMonth()]}`); }
+  $("todayNext").textContent = "அடுத்த அதிர்ஷ்ட நாட்கள்: " + next.join(", ");
 }
 const stars = p => { const s=Math.max(1,Math.round(p/20)); return "★".repeat(s)+"☆".repeat(5-s); };
 const level = p => p>=75 ? "ok" : p>=50 ? "mid" : "no";
@@ -597,7 +660,7 @@ $("form").addEventListener("submit", e=>{
     if(level(p)==="ok"){ v.className="verdict ok"; v.innerHTML=`✅ சிறப்பான பொருத்தம் — பெயர் எண் ${nameN} உங்கள் பிறவி எண் (${birth}), விதி எண் (${dest}) இரண்டுக்கும் ஏற்றது.`; }
     else if(level(p)==="mid"){ v.className="verdict mid"; v.innerHTML=`🙂 நல்ல பொருத்தம் — பெயர் எண் ${nameN} உங்கள் ${withBirth?"பிறவி":"விதி"} எண்ணுக்கு ஏற்றது.`; }
     else { v.className="verdict no"; v.innerHTML=`⚠️ பெயர் எண் ${nameN} அதிகம் பொருந்தவில்லை.<br><span class="plain">எழுத்துகளைச் சிறிது மாற்றி, கீழே உள்ள சிறந்த கூட்டு எண்களில் ஒன்று வரும்படி செய்யலாம்.</span>`; }
-    const ruleOut = dateRule(nameTotal)?.adj<0;
+    const ruleOut = notSuit(nameTotal, nameN);
     if(ruleOut){ v.className="verdict no"; v.innerHTML=`⚠️ இந்தப் பிறந்த தேதிக்கு கூட்டு எண் ${nameTotal} ஏற்றதல்ல என மரபு கூறுகிறது.<br><span class="plain">எழுத்துகளைச் சிறிது மாற்றி, கீழே உள்ள சிறந்த கூட்டு எண்களில் ஒன்று வரும்படி செய்யலாம்.</span>`; }
     else if(level(p)==="mid" && !withBirth && rel(nameN,dest)<0.8 && COMPOUND_GOOD.includes(nameTotal)) v.innerHTML=`🙂 நல்ல பெயர் — கூட்டு எண் ${nameTotal} அதிர்ஷ்டமானது.`;
     v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + goodCompoundNote(nameTotal, nameN, birth, dest) + totalNotesHTML(nameTotal, nameN);
@@ -609,7 +672,7 @@ $("form").addEventListener("submit", e=>{
       const iv=valueOf(initials), mv=valueOf(mainName);
       v.innerHTML += `<div class="splitname"><b>இனிஷியல் ${esc(initials.split("").join(".")+".")}</b> = ${iv.total}${iv.total>9?" → "+iv.single:""} ${compoundTag(iv.total)}<br><b>பெயர் ${esc(mainName)}</b> = ${mv.total}${mv.total>9?" → "+mv.single:""} ${compoundTag(mv.total)}<br><span style="color:var(--muted)">இரண்டும் சேர்ந்து கூட்டு எண் ${nameTotal} ஆகிறது.</span></div>`;
     }
-    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "உங்கள் பெயருக்கு சிறந்த கூட்டு எண்கள்") + wholeLifeHTML(birth, dest, {}, nameTotal);
+    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "உங்கள் பெயருக்கு சிறந்த கூட்டு எண்கள்") + wholeLifeHTML(birth, dest, {}, nameTotal) + spellingIdeasHTML(rawName, birth, dest);
   }
 
   // Business name match
@@ -663,6 +726,7 @@ $("form").addEventListener("submit", e=>{
     return `<div class="trait"><b>${label} ${n} — ${DATA[n].planet}</b><div class="role">${what}</div>${ROLE_TEXT[role][n]}`
       + (same.length ? `<div style="margin-top:6px;font-size:13px;color:var(--brand);font-weight:600">↺ உங்கள் ${same.join(", ")} எண்ணும் இதுவே; எனவே இந்தக் குணங்கள் இன்னும் வலுவாக இருக்கும்.</div>` : "") + `</div>`;
   }).join("");
+  if(DAY_TRAITS[d]) html += `<div class="trait"><b>${d}-ம் தேதி பிறந்தவர்</b><div class="role">பிறந்த தேதியின்படி</div>${DAY_TRAITS[d]}</div>`;
   const r = rel(dest, birth);
   const combo = r===1 ? COMBO.same : r>=0.8 ? COMBO.friend : r===0 ? COMBO.enemy : COMBO.neutral;
   html += `<div class="trait" style="background:#fff;border:1px dashed var(--line)"><b>${L.together}: ${birth} + ${dest}</b><br>${combo}</div>`;
@@ -679,6 +743,7 @@ ${nameN!==null?"பெயர் எண்: "+nameN+" ("+nameTotal+")\n":""}க�
 ரத்தினம்: ${D.gem}${bz.single!==null?"\nதொழில் பெயர்: "+rawBiz+" = "+bz.single+" ("+bzScore+"% பொருத்தம்)":""}${ph.single!==null?"\n"+(TAB==="vehicle"?"வாகன":"தொலைபேசி")+" எண்: "+ph.single+" ("+phScore+"% பொருத்தம்)":""}
 இலவசம்: freenetsave.com`;
   $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(lastText);
+  if(TAB==="my") todayCheck(birth, dest);
   if(TAB==="house") houseCheck({d,m,y,birth,dest,label:""});
   applyTab();
   $("results").style.display = "block";

@@ -80,6 +80,9 @@
   .inlang span{font-weight:700;margin-right:2px}
   .inlang a{text-decoration:none;font:inherit;font-weight:600;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer}
   .inlang a:hover,.inlang a:focus-visible,.inlang a.on{border-color:var(--brand);color:var(--brand)}
+  .disclaimer{background:#fffaf2;border-color:#ecd9b5}
+  .disclaimer h2{font-size:18px}
+  .disclaimer p{font-size:13.5px;margin:0 0 8px;color:var(--muted)}
   .hint{font-size:13px;color:var(--muted);margin:-4px 0 12px}
   @media (max-width:700px){ .tabs{grid-template-columns:repeat(3,1fr)} }
   @media (max-width:600px){ .big3,.totals{grid-template-columns:1fr} .chart{grid-template-columns:repeat(5,1fr)} }
@@ -147,6 +150,7 @@
       <input id="phone" inputmode="tel" placeholder="Phone number with area code">
     </div>
     <button class="btn" type="submit" data-t="calculate"></button>
+      <p class="hint" style="margin:10px 0 0;text-align:center">For fun and cultural interest only. Not scientifically proven. Nothing you type is saved or sent.</p>
     <div class="err" id="err"></div>
   </form>
 
@@ -169,6 +173,12 @@
         <div class="tot"><span data-t="year"></span><b id="tY">–</b><span id="tYc"></span></div>
       </div>
       <p class="calc" style="margin:12px 0 0;text-align:center" id="weekday"></p>
+    </div>
+
+    <div class="card" data-tab="my" id="todayCard">
+      <h2>Today for you</h2>
+      <div class="verdict" id="todayVerdict"></div>
+      <div class="calc" style="margin-top:8px" id="todayNext"></div>
     </div>
 
     <div class="card" data-tab="my">
@@ -270,6 +280,12 @@
     </div>
   </section>
 
+  <div class="card disclaimer">
+    <h2>⚠️ Disclaimer</h2>
+    <p>This tool is for entertainment and cultural interest only. It is based on traditional numerology beliefs, summarised in our own words. Numerology is not scientifically proven, and the results do not predict or guarantee anything about the future.</p>
+    <p>Please don't make important decisions, such as changing a name, marriage, business, money or health matters, based only on these results. Where needed, consult a qualified professional (doctor, lawyer or financial adviser). Different numerologists use different rules, so results may differ from other sources. Nothing you enter is saved or sent anywhere; all calculations happen in your own browser.</p>
+  </div>
+
   <p class="note"><span data-t="disclaimer"></span><br><span data-t="privacy"></span><br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · <span data-t="freeTools"></span></p>
 </div>
@@ -367,35 +383,30 @@ const COMBO = {
 };
 
 // Lucky and harmful full totals (traditional Tamil numerology)
-const COMPOUND_GOOD = [10,19,21,23,24,27,32,33,37,41,42,45,46,68];
-const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47];
+const COMPOUND_GOOD = [10,14,15,19,21,23,24,27,32,33,37,41,42,45,46,50,51,60,68,69,78,96];
+const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47,87];
+const HARM_TOTALS = [16,17,26,28,29,31,35,38,44,47,87];   // always shown as weak
 const GOOD_FLOOR = 55;            // a lucky total never shows red, unless a birth-date rule says it does not suit
 let CUR_DAY = 0, CUR_DEST = 0;    // set on each calculation, used by the birth-date rules
 // Rules that depend on the birth date. adj below 0 means "tradition advises against this total".
-function dateRule(total){
+function dateRule(total, n){
   const d=CUR_DAY, nine=[9,18,27].includes(d), six=[6,15,24].includes(d)||CUR_DEST===6;
+  const bn = d ? reduceSteps(d).at(-1) : 0;
   if(total===46 && nine) return {adj:-25, en:"46 stands for high position, but tradition advises against this total for people with birth number 9."};
   if(total===37 && nine) return {adj:-25, en:"37 stands for comfort, but tradition advises against this total for people born on the 9th, 18th or 27th."};
   if(total===45 && (d===9||d===27)) return {adj:10, en:"Tradition says 45 is good for people born on the 9th or 27th."};
   if((total===45||total===44) && d===18) return {adj:-25, en:"Tradition advises against this total for people born on the 18th."};
   if(total===42 && six) return {adj:10, en:"Tradition recommends 42 for people born on the 6th, 15th or 24th, or with destiny number 6."};
-  if(total===33 && six) return {adj:-10, en:"For people born on the 6th, 15th or 24th, or with destiny number 6, tradition advises against this total and prefers 42."};
+  if(total===33 && six) return {adj:-25, en:"For people born on the 6th, 15th or 24th, or with destiny number 6, tradition advises against this total and prefers 42."};
+  if(n===1 && d && ![1,4,8].includes(bn) && ![1,4,8].includes(CUR_DEST)) return {adj:-10, en:"A name that comes down to 1 gives full results only when the birth or destiny number is 1, 4 or 8. For others it brings progress with needless complications."};
+  if(n===1 && d) return {adj:5, en:"For your numbers, a name that comes down to 1 gives full results."};
   return null;
 }
+const notSuit = (total, n) => (dateRule(total, n)?.adj <= -25);   // "does not suit this person"
 const HARM = "Traditionally a harmful name total. Changing the name to reach a lucky total is advised.";
-const TOTAL_NOTES = {
-  23:"Big success when you work to a clear plan. Without a goal, simply a comfortable life.",
-  32:"A sharp mind, sudden new ideas and popularity, but money can go up and down.",
-  41:"Very lucky: public support and wealth. Best when you act with patience.",
-  46:"Often seen with leaders and people in high positions. It gives the good effects of number 1.",
-  68:"Very lucky for wealth, but it can bring a restless mind that always wants more.",
-  37:"Brings great comfort and enjoyment.",
-  42:"A good total, and especially good for number 6 people.",
-  45:"Generally a good total. How good depends on the birth date.",
-  12:"Points to sacrifice and struggle.",
-  29:"Progress comes only through hard effort. " + HARM,
-  16:HARM, 17:HARM, 26:HARM, 31:HARM, 35:HARM, 38:HARM, 44:HARM, 47:HARM
-};
+const TOTAL_NOTES = {"10": "Fame and respect with self-confidence; luck goes up and down. Honesty is a must; money never runs short.", "19": "Like the rising sun, life keeps improving: status, wealth and a good life partner.", "28": "Early progress, then loss; competition and struggle, and money lent is not returned. An unlucky total.", "14": "Very good for business: always surrounded by people and goods. Be careful trusting others and in fast vehicles.", "15": "Tasks succeed and gains keep coming; excellent for speech and arts work. Keep selfishness in check.", "24": "Government support and positions above one's level; fast rise in uniformed jobs such as police or army.", "33": "Kubera's number: grace and wealth grow together, and prosperity does not fade.", "50": "Very intelligent and research-minded; excels in education, some become well-known teachers.", "51": "The most powerful of the 6 totals: sudden rise and unexpected high positions. Avoid hurting others.", "60": "Peace, wealth, love of the arts, deep knowledge and fine speech; a very happy family life.", "69": "Rules like a king in any line of work: great wealth, a commanding presence and a comfortable life.", "78": "The finest of the 6 totals: poetic, persuasive, drawn to service; large sums come easily, but care is needed.", "87": "Tradition links this total to gaining money in wrong ways. Avoid it.", "96": "Wealth and education together; what you set out to do succeeds.", "23": "The luckiest of all: plans succeed, with support from people in high office. Without big goals, simply a comfortable life.", "32": "Seat of knowledge: new ideas and public support. Success when following your own mind, failure when following others' advice; ups and downs.", "41": "Wins people over, words carry weight, a winner with wide fame. Don't let success push you into tasks beyond your strength.", "46": "'The forehead under the crown': used wisely, it takes you to the top of any field, and wealth and status grow with age. Honesty is essential.", "68": "Very lucky for wealth, but brings restlessness and little contentment.", "37": "Very lucky: lifts you from ordinary to great, with charm and help from friends and partners. Once you rise, be content; greed weakens it.", "45": "Generally good; depends on the birth date.", "42": "Even from poverty, rises to high authority; good at saving, thrifty and mentally strong. Especially good for number 6 people.", "12": "Points to sacrifice and struggle.", "29": "Progress comes only through hardship."};
+[16,17,26,31,35,38,44,47].forEach(t=>{ TOTAL_NOTES[t]=HARM; }); TOTAL_NOTES[29] += " " + HARM;
+const DAY_TRAITS = {"1": "Little patience for others' opinions; says exactly what they think; very self-confident and keen to get ahead.", "10": "Calm and gentle; keeps their thoughts to themselves; gains popularity and much affection; pleasant company.", "19": "Strong-willed: gentle as a cow, fierce as a tiger when roused; rarely changes their mind; learned.", "28": "Good-looking, smiling and soft-natured; trusts people easily, so can be taken advantage of."};
 const NAME_DIGIT_NOTES = {
   2:"A name that comes down to 2 can bring complications.",
   4:"A name that comes down to 4 can bring unexpected opposition.",
@@ -406,13 +417,13 @@ const NAME_DIGIT_NOTES = {
 function totalNotesHTML(total, n){
   const out=[];
   if(TOTAL_NOTES[total]) out.push(`📘 ${total}: ${TOTAL_NOTES[total]}`);
-  const dr = dateRule(total);
+  const dr = dateRule(total, n);
   if(dr) out.push(`${dr.adj<0?"⚠️":"✅"} ${dr.en}`);
   if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"📘":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
   return out.length ? `<div class="totalnote">${out.join("<hr>")}</div>` : "";
 }
 function goodCompoundNote(total, n, birth, dest){
-  if(!COMPOUND_GOOD.includes(total) || dateRule(total)?.adj<0) return "";
+  if(!COMPOUND_GOOD.includes(total) || notSuit(total,n)) return "";
   if(rel(n,birth)>=0.8 || rel(n,dest)>=0.8) return "";
   return `<div class="gcn">🌟 The full total ${total} is a lucky one. The single digit ${n} is not a direct friend of your numbers, but because the full total is lucky this name is not marked as weak.</div>`;
 }
@@ -454,24 +465,26 @@ function matchPct(n, birth, dest, opt={}){
   if(opt.total!=null){                       // names and business names only
     if([2,4,7,8].includes(n)) pct -= 8;
     if(n===5) pct += 8;
-    const r = dateRule(opt.total);
-    if(r) pct = r.adj<0 ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
-    if(COMPOUND_GOOD.includes(opt.total)) pct = (r && r.adj<0) ? pct : Math.max(pct + 7, GOOD_FLOOR);
+    const r = dateRule(opt.total, n), out = r && r.adj <= -25;
+    if(r) pct = out ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
+    if(COMPOUND_GOOD.includes(opt.total) && !out){
+      pct = Math.max(pct + 7, GOOD_FLOOR);
+      const strong = W.d > W.b ? dest : birth;                  // destiny from 30, birth number before 30
+      if(rel(n,strong)>=0.8) pct = Math.max(pct, 75);            // lucky total that suits the stronger number is green
+    }
     if(COMPOUND_BAD.includes(opt.total)) pct -= 12;
-    // A lucky total whose single digit suits the number that is stronger now is always green
-    const strong = W.d > W.b ? dest : birth;
-    if(COMPOUND_GOOD.includes(opt.total) && !(r && r.adj<0) && rel(n,strong)>=0.8) pct = Math.max(pct, 75);
+    if(HARM_TOTALS.includes(opt.total)) pct = Math.min(pct, 35);
   }
   return Math.max(5, Math.min(100, Math.round(pct)));
 }
 function bestTotalsHTML(birth, dest, opt, current, title){
   const list=[];
-  for(let t=10;t<=68;t++){ if(!COMPOUND_GOOD.includes(t) || dateRule(t)?.adj<0) continue; const s=reduceSteps(t).at(-1); list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
+  for(let t=10;t<=70;t++){ const s=reduceSteps(t).at(-1); if(!COMPOUND_GOOD.includes(t) || notSuit(t,s)) continue; list.push({t,s,p:matchPct(s,birth,dest,{...opt,total:t})}); }
   const digits=[...new Set(list.sort((a,b)=>b.p-a.p).map(x=>x.s))].slice(0,3);
   const top=digits.flatMap(s=>list.filter(x=>x.s===s).sort((a,b)=>a.t-b.t).slice(0,3)).filter(x=>x.p>=50);
   const curP = matchPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   const inList = top.some(x=>x.t===current) || (COMPOUND_GOOD.includes(current) && top.length && curP>=Math.min(...top.map(x=>x.p)));
-  const luckyOk = COMPOUND_GOOD.includes(current) && !(dateRule(current)?.adj<0) && curP>=50;
+  const luckyOk = COMPOUND_GOOD.includes(current) && !notSuit(current,reduceSteps(current).at(-1)) && curP>=50;
   const cur = inList
     ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ Your total <b>${current}</b> is already one of the best.</div>`
     : luckyOk ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ Your total <b>${current}</b> is a lucky total, so there is no need to change it. The totals above are only if you want an even stronger match.</div>`
@@ -488,12 +501,62 @@ function twinPct(n, birth, dest, opt){
 }
 function wholeLifeHTML(birth, dest, opt, current){
   const list=[];
-  for(let t=10;t<=52;t++){ if(!COMPOUND_GOOD.includes(t)) continue; const s=reduceSteps(t).at(-1); list.push({t,s,...twinPct(s,birth,dest,{...opt,total:t})}); }
+  for(let t=10;t<=70;t++){ if(!COMPOUND_GOOD.includes(t)) continue; const s=reduceSteps(t).at(-1); list.push({t,s,...twinPct(s,birth,dest,{...opt,total:t})}); }
   const top=list.filter(x=>x.lo>=60).sort((x,y)=>y.lo-x.lo || y.sum-x.sum || x.t-y.t).slice(0,5);
   const cur=twinPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   return `<div style="margin-top:14px;font-weight:600;color:var(--ink)">🌿 Best for your whole life (before and after 30)</div>`
     + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.a}% / ${x.b}%</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">First % is before 30, second % is from 30.</div>` : "")
     + `<div class="plain" style="font-size:13px;margin-top:6px">Your total ${current}: before 30 ${cur.a}%, from 30 ${cur.b}% → whole life ${cur.lo}%</div>`;
+}
+// Spelling ideas: small, common spelling changes that reach a better lucky total
+function spellingIdeasHTML(name, birth, dest){
+  const up=name.toUpperCase().replace(/\./g,". ").replace(/\s+/g," ").trim();
+  if(!up) return "";
+  const words=up.split(" ");
+  const tweaks=w=>{ const c=new Set();
+    for(let i=0;i<w.length;i++){ const ch=w[i];
+      if("AEIOU".includes(ch) && w[i+1]!==ch && w[i-1]!==ch && i<w.length-1) c.add(w.slice(0,i+1)+ch+w.slice(i+1));
+      if("TDKSBGP".includes(ch) && w[i+1]!=="H") c.add(w.slice(0,i+1)+"H"+w.slice(i+1));
+      if("NLRTM".includes(ch) && i>0 && i<w.length-1 && w[i+1]!==ch && w[i-1]!==ch && "AEIOU".includes(w[i-1])) c.add(w.slice(0,i+1)+ch+w.slice(i+1));
+    }
+    if(/[^AEIOU]$/.test(w)) c.add(w+"A");
+    if(/I$/.test(w)) c.add(w.slice(0,-1)+"EE");
+    return [...c]; };
+  const singles=[];
+  words.forEach((w,wi)=>{ if(w.replace(/[^A-Z]/g,"").length>=3) tweaks(w).forEach(nw=>singles.push({wi,nw})); });
+  const cand=new Set();
+  singles.forEach(a=>cand.add(words.map((x,i)=>i===a.wi?a.nw:x).join(" ")));
+  singles.forEach(a=>singles.forEach(b=>{ if(b.wi!==a.wi) cand.add(words.map((x,i)=>i===a.wi?a.nw:i===b.wi?b.nw:x).join(" ")); }));
+  const cur=valueOf(up), curLow=twinPct(cur.single,birth,dest,{total:cur.total}).lo;
+  const out=[], seen={};
+  cand.forEach(full=>{
+    const v=valueOf(full); if(!COMPOUND_GOOD.includes(v.total)) return;
+    const tw=twinPct(v.single,birth,dest,{total:v.total});
+    if(tw.lo<=curLow || tw.lo<55) return;
+    const changes=full.split(" ").filter((x,i)=>x!==words[i]).length;
+    out.push({pretty:full.toLowerCase().replace(/\b\w/g,ch=>ch.toUpperCase()),total:v.total,single:v.single,...tw,changes});
+  });
+  out.sort((x,y)=>y.lo-x.lo || x.changes-y.changes || y.sum-x.sum);
+  const pick=[]; for(const o of out){ if((seen[o.total]||0)>=2) continue; seen[o.total]=(seen[o.total]||0)+1; pick.push(o); if(pick.length>=6) break; }
+  if(!pick.length) return "";
+  return `<div class="splitname">✍️ <b>Spelling ideas</b><div class="chips" style="margin-top:6px">${pick.map(o=>`<span class="chip good">${esc(o.pretty)} · ${o.total}${o.total>9?" → "+o.single:""} · ${o.a}% / ${o.b}%</span>`).join("")}</div><div style="color:var(--muted);margin-top:4px">Small, common spelling changes (aa, ee, th, nn…). First % is before 30, second % is from 30. Only shown when the whole-life score improves.</div></div>`;
+}
+// Today for you
+function todayCheck(birth, dest){
+  const now=new Date(), td=now.getDate(), tm=now.getMonth()+1, ty=now.getFullYear();
+  const dayN=reduceSteps(td).at(-1);
+  const full=reduceSteps((String(td).padStart(2,"0")+String(tm).padStart(2,"0")+ty).split("").reduce((a,c)=>a+ +c,0)).at(-1);
+  const D=DATA[birth], eightBad=[1,2,4,7,8].includes(birth)||[1,2,4,7,8].includes(dest);
+  const good=n=>n===birth||n===dest||D.lucky.includes(n), bad=n=>D.avoid.includes(n)||(eightBad&&n===8);
+  const score=(good(dayN)?1:0)+(good(full)?1:0)-(bad(dayN)?2:0)-(bad(full)?1:0);
+  const dateStr=`${td} ${MONTHS[tm-1]} ${ty}`, v=$("todayVerdict");
+  if(score>=1 && !bad(dayN)){ v.className="verdict ok"; v.innerHTML=`✅ Today (${dateStr}) is a good day for you: date number ${dayN}, full-date number ${full}. A good day to start something new.`; }
+  else if(score<0){ v.className="verdict no"; v.innerHTML=`⚠️ Today (${dateStr}) is better for routine work. Put off important starts if you can (date number ${dayN}).`; }
+  else { v.className="verdict mid"; v.innerHTML=`🙂 Today (${dateStr}) is an ordinary day for you: date number ${dayN}, full-date number ${full}.`; }
+  const next=[], dt=new Date(ty,tm-1,td);
+  for(let i=1;i<=45 && next.length<4;i++){ const x=new Date(dt); x.setDate(dt.getDate()+i);
+    const n=reduceSteps(x.getDate()).at(-1); if(good(n)&&!bad(n)) next.push(`${x.getDate()} ${MONTHS[x.getMonth()]}`); }
+  $("todayNext").textContent = "Next lucky days: " + next.join(", ");
 }
 const stars = p => { const s=Math.max(1,Math.round(p/20)); return "★".repeat(s)+"☆".repeat(5-s); };
 const level = p => p>=75 ? "ok" : p>=50 ? "mid" : "no";
@@ -596,7 +659,7 @@ $("form").addEventListener("submit", e=>{
     if(level(p)==="ok"){ v.className="verdict ok"; v.innerHTML=`✅ Excellent match — name number ${nameN} suits both your birth number (${birth}) and destiny number (${dest}).`; }
     else if(level(p)==="mid"){ v.className="verdict mid"; v.innerHTML=`🙂 Good match — name number ${nameN} suits your ${withBirth?"birth":"destiny"} number.`; }
     else { v.className="verdict no"; v.innerHTML=`⚠️ Name number ${nameN} is not a strong match.<br><span class="plain">A small spelling change to reach one of the best totals below is suggested.</span>`; }
-    const ruleOut = dateRule(nameTotal)?.adj<0;
+    const ruleOut = notSuit(nameTotal, nameN);
     if(ruleOut){ v.className="verdict no"; v.innerHTML=`⚠️ Tradition advises against the total ${nameTotal} for this date of birth.<br><span class="plain">A small spelling change to reach one of the best totals below is suggested.</span>`; }
     else if(level(p)==="mid" && !withBirth && rel(nameN,dest)<0.8 && COMPOUND_GOOD.includes(nameTotal)) v.innerHTML=`🙂 Good name — the full total ${nameTotal} is a lucky one.`;
     v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + goodCompoundNote(nameTotal, nameN, birth, dest) + totalNotesHTML(nameTotal, nameN);
@@ -608,7 +671,7 @@ $("form").addEventListener("submit", e=>{
       const iv=valueOf(initials), mv=valueOf(mainName);
       v.innerHTML += `<div class="splitname"><b>Initials ${esc(initials.split("").join(".")+".")}</b> = ${iv.total}${iv.total>9?" → "+iv.single:""} ${compoundTag(iv.total)}<br><b>Name ${esc(mainName)}</b> = ${mv.total}${mv.total>9?" → "+mv.single:""} ${compoundTag(mv.total)}<br><span style="color:var(--muted)">Together they make the full total ${nameTotal}.</span></div>`;
     }
-    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "Best name totals for you") + wholeLifeHTML(birth, dest, {}, nameTotal);
+    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "Best name totals for you") + wholeLifeHTML(birth, dest, {}, nameTotal) + spellingIdeasHTML(rawName, birth, dest);
   }
 
   // Business name match
@@ -662,6 +725,7 @@ $("form").addEventListener("submit", e=>{
     return `<div class="trait"><b>${label} ${n} — ${DATA[n].planet}</b><div class="role">${what}</div>${ROLE_TEXT[role][n]}`
       + (same.length ? `<div style="margin-top:6px;font-size:13px;color:var(--brand);font-weight:600">↺ Same as your ${same.join(", ")}, so these qualities are stronger.</div>` : "") + `</div>`;
   }).join("");
+  if(DAY_TRAITS[d]) html += `<div class="trait"><b>Born on day ${d}</b><div class="role">By birth date</div>${DAY_TRAITS[d]}</div>`;
   const r = rel(dest, birth);
   const combo = r===1 ? COMBO.same : r>=0.8 ? COMBO.friend : r===0 ? COMBO.enemy : COMBO.neutral;
   html += `<div class="trait" style="background:#fff;border:1px dashed var(--line)"><b>${L.together}: ${birth} + ${dest}</b><br>${combo}</div>`;
@@ -678,6 +742,7 @@ Lucky days: ${D.days.map(i=>DAYS[i]).join(", ")}
 Gemstone: ${D.gem}${bz.single!==null?"\nBusiness name: "+rawBiz+" = "+bz.single+" ("+bzScore+"% match)":""}${ph.single!==null?"\n"+(TAB==="vehicle"?"Vehicle":"Phone")+" number: "+ph.single+" ("+phScore+"% match)":""}
 Free at freenetsave.com`;
   $("waBtn").href = "https://wa.me/?text=" + encodeURIComponent(lastText);
+  if(TAB==="my") todayCheck(birth, dest);
   if(TAB==="house") houseCheck({d,m,y,birth,dest,label:""});
   applyTab();
   $("results").style.display = "block";
