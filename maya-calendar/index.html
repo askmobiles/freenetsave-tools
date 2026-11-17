@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://tools.freenetsave.com/maya-calendar/">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="../assets/style.css?v=8">
-<link rel="stylesheet" href="../assets/almanac.css?v=7">
+<link rel="stylesheet" href="../assets/almanac.css?v=8">
 <style>.s-grid .mhead .field{display:none}</style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Maya Calendar", "url": "https://tools.freenetsave.com/maya-calendar/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free Maya calendar converter. See any date as a Tzolk'in day sign and number, a Haab' date, the Calendar Round and the Long Count, with the whole month in a grid."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is my Maya day sign?", "acceptedAnswer": {"@type": "Answer", "text": "Enter your birth date. The Tzolk'in line shows the number and the day sign for that day."}}, {"@type": "Question", "name": "Did the Maya calendar end in 2012?", "acceptedAnswer": {"@type": "Answer", "text": "No. A large cycle of the Long Count was completed on 21 December 2012 and a new one began. The count simply continues."}}, {"@type": "Question", "name": "Which correlation does this use?", "acceptedAnswer": {"@type": "Answer", "text": "The standard GMT correlation, number 584283, used by most researchers."}}]}]}</script>
 </head>
@@ -47,10 +47,11 @@
     <table class="cal" id="tim"></table><p class="fine" id="timn"></p></section><section class="s-thi"><h2 class="sec">Yearly thithi (remembrance day) · வருட திதி</h2>
     <p class="lead">Enter the date a loved one passed away. You get the Tamil month and thithi of that day, and the date it falls on this year.<br>இறந்த தேதியை இடுங்கள். அந்த நாளின் தமிழ் மாதம், திதி மற்றும் இந்த ஆண்டு திதி வரும் தேதி கிடைக்கும்.</p>
     <div class="top"><div class="field"><label for="dd">Date of passing · இறந்த தேதி</label><input id="dd" type="date"></div>
-    <div class="field"><label for="dt">Time of passing, if known (place chosen on this page) · நேரம் (தெரிந்தால்)</label><input id="dt" type="time"></div></div>
+    <div class="field"><label for="dt">Time of passing, if known (local time there) · நேரம் (தெரிந்தால்)</label><input id="dt" type="time"></div></div>
+    <div class="mhead" style="margin-top:10px"><div class="field"><label for="dp">Place of passing · இறந்த இடம்</label><select id="dp"></select></div></div>
     <p class="err" id="derr"></p>
     <table class="cal" id="thi"></table>
-    <p class="fine" id="thinote" hidden>The yearly thithi is found the Tamil way: the same Tamil month and the same thithi, on the day that thithi covers the afternoon. It uses the method (Thirukanitham or Vakyam) and the place chosen on this page. Without a time, the thithi at sunrise on the day of passing is used. Families and temples follow slightly different rules, so please confirm the date with your priest.<br>ஒரே தமிழ் மாதம், ஒரே திதி என்ற முறையில் கணிக்கப்படுகிறது. தேதியை உங்கள் குருக்களிடம் உறுதி செய்யுங்கள்.</p></section><section class="s-chi"><h2 class="sec">Chinese calendar · 农历</h2>
+    <p class="fine" id="thinote" hidden>The yearly thithi is found the Tamil way: the same Tamil month and the same thithi, on the day that thithi covers the afternoon. The thithi of passing is worked out for the place of passing. This year's date is worked out for the place chosen at the top of the page, which should be where you will keep the day, using the method (Thirukanitham or Vakyam) chosen there. Without a time, the thithi at sunrise on the day of passing is used. Families and temples follow slightly different rules, so please confirm the date with your priest.<br>ஒரே தமிழ் மாதம், ஒரே திதி என்ற முறையில் கணிக்கப்படுகிறது. தேதியை உங்கள் குருக்களிடம் உறுதி செய்யுங்கள்.</p></section><section class="s-chi"><h2 class="sec">Chinese calendar · 农历</h2>
     <table class="cal" id="chi"></table></section></div>
     <section class="about"><h2>About this page</h2><p>The Maya kept several counts at once. The <b>Tzolk'in</b> is a sacred count of 260 days, made of 13 numbers and 20 day signs. The <b>Haab'</b> is a 365-day year of 18 months of 20 days plus 5 extra days. The <b>Long Count</b> counts every day from a starting date in 3114 BC. Day-keepers in the highlands of Guatemala still follow the Tzolk'in to choose days for ceremonies.</p><p class="fine">Dates are calculated on your device. Please check with your temple, mosque, synagogue, church or a local calendar for religious dates.</p>
     <h2>Questions</h2><details><summary>What is my Maya day sign?</summary><p>Enter your birth date. The Tzolk&#x27;in line shows the number and the day sign for that day.</p></details><details><summary>Did the Maya calendar end in 2012?</summary><p>No. A large cycle of the Long Count was completed on 21 December 2012 and a new one began. The count simply continues.</p></details><details><summary>Which correlation does this use?</summary><p>The standard GMT correlation, number 584283, used by most researchers.</p></details>
@@ -60,6 +61,6 @@
 </div>
 <script src="../assets/embed.js?v=11"></script>
 <script>window.ALM={"mc": "maya", "shareName": "Maya date"};</script>
-<script src="../assets/almanac.js?v=7"></script>
+<script src="../assets/almanac.js?v=8"></script>
 </body>
 </html>

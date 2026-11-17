@@ -201,9 +201,9 @@ function tzOff(ms,tz){var f=new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCyc
 function thithi(){var v=el("dd").value,out=el("thi"),er=el("derr");er.textContent="";out.innerHTML="";el("thinote").hidden=true;if(!v)return;
   var p=v.split("-").map(Number),y=p[0],m=p[1],d=p[2],now=new Date(),ty=now.getFullYear(),todayS=ty+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
   if(!y||y<1600||v>todayS){er.textContent="Please pick a date from 1600 up to today.";return;}
-  var pl=PL[+el("pl").value||0],tz=pl[3],J,tv=el("dt").value;
+  var pl=PL[+el("pl").value||0],pp=el("dp").value===""?pl:PL[+el("dp").value],tz=pp[3],J,tv=el("dt").value;
   if(tv){var q=tv.split(":").map(Number),g=Date.UTC(y,m-1,d,q[0],q[1]),u=g-tzOff(g,tz);u=g-tzOff(u,tz);J=u/864e5+2440587.5;}
-  else J=CAL.jd(y,m,d,0)+CAL.sunTimes(y,m,d,pl[1],pl[2]).rise/24;
+  else J=CAL.jd(y,m,d,0)+CAL.sunTimes(y,m,d,pp[1],pp[2]).rise/24;
   var ti=CAL.tithiAt(J,sys),tn=CAL.tithiName(ti),tm0=CAL.tamil(y,m,d,sys);
   function find(yr){var res=[],on=false;for(var t=Date.UTC(yr,0,1);t<Date.UTC(yr+1,1,25);t+=864e5){var c=new Date(t),cy=c.getUTCFullYear(),cm=c.getUTCMonth()+1,cd=c.getUTCDate(),tt=CAL.tamil(cy,cm,cd,sys);
       if(tt.rasi!==tm0.rasi){if(on)break;continue;}if(!on){if(tt.day!==1)continue;on=true;}
@@ -219,7 +219,7 @@ function thithi(){var v=el("dd").value,out=el("thi"),er=el("derr");er.textConten
   var G=[find(ty-1),find(ty),find(ty+1),find(ty+2)],inY=[],nxt=null;
   G.forEach(function(g){var k=g.filter(function(c){return c.getUTCFullYear()===ty;});if(k.length)inY=inY.concat(g.length>1&&k.length===g.length?[g]:k.map(function(c){return [c];}));if(!nxt&&g.length&&g[g.length-1].toISOString().slice(0,10)>=todayS&&g[g.length-1].getUTCFullYear()>ty)nxt=g;});
   var a=inY.length?[inY.map(function(g){return cell(g)[0];}).join("<br>and "),inY.map(function(g){return cell(g)[1];}).join(" / ")]:["No thithi day falls inside "+ty+". See the next one below.","இந்த ஆண்டில் திதி நாள் இல்லை."],b=cell(nxt||[]);
-  out.innerHTML=r2("Tamil month of passing","இறந்த தமிழ் மாதம்",tm0.month+" "+tm0.day,tm0.monthT+" "+tm0.day)+r2("Thithi of passing","இறந்த திதி",tn[0],tn[1])+r2("Thithi in "+ty,ty+" திதி நாள்",a[0],a[1])+r2("Thithi after "+ty,ty+"க்குப் பின் திதி நாள்",b[0],b[1]);
+  out.innerHTML=r2("Tamil month of passing","இறந்த தமிழ் மாதம்",tm0.month+" "+tm0.day,tm0.monthT+" "+tm0.day)+r2("Thithi of passing · at "+pp[0],"இறந்த திதி",tn[0],tn[1])+r2("Thithi in "+ty+" · for "+pl[0],ty+" திதி நாள்",a[0],a[1])+r2("Thithi after "+ty,ty+"க்குப் பின் திதி நாள்",b[0],b[1]);
   el("thinote").hidden=false;}
 var MC=[["tt","Tamil (Thirukanitham) · திருக்கணிதம்"],["tv","Tamil (Vakyam) · வாக்கியம்"],["chinese","Chinese lunar · 农历"],["islamic-umalqura","Islamic (Hijri)"],["hebrew","Hebrew (Jewish)"],["persian","Persian (Solar Hijri)"],["indian","Indian national (Saka)"],["lunar","Hindu lunar (Telugu / Kannada / Marathi / Gujarati)"],["ml","Malayalam (Kollam era)"],["bn","Bengali"],["dangi","Korean lunar"],["ethiopic","Ethiopian"],["coptic","Coptic"],["buddhist","Buddhist era"],["japanese","Japanese"],["roc","Minguo (Taiwan)"],["julian","Julian"],["maya","Maya (Tzolk'in and Haab')"],["moon","Moon phases"]];
 MC.forEach(function(c){var o=document.createElement("option");o.value=c[0];o.textContent=c[1];el("mc").appendChild(o);});if(CFG.mc)el("mc").value=CFG.mc;
@@ -334,7 +334,7 @@ window.FNS_SHARE=function(){var v=el("d").value;if(!v)return null;var p=v.split(
   else{var r=el("det").querySelector("tr");t=day+(r?" = "+r.querySelector("td:last-child").textContent.trim().split("\n")[0]:"")+". "+(CFG.shareName||"See it in other calendars")+":";}
   return {url:u,text:t};};
 function pick(k){sys=k;el("bT").setAttribute("aria-pressed",k==="t");el("bV").setAttribute("aria-pressed",k==="v");show();thithi();}
-el("d").addEventListener("input",show);el("pl").addEventListener("change",function(){show();thithi();});el("pm").addEventListener("change",times);el("asr").addEventListener("change",times);el("dd").addEventListener("input",thithi);el("dt").addEventListener("input",thithi);el("today").addEventListener("click",now);el("prev").addEventListener("click",function(){shift(-1);});el("next").addEventListener("click",function(){shift(1);});
+el("d").addEventListener("input",show);el("pl").addEventListener("change",function(){show();thithi();});el("pm").addEventListener("change",times);el("asr").addEventListener("change",times);(function(){var o=document.createElement("option");o.value="";o.textContent="Same as the place at the top of the page";el("dp").appendChild(o);PL.forEach(function(p,i){var x=document.createElement("option");x.value=i;x.textContent=p[0];el("dp").appendChild(x);});})();el("dp").addEventListener("change",thithi);el("dd").addEventListener("input",thithi);el("dt").addEventListener("input",thithi);el("today").addEventListener("click",now);el("prev").addEventListener("click",function(){shift(-1);});el("next").addEventListener("click",function(){shift(1);});
 el("bT").addEventListener("click",function(){pick("t");});el("bV").addEventListener("click",function(){pick("v");});
 var qd=(location.search.match(/[?&]d=(\d{4}-\d{2}-\d{2})/)||[])[1];if(qd){el("d").value=qd;show();if(!el("pan").innerHTML)now();}else now();
 })();
