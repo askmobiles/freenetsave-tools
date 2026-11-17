@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thithi Calculator: find the yearly thithi (திதி) date from a date of passing</title>
+<meta name="description" content="Free thithi calculator. Enter the date a loved one passed away and get the Tamil month, the thithi, and the date the yearly thithi (devasam, shraddha) falls on this year and next.">
+<link rel="canonical" href="https://tools.freenetsave.com/thithi-calculator/">
+<meta property="og:title" content="Thithi Calculator: find the yearly thithi (திதி) date from a date of passing">
+<meta property="og:description" content="Free thithi calculator. Enter the date a loved one passed away and get the Tamil month, the thithi, and the date the yearly thithi (devasam, shraddha) falls on this year and next.">
+<meta property="og:url" content="https://tools.freenetsave.com/thithi-calculator/">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<link rel="stylesheet" href="../assets/almanac.css?v=1">
+<style></style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Thithi Calculator", "url": "https://tools.freenetsave.com/thithi-calculator/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free thithi calculator. Enter the date a loved one passed away and get the Tamil month, the thithi, and the date the yearly thithi (devasam, shraddha) falls on this year and next."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What if I do not know the time of passing?", "acceptedAnswer": {"@type": "Answer", "text": "Leave the time empty. The thithi at sunrise on that day is used. If the person passed at night, the thithi may have already changed, so enter the time if you can."}}, {"@type": "Question", "name": "Why are two dates shown sometimes?", "acceptedAnswer": {"@type": "Answer", "text": "A thithi can come twice in one Tamil month. Many families keep the second one. Please ask your priest."}}, {"@type": "Question", "name": "Is the date of passing saved?", "acceptedAnswer": {"@type": "Answer", "text": "No. It stays on your device and is never sent, saved or put in a shared link."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Thithi Calculator · திதி</h1>
+    <p class="sub">Find the date of the yearly thithi (remembrance day) for a loved one.</p>
+  </div>
+  <div class="card">
+    <div class="top"><div class="field"><label for="d">Date (English / Gregorian calendar)</label><input id="d" type="date"></div>
+    <div class="btnrow"><button type="button" class="btn line" id="prev">← Day before</button><button type="button" class="btn" id="today">Today</button><button type="button" class="btn line" id="next">Day after →</button></div></div>
+    <p class="err" id="err"></p>
+    <p class="lead" id="long" style="margin-top:14px"></p>
+    <section class="s-thi"><h2 class="sec">Yearly thithi (remembrance day) · வருட திதி</h2>
+    <p class="lead">Enter the date a loved one passed away. You get the Tamil month and thithi of that day, and the date it falls on this year.<br>இறந்த தேதியை இடுங்கள். அந்த நாளின் தமிழ் மாதம், திதி மற்றும் இந்த ஆண்டு திதி வரும் தேதி கிடைக்கும்.</p>
+    <div class="top"><div class="field"><label for="dd">Date of passing · இறந்த தேதி</label><input id="dd" type="date"></div>
+    <div class="field"><label for="dt">Time of passing, if known (place chosen on this page) · நேரம் (தெரிந்தால்)</label><input id="dt" type="time"></div></div>
+    <p class="err" id="derr"></p>
+    <table class="cal" id="thi"></table>
+    <p class="fine" id="thinote" hidden>The yearly thithi is found the Tamil way: the same Tamil month and the same thithi, on the day that thithi covers the afternoon. It uses the method (Thirukanitham or Vakyam) and the place chosen on this page. Without a time, the thithi at sunrise on the day of passing is used. Families and temples follow slightly different rules, so please confirm the date with your priest.<br>ஒரே தமிழ் மாதம், ஒரே திதி என்ற முறையில் கணிக்கப்படுகிறது. தேதியை உங்கள் குருக்களிடம் உறுதி செய்யுங்கள்.</p></section>
+    <section class="s-pan"><h2 class="sec">Method and place · முறை, இடம்</h2>
+    <div class="field" style="max-width:560px"><label for="pl">Place · இடம்</label><select id="pl"></select></div>
+    <div class="tabs"><button type="button" id="bT" aria-pressed="true">Thirukanitham<small>திருக்கணிதம்</small></button><button type="button" id="bV" aria-pressed="false">Vakyam<small>வாக்கியம்</small></button></div>
+    <table class="cal" id="pan"></table>
+    <p class="diff" id="diff" hidden></p></section>
+    <section class="s-oth"><h2 class="sec">The same day in other calendars</h2>
+    <table class="cal" id="tbl"></table></section>
+    <div hidden><section class="s-grid"><h2 class="sec"></h2>
+    <div class="mhead"><div class="field"><label for="mc">Show the month in this calendar</label><select id="mc"></select></div>
+    <button type="button" class="btn line" id="mp">← Month before</button><button type="button" class="btn line" id="mn">Month after →</button><button type="button" class="btn alt" id="mprint" style="background:var(--accent)">🖨️ Print this month</button></div>
+    <div id="mt"></div>
+    <div class="mg" id="mg"></div>
+    <p class="fine" style="margin-top:8px">The big number is the English date. The orange line is the date in this calendar. Tap any day to see its details. Print this month gives a clean one-page calendar with both dates.</p></section><section class="s-det"><h2 class="sec" id="dth"></h2>
+    <table class="cal" id="det"></table></section><section class="s-chi"><h2 class="sec">Chinese calendar · 农历</h2>
+    <table class="cal" id="chi"></table></section></div>
+    <section class="about"><h2>About this page</h2><p>In the Tamil tradition, the yearly remembrance (thithi, devasam or shraddham) is kept on the day when the same Tamil month and the same thithi return. This tool finds that day for this year and the next. Choose Thirukanitham or Vakyam and your city, because both can change the date.</p><p class="fine">Dates are calculated on your device. Please check with your temple, mosque, synagogue, church or a local calendar for religious dates.</p>
+    <h2>Questions</h2><details><summary>What if I do not know the time of passing?</summary><p>Leave the time empty. The thithi at sunrise on that day is used. If the person passed at night, the thithi may have already changed, so enter the time if you can.</p></details><details><summary>Why are two dates shown sometimes?</summary><p>A thithi can come twice in one Tamil month. Many families keep the second one. Please ask your priest.</p></details><details><summary>Is the date of passing saved?</summary><p>No. It stays on your device and is never sent, saved or put in a shared link.</p></details>
+    <h2>More calendars and panchangams</h2><div class="links"><a href="../calendar-converter/"><b>World Calendar Converter</b><span>All calendars on one page</span></a><a href="../tamil-panchangam/"><b>Tamil Panchangam</b><span>தமிழ் பஞ்சாங்கம் · Thirukanitham and Vakyam</span></a><a href="../hindu-panchang/"><b>Hindu Panchang</b><span>हिन्दी पंचांग · tithi, nakshatra, Rahu Kaal</span></a><a href="../chinese-almanac/"><b>Chinese Almanac</b><span>农历 · zodiac, solar terms, festivals</span></a><a href="../islamic-hijri-calendar/"><b>Islamic Hijri Calendar</b><span>التقويم الهجري · Ramadan and Eid dates</span></a><a href="../hebrew-jewish-calendar/"><b>Hebrew (Jewish) Calendar</b><span>לוח עברי · holiday dates</span></a><a href="../persian-calendar/"><b>Persian Calendar</b><span>تقویم شمسی · Nowruz and Yalda</span></a><a href="../korean-lunar-calendar/"><b>Korean Lunar Calendar</b><span>음력 · Seollal and Chuseok</span></a><a href="../malayalam-calendar/"><b>Malayalam Calendar</b><span>മലയാളം കലണ്ടർ · Kollam era</span></a><a href="../bengali-calendar/"><b>Bengali Calendar</b><span>বাংলা ক্যালেন্ডার · Pohela Boishakh</span></a><a href="../ethiopian-calendar/"><b>Ethiopian Calendar</b><span>የኢትዮጵያ ዘመን አቆጣጠር · 13 months</span></a><a href="../printable-calendar/"><b>Printable calendar</b><span>A plain English month to print</span></a></div></section>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+</div>
+<script src="../assets/embed.js?v=7"></script>
+<script>window.ALM={"mc": "tt", "share": "tamil"};</script>
+<script src="../assets/almanac.js?v=1"></script>
+</body>
+</html>
