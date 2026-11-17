@@ -110,7 +110,7 @@ function row(a,b,c,nat){return "<tr><td>"+a+(c?"<small>"+c+"</small>":"")+"</td>
 function show(){var v=el("d").value,p=v?v.split("-").map(Number):null;el("err").textContent="";
   if(!p||p.length!==3||!p[0]||p[0]<1600||p[0]>2400){el("err").textContent=v?"Please pick a year between 1600 and 2400.":"";return;}
   var y=p[0],m=p[1],d=p[2],dt=new Date(Date.UTC(y,m-1,d)),wd=dt.toLocaleDateString("en",{weekday:"long",timeZone:"UTC"});
-  el("long").textContent=wd+", "+MN[m-1]+" "+d+", "+y+" · "+(intl("ta-IN","gregory",dt,{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"UTC"})||"");
+  var nl=CFG.share==="tamil"?"ta-IN":CFG.region==="in"?"hi-IN":"";el("long").textContent=wd+", "+MN[m-1]+" "+d+", "+y+(nl?" · "+(intl(nl,"gregory",dt,{weekday:"long",day:"numeric",month:"long",year:"numeric",timeZone:"UTC"})||""):"");
   var pl=PL[+el("pl").value||0],tz=pl[3],a=CAL.panchang(y,m,d,pl[1],pl[2],sys),o=CAL.panchang(y,m,d,pl[1],pl[2],sys==="t"?"v":"t");
   var tf=new Intl.DateTimeFormat("en",{hour:"numeric",minute:"2-digit",timeZone:tz}),df=new Intl.DateTimeFormat("en-CA",{year:"numeric",month:"2-digit",day:"2-digit",timeZone:tz});
   function tm(J){return tf.format(new Date((J-2440587.5)*864e5));}
