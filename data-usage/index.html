@@ -37,7 +37,7 @@
   </div>
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
-<script src="../assets/embed.js?v=9"></script>
+<script src="../assets/embed.js?v=10"></script>
 <script>
 const R=[["web","Web and social media","hours a day",90],["mail","Email and chat messages","messages a day",0.05],["music","Music or podcasts","hours a day",70],["sd","Video, normal quality (480p)","hours a day",600],["hd","Video, HD (1080p)","hours a day",2500],["call","Video calls","hours a day",800],["maps","Maps and directions","hours a day",8],["game","Online games","hours a day",80],["hot","Laptop on phone hotspot","hours a day",300]];
 $("rows").innerHTML=R.map(r=>'<div class="use"><label for="'+r[0]+'" style="margin:0"><b>'+r[1]+'</b><span>'+r[2]+'</span></label><input id="'+r[0]+'" type="number" inputmode="decimal" min="0" placeholder="0"></div>').join("");
