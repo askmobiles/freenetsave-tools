@@ -76,3 +76,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand)}
 
 /* wide screens: use the room, scale the text a little */
 @media(min-width:900px){html{font-size:clamp(16px,.35vw + 13px,19px)}.card{padding:clamp(18px,2vw,34px)}}
+/* inside freenetsave.com: no extra side space, so the tool lines up with the page text */
+.embedded .wrap{max-width:none;padding:2px 2px 8px}
+.embedded body,html.embedded{background:transparent}
+.embedded .fns-share,.embedded .note{justify-content:flex-start;text-align:left}
