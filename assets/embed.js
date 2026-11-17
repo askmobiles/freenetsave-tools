@@ -79,3 +79,6 @@
 (function(){function orig(){var h=location.hostname,m=h.match(/^(.*)\.translate\.goog$/);if(!m)return location.href.split("#")[0];var host=m[1].replace(/--/g,"\u0000").replace(/-/g,".").replace(/\u0000/g,"-");return "https://"+host+location.pathname;}document.addEventListener("change",function(e){var s=e.target;if(!s.classList||!s.classList.contains("fns-lang")||!s.value)return;var u=orig();top.location.href=s.value==="en"?u:"https://translate.google.com/translate?sl=en&tl="+s.value+"&u="+encodeURIComponent(u);});})();
 
 (function(){try{if(window.top!==window.self)return;}catch(e){return;}var s=document.createElement("script");s.src="/pwa.js?v=1";s.defer=true;document.head.appendChild(s);})();
+
+/* Google tag */
+(function(){if(window.__fnsGT)return;window.__fnsGT=1;var s=document.createElement("script");s.async=true;s.src="https://www.googletagmanager.com/gtm.js?id=GTM-52VBTBX4";document.head.appendChild(s);window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};gtag("js",new Date());})();
