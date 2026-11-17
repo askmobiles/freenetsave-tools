@@ -19,19 +19,27 @@
   .tam b{font-size:18px;line-height:1.3;overflow-wrap:anywhere}
   .tam small{display:block;font-size:14px;color:#33415c;margin-top:2px}
   h2.sec{font-size:19px;margin:22px 0 8px}
-  table.cal{width:100%;border-collapse:collapse;font-size:15px}
-  table.cal td{padding:10px 8px;border-bottom:1px solid #e6ecf5;vertical-align:top}
-  table.cal td:first-child{color:#33415c;width:44%}
-  table.cal td:first-child small{display:block;color:var(--muted);font-size:12.5px}
-  table.cal td:last-child{font-weight:700;overflow-wrap:anywhere}
+  .wrap{max-width:1680px;padding-left:clamp(12px,2.5vw,40px);padding-right:clamp(12px,2.5vw,40px)}
+  .card{font-size:clamp(15px,.55vw + 13px,19px)}
+  .top{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px 16px;align-items:end}
+  .top .field{margin:0}.top .btnrow{margin:0}
+  table.cal,table.cal tbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:12px;width:100%}
+  table.cal tbody{grid-column:1/-1}
+  table.cal tr{display:block;background:#f4f7fc;border:1px solid #dde5f2;border-radius:14px;padding:13px 15px;min-width:0}
+  table.cal td{display:block;padding:0;border:0;overflow-wrap:anywhere}
+  table.cal td:first-child{color:#33415c;font-size:.88em;margin-bottom:5px}
+  table.cal td:first-child small{display:block;color:var(--muted);font-size:.9em}
+  table.cal td:last-child{font-weight:700;font-size:1.12em;line-height:1.35}
+  h2.sec{font-size:clamp(19px,1vw + 15px,26px);margin:26px 0 10px}
   .fine{font-size:13.5px;color:var(--muted);line-height:1.55;margin-top:14px}
   .fine b{color:#33415c}
   .tabs{display:flex;gap:8px;margin:6px 0 10px}
   .tabs button{flex:1;padding:11px 8px;border-radius:12px;border:1.5px solid var(--brand);background:#fff;color:var(--brand);font:inherit;font-weight:700;cursor:pointer;line-height:1.25}
   .tabs button small{display:block;font-weight:500;font-size:13px}
   .tabs button[aria-pressed="true"]{background:var(--brand);color:#fff}
-  table.cal td small.nat{color:#33415c;font-size:15px;font-weight:500;margin-top:2px;display:block}
-  table.cal td:last-child small{display:block;font-weight:500;font-size:14.5px;color:#33415c;margin-top:2px}
+  table.cal td small.nat{color:#33415c;font-size:1em;font-weight:500;display:block}
+  table.cal td:last-child small{display:block;font-weight:500;font-size:.86em;color:#33415c;margin-top:3px;unicode-bidi:plaintext;text-align:left}
+  .tabs{max-width:560px}.fine{max-width:1100px}
   .diff{background:#fff7e0;border:1px solid #f0d58a;border-radius:12px;padding:10px 12px;font-size:14px;margin:8px 0 0}
 </style>
 </head>
@@ -42,21 +50,21 @@
     <p class="sub">Pick a date and see it in the calendars people use around the world today, with the full Tamil panchangam.</p>
   </div>
   <div class="card">
-    <div class="field"><label for="d">Date (English / Gregorian calendar)</label><input id="d" type="date"></div>
-    <div class="btnrow"><button type="button" class="btn line" id="prev">← Day before</button><button type="button" class="btn" id="today">Today</button><button type="button" class="btn line" id="next">Day after →</button></div>
+    <div class="top"><div class="field"><label for="d">Date (English / Gregorian calendar)</label><input id="d" type="date"></div>
+    <div class="btnrow"><button type="button" class="btn line" id="prev">← Day before</button><button type="button" class="btn" id="today">Today</button><button type="button" class="btn line" id="next">Day after →</button></div></div>
     <p class="err" id="err"></p>
     <p class="lead" id="long" style="margin-top:14px"></p>
 
     <h2 class="sec">Tamil panchangam · தமிழ் பஞ்சாங்கம்</h2>
-    <div class="field"><label for="pl">Place for the times · இடம்</label><select id="pl"></select></div>
+    <div class="field" style="max-width:560px"><label for="pl">Place for the times · இடம்</label><select id="pl"></select></div>
     <div class="tabs"><button type="button" id="bT" aria-pressed="true">Thirukanitham<small>திருக்கணிதம்</small></button><button type="button" id="bV" aria-pressed="false">Vakyam<small>வாக்கியம்</small></button></div>
     <table class="cal" id="pan"></table>
     <p class="diff" id="diff" hidden></p>
 
     <h2 class="sec">Yearly thithi (remembrance day) · வருட திதி</h2>
     <p class="lead">Enter the date a loved one passed away. You get the Tamil month and thithi of that day, and the date it falls on this year.<br>இறந்த தேதியை இடுங்கள். அந்த நாளின் தமிழ் மாதம், திதி மற்றும் இந்த ஆண்டு திதி வரும் தேதி கிடைக்கும்.</p>
-    <div class="field"><label for="dd">Date of passing · இறந்த தேதி</label><input id="dd" type="date"></div>
-    <div class="field"><label for="dt">Time of passing, if you know it (in the place chosen above) · நேரம் (தெரிந்தால்)</label><input id="dt" type="time"></div>
+    <div class="top"><div class="field"><label for="dd">Date of passing · இறந்த தேதி</label><input id="dd" type="date"></div>
+    <div class="field"><label for="dt">Time of passing, if known (place chosen above) · நேரம் (தெரிந்தால்)</label><input id="dt" type="time"></div></div>
     <p class="err" id="derr"></p>
     <table class="cal" id="thi"></table>
     <p class="fine" id="thinote" hidden>The yearly thithi is found the Tamil way: the same Tamil month and the same thithi, on the day that thithi covers the afternoon. It uses the method (Thirukanitham or Vakyam) and the place chosen above. Without a time, the thithi at sunrise on the day of passing is used. Families and temples follow slightly different rules, so please confirm the date with your priest.<br>ஒரே தமிழ் மாதம், ஒரே திதி என்ற முறையில் கணிக்கப்படுகிறது. தேதியை உங்கள் குருக்களிடம் உறுதி செய்யுங்கள்.</p>
@@ -130,8 +138,13 @@ function panchang(y,m,d,lat,lon,k){var s=SYS[k||"t"],st=sunTimes(y,m,d,lat,lon),
   tithi:tn[0],tithiT:tn[1],tithiEnd:nextChange(elong,12,Jr),nak:NK[nk],nakT:NKT[nk],nakEnd:nextChange(s.moon,360/27,Jr),
   yoga:YG[yg],yogaT:YGT[yg],yogaEnd:nextChange(yogaL,360/27,Jr),kar:kn[0],karT:kn[1],karEnd:nextChange(elong,6,Jr),mrasi:RS[mr],mrasiT:RST[mr],
   rahu:part([8,2,7,5,6,4,3][w]),yama:part([5,4,3,2,1,7,6][w]),kuli:part([7,6,5,4,3,2,1][w])};}
+function lunar(y,m,d){var J=jd(y,m,d,0.5);function el(x){return n360(moon(x)-sun(x));}
+ function nm(x){var a=x-el(x)/12.19;for(var i=0;i<6;i++){var e=el(a);if(e>180)e-=360;a-=e/12.19;}return a;}
+ var a=nm(J),b=nm(a+32),r=Math.floor(sidSun(a)/30),r2=Math.floor(sidSun(b)/30),ti=Math.floor(el(J)/12),mi=(r+1)%12,adhik=r===r2;
+ var saka=y-78;if(m<=4&&mi>=9)saka=y-79;
+ return {mi:mi,adhik:adhik,ti:ti,saka:saka,yr:YR[((saka+11)%60+60)%60]};}
 function tithiAt(J,k){var s=SYS[k||"t"];return Math.floor(n360(s.moon(J)-s.sun(J))/12);}
-return {tamil:tamil,panchang:panchang,julian:julian,jd:jd,SYS:SYS,tithiAt:tithiAt,tithiName:tithiName,sunTimes:sunTimes,ssSun:ssSun,ssMoon:ssMoon,sidSun:sidSun,sidMoon:sidMoon};
+return {tamil:tamil,panchang:panchang,julian:julian,jd:jd,SYS:SYS,tithiAt:tithiAt,lunar:lunar,TI:TI,tithiName:tithiName,sunTimes:sunTimes,ssSun:ssSun,ssMoon:ssMoon,sidSun:sidSun,sidMoon:sidMoon};
 })();
 
 (function(){
@@ -140,6 +153,8 @@ var MN=["January","February","March","April","May","June","July","August","Septe
 var ZO=["Rat","Ox","Tiger","Rabbit","Dragon","Snake","Horse","Goat","Monkey","Rooster","Dog","Pig"],ZC="鼠牛虎兔龙蛇马羊猴鸡狗猪";
 var ML=["Medam","Edavam","Mithunam","Karkidakam","Chingam","Kanni","Thulam","Vrischikam","Dhanu","Makaram","Kumbham","Meenam"],MLN=["മേടം","ഇടവം","മിഥുനം","കർക്കടകം","ചിങ്ങം","കന്നി","തുലാം","വൃശ്ചികം","ധനു","മകരം","കുംഭം","മീനം"];
 var BN=["Boishakh","Joishtho","Asharh","Shrabon","Bhadro","Ashwin","Kartik","Ogrohayon","Poush","Magh","Falgun","Choitro"],BNN=["বৈশাখ","জ্যৈষ্ঠ","আষাঢ়","শ্রাবণ","ভাদ্র","আশ্বিন","কার্তিক","অগ্রহায়ণ","পৌষ","মাঘ","ফাল্গুন","চৈত্র"];
+var LM=["Chaitra","Vaisakha","Jyeshtha","Ashadha","Shravana","Bhadrapada","Ashwayuja","Kartika","Margasira","Pushya","Magha","Phalguna"],LMT=["చైత్రం","వైశాఖం","జ్యేష్ఠం","ఆషాఢం","శ్రావణం","భాద్రపదం","ఆశ్వయుజం","కార్తీకం","మార్గశిరం","పుష్యం","మాఘం","ఫాల్గుణం"],LMK=["ಚೈತ್ರ","ವೈಶಾಖ","ಜ್ಯೇಷ್ಠ","ಆಷಾಢ","ಶ್ರಾವಣ","ಭಾದ್ರಪದ","ಆಶ್ವಯುಜ","ಕಾರ್ತಿಕ","ಮಾರ್ಗಶಿರ","ಪುಷ್ಯ","ಮಾಘ","ಫಾಲ್ಗುಣ"];
+var CD=["初一","初二","初三","初四","初五","初六","初七","初八","初九","初十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十","廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"],CM=["正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"],GZ=["甲乙丙丁戊己庚辛壬癸","子丑寅卯辰巳午未申酉戌亥"];
 var PL=[["Chennai, India",13.0827,80.2707,"Asia/Kolkata"],["Madurai, India",9.9252,78.1198,"Asia/Kolkata"],["Jaffna, Sri Lanka",9.6615,80.0255,"Asia/Colombo"],["Colombo, Sri Lanka",6.9271,79.8612,"Asia/Colombo"],["Singapore",1.3521,103.8198,"Asia/Singapore"],["Kuala Lumpur, Malaysia",3.139,101.6869,"Asia/Kuala_Lumpur"],["Dubai, UAE",25.2048,55.2708,"Asia/Dubai"],["London, UK",51.5074,-0.1278,"Europe/London"],["Paris, France",48.8566,2.3522,"Europe/Paris"],["Toronto, Canada",43.6532,-79.3832,"America/Toronto"],["New York, USA",40.7128,-74.006,"America/New_York"],["Sydney, Australia",-33.8688,151.2093,"Australia/Sydney"]];
 var sys="t";
 PL.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.textContent=p[0];el("pl").appendChild(o);});
@@ -178,7 +193,7 @@ function show(){var v=el("d").value,p=v?v.split("-").map(Number):null;el("err").
   var df2=[];if(a.month!==o.month||a.day!==o.day)df2.push("Tamil date");if(a.tithi!==o.tithi)df2.push("tithi");if(a.nak!==o.nak)df2.push("nakshatra");if(a.yoga!==o.yoga)df2.push("yogam");if(a.kar!==o.kar)df2.push("karanam");
   el("diff").hidden=!df2.length;el("diff").textContent=df2.length?"On this day the two methods differ in: "+df2.join(", ")+". Tap "+(sys==="t"?"Vakyam":"Thirukanitham")+" above to compare.":"";
   var t=CAL.tamil(y,m,d,"t"),c=chinese("chinese",dt),ch="";
-  if(c){ch=row("Chinese lunar date",ord(c.d)+" day of the "+ord(c.m)+(c.leap?" (leap)":"")+" month","",intl("zh-CN","chinese",dt,{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}))+row("Zodiac year","Year of the "+ZO[((c.y-4)%12+12)%12],"Chinese year that began in "+c.y,ZC.charAt(((c.y-4)%12+12)%12)+"年");}
+  if(c){ch=row("Chinese lunar date",ord(c.d)+" day of the "+ord(c.m)+(c.leap?" (leap)":"")+" month","",GZ[0].charAt(((c.y-4)%10+10)%10)+GZ[1].charAt(((c.y-4)%12+12)%12)+"年 "+(c.leap?"闰":"")+CM[c.m-1]+CD[c.d-1])+row("Zodiac year","Year of the "+ZO[((c.y-4)%12+12)%12],"Chinese year that began in "+c.y,ZC.charAt(((c.y-4)%12+12)%12)+"年");}
   else ch=row("Chinese lunar date","Not available in this browser");
   el("chi").innerHTML=ch;
   h="";var x,k=chinese("dangi",dt),j=CAL.julian(y,m,d),ty=(m<=4&&t.rasi>=8)?y-1:y,doy=Math.round((dt-Date.UTC(y,0,1))/864e5)+1,L={day:"numeric",month:"long",year:"numeric",timeZone:"UTC"};
@@ -188,6 +203,8 @@ function show(){var v=el("d").value,p=v?v.split("-").map(Number):null;el("err").
   add("Persian (Solar Hijri)","persian","Iran and Afghanistan","fa-IR");
   add("Indian national (Saka)","indian","India's official civil calendar","hi-IN");
   var ky=y-(((m>8)||(m===8&&t.rasi>=4))?824:825),bg=bengali(y,m,d);
+  var lu=CAL.lunar(y,m,d),lt=(lu.ti<15?"Shukla (bright half) ":"Krishna (dark half) ")+(lu.ti===14?"Purnima":lu.ti===29?"Amavasya":CAL.TI[lu.ti%15]);
+  h+=row("Telugu / Kannada / Marathi (lunar)",(lu.adhik?"Adhika ":"")+LM[lu.mi]+", "+lt,"Shalivahana Saka "+lu.saka+", year "+lu.yr+". Month runs new moon to new moon",LMT[lu.mi]+" · "+LMK[lu.mi]+" · "+(lu.ti<15?"శుక్ల పక్షం":"కృష్ణ పక్షం"));
   h+=row("Malayalam (Kollam era)",t.day+" "+ML[t.rasi]+" "+ky,"Kerala. May differ by a day",num(t.day,"ml-IN")+" "+MLN[t.rasi]+" "+ky);
   h+=row("Bengali",bg[0],"Bangladesh national version",bg[1]);
   h+=row("Vikram Samvat year","Year "+(ty+57),"Nepal and North India. Year only, counted from mid-April","विक्रम संवत् "+String(ty+57).replace(/\d/g,function(c){return "०१२३४५६७८९".charAt(+c);}));
@@ -198,6 +215,7 @@ function show(){var v=el("d").value,p=v?v.split("-").map(Number):null;el("err").
   add("Ethiopian","ethiopic","13 months","am-ET");
   add("Coptic","coptic","Egypt's Coptic church","ar-EG");
   h+=row("Julian",j.d+" "+MN[j.m-1]+" "+j.y,"Used by some Orthodox churches",j.d+" "+new Intl.DateTimeFormat("ru",{month:"long",day:"numeric",timeZone:"UTC"}).format(new Date(Date.UTC(2001,j.m-1,5))).replace(/^\d+\s*/,"")+" "+j.y+" г.");
+  h+=row("Gregorian (English)",wd+", "+MN[m-1]+" "+d+", "+y,"The world's civil calendar");
   h+=row("ISO week",isoWeek(dt),"Used in business and Europe");
   h+=row("Day of the year","Day "+doy+" of "+y);
   h+=row("Julian Day Number",String(Math.floor(CAL.jd(y,m,d,12)+0.5)),"Used by astronomers");
@@ -222,9 +240,9 @@ function thithi(){var v=el("dd").value,out=el("thi"),er=el("derr");er.textConten
     return [e,list.map(fta).join(" / ")];}
   function r2(en,ta,ve,vt){return "<tr><td>"+en+"<small class='nat'>"+ta+"</small></td><td>"+ve+"<small>"+vt+"</small></td></tr>";}
   var G=[find(ty-1),find(ty),find(ty+1),find(ty+2)],inY=[],nxt=null;
-  G.forEach(function(g){var k=g.filter(function(c){return c.getUTCFullYear()===ty;});if(k.length)inY=inY.concat(g.length>1&&k.length===g.length?[g]:k.map(function(c){return [c];}));if(!nxt&&g.length&&g[g.length-1].toISOString().slice(0,10)>=todayS)nxt=g;});
+  G.forEach(function(g){var k=g.filter(function(c){return c.getUTCFullYear()===ty;});if(k.length)inY=inY.concat(g.length>1&&k.length===g.length?[g]:k.map(function(c){return [c];}));if(!nxt&&g.length&&g[g.length-1].toISOString().slice(0,10)>=todayS&&g[g.length-1].getUTCFullYear()>ty)nxt=g;});
   var a=inY.length?[inY.map(function(g){return cell(g)[0];}).join("<br>and "),inY.map(function(g){return cell(g)[1];}).join(" / ")]:["No thithi day falls inside "+ty+". See the next one below.","இந்த ஆண்டில் திதி நாள் இல்லை."],b=cell(nxt||[]);
-  out.innerHTML=r2("Tamil month of passing","இறந்த தமிழ் மாதம்",tm0.month+" "+tm0.day,tm0.monthT+" "+tm0.day)+r2("Thithi of passing","இறந்த திதி",tn[0],tn[1])+r2("Thithi in "+ty,ty+" திதி நாள்",a[0],a[1])+r2("Next thithi","அடுத்த திதி நாள்",b[0],b[1]);
+  out.innerHTML=r2("Tamil month of passing","இறந்த தமிழ் மாதம்",tm0.month+" "+tm0.day,tm0.monthT+" "+tm0.day)+r2("Thithi of passing","இறந்த திதி",tn[0],tn[1])+r2("Thithi in "+ty,ty+" திதி நாள்",a[0],a[1])+r2("The one after that","அதற்கு அடுத்த திதி நாள்",b[0],b[1]);
   el("thinote").hidden=false;}
 function setD(dt){el("d").value=dt.getUTCFullYear()+"-"+String(dt.getUTCMonth()+1).padStart(2,"0")+"-"+String(dt.getUTCDate()).padStart(2,"0");show();}
 function shift(n){var v=el("d").value;if(!v)return;var p=v.split("-").map(Number);setD(new Date(Date.UTC(p[0],p[1]-1,p[2]+n)));}
