@@ -6,7 +6,7 @@
 <title>Flashcard Maker — free online flashcards to study anything</title>
 <meta name="description" content="Free flashcard maker. Type your own words and answers, then flip through the cards and quiz yourself. Nothing is saved or sent.">
 <link rel="canonical" href="https://tools.freenetsave.com/flashcards/">
-<link rel="stylesheet" href="../assets/style.css?v=6">
+<link rel="stylesheet" href="../assets/style.css?v=7">
 <style>
   [hidden]{display:none !important}
   .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
@@ -40,7 +40,7 @@
   </div>
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
-<script src="../assets/embed.js?v=6"></script>
+<script src="../assets/embed.js?v=7"></script>
 <script>
 let deck=[],front=true,known=0,total=0;
 function parse(){return $("list").value.split("\n").map(l=>{const i=l.search(/\t|,/);return i<0?null:[l.slice(0,i).trim(),l.slice(i+1).trim()];}).filter(c=>c&&c[0]&&c[1]);}

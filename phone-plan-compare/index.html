@@ -6,7 +6,7 @@
 <title>Phone Plan Comparison — real monthly cost of two plans (free)</title>
 <meta name="description" content="Free phone plan comparison. Enter the monthly price, phone payment, one-time fees and contract length for two plans to see the real total cost and which one is cheaper.">
 <link rel="canonical" href="https://tools.freenetsave.com/phone-plan-compare/">
-<link rel="stylesheet" href="../assets/style.css?v=6">
+<link rel="stylesheet" href="../assets/style.css?v=7">
 <style>
   [hidden]{display:none !important}
   .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
@@ -38,7 +38,7 @@
   </div>
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
-<script src="../assets/embed.js?v=6"></script>
+<script src="../assets/embed.js?v=7"></script>
 <script>
 const F=[["m","Plan price each month","Monthly plan price"],["p","Phone payment each month","0 if you own your phone"],["o","One-time costs","Activation, SIM, money down"],["c","Credits or gift cards you get","Bill credits, trade-in"],["n","Months","Length of the deal, e.g. 24"]];
 $("plans").innerHTML=["A","B"].map(k=>'<div class="pl"><h2>Plan '+k+'</h2><div class="row">'+F.map(f=>'<div class="field"><label for="'+f[0]+k+'">'+f[1]+'</label><input id="'+f[0]+k+'" type="number" inputmode="decimal" min="0" placeholder="'+f[2]+'"></div>').join("")+"</div></div>").join("");

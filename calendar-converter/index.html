@@ -6,7 +6,7 @@
 <title>Calendar Converter — Tamil Panchangam, Chinese, Islamic, Hebrew and more</title>
 <meta name="description" content="Free calendar converter. Pick any date and see it in the Tamil, Chinese, Islamic, Hebrew, Persian, Indian, Ethiopian, Japanese and other calendars used today, with the full Tamil panchangam (Thirukanitham and Vakyam) in English and Tamil, and the yearly thithi date.">
 <link rel="canonical" href="https://tools.freenetsave.com/calendar-converter/">
-<link rel="stylesheet" href="../assets/style.css?v=6">
+<link rel="stylesheet" href="../assets/style.css?v=7">
 <style>
   [hidden]{display:none !important}
   .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
@@ -75,6 +75,8 @@
     <button type="button" class="btn line" id="mp">← Month before</button><button type="button" class="btn line" id="mn">Month after →</button></div>
     <div id="mt"></div>
     <div class="mg" id="mg"></div>
+    <h2 class="sec" id="dth" style="font-size:clamp(17px,.8vw + 14px,22px)"></h2>
+    <table class="cal" id="det"></table>
     <p class="fine" style="margin-top:8px">The big number is the English date. The orange line is the date in the calendar you picked. Tap any day to see all its details below.</p>
 
     <h2 class="sec">Tamil panchangam · தமிழ் பஞ்சாங்கம்</h2>
@@ -102,7 +104,7 @@
   </div>
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
-<script src="../assets/embed.js?v=6"></script>
+<script src="../assets/embed.js?v=7"></script>
 <script>
 /* calendar maths: Sun and Moon positions (Meeus), Lahiri ayanamsa, Tamil solar date */
 var CAL=(function(){
@@ -160,6 +162,7 @@ function panchang(y,m,d,lat,lon,k){var s=SYS[k||"t"],st=sunTimes(y,m,d,lat,lon),
   tithi:tn[0],tithiT:tn[1],tithiEnd:nextChange(elong,12,Jr),nak:NK[nk],nakT:NKT[nk],nakEnd:nextChange(s.moon,360/27,Jr),
   yoga:YG[yg],yogaT:YGT[yg],yogaEnd:nextChange(yogaL,360/27,Jr),kar:kn[0],karT:kn[1],karEnd:nextChange(elong,6,Jr),mrasi:RS[mr],mrasiT:RST[mr],
   rahu:part([8,2,7,5,6,4,3][w]),yama:part([5,4,3,2,1,7,6][w]),kuli:part([7,6,5,4,3,2,1][w])};}
+function newMoon(J){function el(x){return n360(moon(x)-sun(x));}var a=J-el(J)/12.19;for(var i=0;i<6;i++){var e=el(a);if(e>180)e-=360;a-=e/12.19;}return a;}
 function lunar(y,m,d){var J=jd(y,m,d,0.5);function el(x){return n360(moon(x)-sun(x));}
  function nm(x){var a=x-el(x)/12.19;for(var i=0;i<6;i++){var e=el(a);if(e>180)e-=360;a-=e/12.19;}return a;}
  var a=nm(J),b=nm(a+32),r=Math.floor(sidSun(a)/30),r2=Math.floor(sidSun(b)/30),ti=Math.floor(el(J)/12),mi=(r+1)%12,adhik=r===r2;
@@ -167,7 +170,7 @@ function lunar(y,m,d){var J=jd(y,m,d,0.5);function el(x){return n360(moon(x)-sun
  return {mi:mi,adhik:adhik,ti:ti,saka:saka,yr:YR[((saka+11)%60+60)%60]};}
 function nakAt(J,k){return Math.floor(SYS[k||"t"].moon(J)/(360/27));}
 function tithiAt(J,k){var s=SYS[k||"t"];return Math.floor(n360(s.moon(J)-s.sun(J))/12);}
-return {tamil:tamil,panchang:panchang,julian:julian,jd:jd,SYS:SYS,tithiAt:tithiAt,nakAt:nakAt,NK:NK,NKT:NKT,lunar:lunar,TI:TI,tithiName:tithiName,sunTimes:sunTimes,ssSun:ssSun,ssMoon:ssMoon,sidSun:sidSun,sidMoon:sidMoon};
+return {tamil:tamil,panchang:panchang,julian:julian,jd:jd,SYS:SYS,tithiAt:tithiAt,nakAt:nakAt,newMoon:newMoon,sunLon:sun,elong:function(J){return n360(moon(J)-sun(J));},NK:NK,NKT:NKT,lunar:lunar,TI:TI,tithiName:tithiName,sunTimes:sunTimes,ssSun:ssSun,ssMoon:ssMoon,sidSun:sidSun,sidMoon:sidMoon};
 })();
 
 (function(){
@@ -184,7 +187,13 @@ PL.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.text
 function num(n,loc){try{return Number(n).toLocaleString(loc,{useGrouping:false});}catch(e){return String(n);}}
 function ord(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 function intl(loc,cal,dt,opt){try{var f=new Intl.DateTimeFormat(loc+"-u-ca-"+cal,opt||{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});if(f.resolvedOptions().calendar!==cal)return null;return f.format(dt);}catch(e){return null;}}
-function chinese(cal,dt){try{var f=new Intl.DateTimeFormat("en-u-ca-"+cal,{day:"numeric",month:"numeric",year:"numeric",timeZone:"UTC"});if(f.resolvedOptions().calendar!==cal)return null;var o={};f.formatToParts(dt).forEach(function(p){o[p.type]=p.value;});return {m:parseInt(o.month,10),d:parseInt(o.day,10),y:parseInt(o.relatedYear||o.year,10),leap:/bis|L/i.test(o.month)};}catch(e){return null;}}
+function chRaw(cal,dt){try{var f=new Intl.DateTimeFormat("en-u-ca-"+cal,{day:"numeric",month:"numeric",year:"numeric",timeZone:"UTC"});if(f.resolvedOptions().calendar!==cal)return null;var o={};f.formatToParts(dt).forEach(function(p){o[p.type]=p.value;});return {m:parseInt(o.month,10),d:parseInt(o.day,10),y:parseInt(o.relatedYear||o.year,10),leap:/bis|L/i.test(o.month)};}catch(e){return null;}}
+/* the browser's lunar date, with the day checked against our own new moon (China time, or Korea time for the Korean calendar) */
+function chinese(cal,dt){var r=chRaw(cal,dt);if(!r)return null;var tz=cal==="dangi"?9:8,jn=Math.round(dt.getTime()/864e5+2440587.5+0.5),nm=CAL.newMoon(jn+0.5-tz/24-0.0001),own=jn-Math.floor(nm+tz/24+0.5)+1,o;
+  if(own===r.d||own<1||own>30)return r;
+  if(own===1&&r.d>=29){o=chRaw(cal,new Date(dt.getTime()+864e5));if(o&&o.d===1)return {m:o.m,d:1,y:o.y,leap:o.leap};return r;}
+  if(own>=29&&r.d===1){o=chRaw(cal,new Date(dt.getTime()-864e5));if(o)return {m:o.m,d:own,y:o.y,leap:o.leap};return r;}
+  if(Math.abs(own-r.d)===1)return {m:r.m,d:own,y:r.y,leap:r.leap};return r;}
 function bengali(y,m,d){var t=Date.UTC(y,m-1,d),ny=Date.UTC(y,3,14),by=y-593;if(t<ny){ny=Date.UTC(y-1,3,14);by=y-594;}var n=Math.round((t-ny)/864e5),gy=new Date(ny).getUTCFullYear()+1,leap=(gy%4===0&&gy%100!==0)||gy%400===0,L=[31,31,31,31,31,31,30,30,30,30,leap?30:29,30],i=0;while(i<11&&n>=L[i]){n-=L[i];i++;}return [(n+1)+" "+BN[i]+" "+by,num(n+1,"bn-BD")+" "+BNN[i]+" "+num(by,"bn-BD")];}
 function isoWeek(dt){var t=new Date(dt.getTime()),dn=(t.getUTCDay()+6)%7;t.setUTCDate(t.getUTCDate()-dn+3);var y=t.getUTCFullYear(),f=new Date(Date.UTC(y,0,4)),w=1+Math.round(((t-f)/864e5-3+((f.getUTCDay()+6)%7))/7);return "Week "+w+" of "+y;}
 function row(a,b,c,nat){return "<tr><td>"+a+(c?"<small>"+c+"</small>":"")+"</td><td>"+b+(nat?"<small>"+nat+"</small>":"")+"</td></tr>";}
@@ -242,7 +251,7 @@ function show(){var v=el("d").value,p=v?v.split("-").map(Number):null;el("err").
   h+=row("ISO week",isoWeek(dt),"Used in business and Europe");
   h+=row("Day of the year","Day "+doy+" of "+y);
   h+=row("Julian Day Number",String(Math.floor(CAL.jd(y,m,d,12)+0.5)),"Used by astronomers");
-  el("tbl").innerHTML=h;month();}
+  el("tbl").innerHTML=h;month();details();}
 function tzOff(ms,tz){var f=new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric"}),o={};f.formatToParts(new Date(ms)).forEach(function(p){o[p.type]=+p.value;});return Date.UTC(o.year,o.month-1,o.day,o.hour,o.minute)-Math.floor(ms/6e4)*6e4;}
 function thithi(){var v=el("dd").value,out=el("thi"),er=el("derr");er.textContent="";out.innerHTML="";el("thinote").hidden=true;if(!v)return;
   var p=v.split("-").map(Number),y=p[0],m=p[1],d=p[2],now=new Date(),ty=now.getFullYear(),todayS=ty+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
@@ -286,17 +295,65 @@ function month(){var v=el("d").value;if(!v)return;var p=v.split("-").map(Number)
     h+="<button type='button' class='dc"+(ds===v?" sel":"")+(ds===ts?" tdy":"")+"' data-d='"+ds+"'><b>"+d+"</b>"+(x?"<span class='o'>"+x.o+"</span>"+(x.s?"<small>"+x.s+"</small>":"")+(x.x?"<small class='x'>"+x.x+"</small>":""):"")+"</button>";}
   el("mg").innerHTML=h;var nm=MC.filter(function(q){return q[0]===c;})[0][1];
   el("mt").innerHTML=MN[m-1]+" "+y+"<small>"+nm+": "+(mos.length?mos.join(" – ")+" · "+yrs.join(" – "):"not available in this browser")+"</small>";}
+var ST=[["Chunfen","春分","Spring Equinox"],["Qingming","清明","Clear and Bright"],["Guyu","谷雨","Grain Rain"],["Lixia","立夏","Start of Summer"],["Xiaoman","小满","Grain Buds"],["Mangzhong","芒种","Grain in Ear"],["Xiazhi","夏至","Summer Solstice"],["Xiaoshu","小暑","Minor Heat"],["Dashu","大暑","Major Heat"],["Liqiu","立秋","Start of Autumn"],["Chushu","处暑","End of Heat"],["Bailu","白露","White Dew"],["Qiufen","秋分","Autumn Equinox"],["Hanlu","寒露","Cold Dew"],["Shuangjiang","霜降","Frost's Descent"],["Lidong","立冬","Start of Winter"],["Xiaoxue","小雪","Minor Snow"],["Daxue","大雪","Major Snow"],["Dongzhi","冬至","Winter Solstice"],["Xiaohan","小寒","Minor Cold"],["Dahan","大寒","Major Cold"],["Lichun","立春","Start of Spring"],["Yushui","雨水","Rain Water"],["Jingzhe","惊蛰","Awakening of Insects"]];
+var EL=["Wood","Wood","Fire","Fire","Earth","Earth","Metal","Metal","Water","Water"],ELC="木木火火土土金金水水",STEM=["Jia","Yi","Bing","Ding","Wu","Ji","Geng","Xin","Ren","Gui"],BR=["Zi","Chou","Yin","Mao","Chen","Si","Wu","Wei","Shen","You","Xu","Hai"];
+var pn={};function np(cal,dt){var f=pn[cal]||(pn[cal]=new Intl.DateTimeFormat("en-u-ca-"+cal,{day:"numeric",month:"numeric",year:"numeric",timeZone:"UTC"})),o={};f.formatToParts(dt).forEach(function(p){o[p.type]=p.value;});return {m:parseInt(o.month,10),d:parseInt(o.day,10),y:parseInt(o.relatedYear||o.year,10),mn:o.month};}
+function gd(c){return c.toLocaleDateString("en",{weekday:"short",day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});}
+function scan(dt,test,max){for(var i=0;i<(max||420);i++){var c=new Date(dt.getTime()+i*864e5);try{if(test(c))return c;}catch(e){return null;}}return null;}
+function nextOn(cal,mon,day,dt){return scan(dt,function(c){if(cal==="chinese"||cal==="dangi"){var x=chinese(cal,c);return x&&!x.leap&&x.m===mon&&x.d===day;}if(cal==="hebrew"){var q=parts(cal,c);return q.month===mon&&+q.day===day;}var n=np(cal,c);return n.m===mon&&n.d===day;});}
+function fest(list,cal,dt){return list.map(function(f){var c=nextOn(cal,f[1],f[2],dt);return c?[f[0],gd(c),f[3]||"",f[4]||""]:null;}).filter(Boolean);}
+function mlen(cal,dt){var a=np(cal,dt),n=a.d;for(var i=1;i<40;i++){var b=np(cal,new Date(dt.getTime()+i*864e5));if(b.d===1)break;n=b.d;}return n;}
+function moonPhase(J){var e=CAL.elong(J),nm=["New moon","Waxing crescent","First quarter","Waxing gibbous","Full moon","Waning gibbous","Last quarter","Waning crescent"],ic="🌑🌒🌓🌔🌕🌖🌗🌘";var i=Math.floor(((e+22.5)%360)/45);return Array.from(ic)[i]+" "+nm[i]+" · "+Math.round((1-Math.cos(e*Math.PI/180))/2*100)+"% lit";}
+function details(){var v=el("d").value,c=el("mc").value,R=[],nm=MC.filter(function(q){return q[0]===c;})[0][1];if(!v)return;var p=v.split("-").map(Number),y=p[0],m=p[1],d=p[2],dt=new Date(Date.UTC(y,m-1,d)),J=CAL.jd(y,m,d,4),x,i,wdn=function(loc){try{return dt.toLocaleDateString(loc,{weekday:"long",timeZone:"UTC"});}catch(e){return "";}};
+  function A(a,b,s,n){R.push([a,b,s||"",n||""]);}
+  function F(list,cal){fest(list,cal,dt).forEach(function(f){A(f[0],f[1],f[2],f[3]);});}
+  function basic(cal,loc,suffix){var q=parts(cal,dt),n=np(cal,dt);A("Date",q.day+" "+q.month+" "+(q.relatedYear||q.year)+(suffix||""),"",intl(loc,cal,dt,{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}));A("Day of the week",wdn("en"),"",wdn(loc));A("Month",q.month,(isNaN(n.m)?"":"Month "+n.m+" · ")+mlen(cal,dt)+" days long");return n;}
+  if(c==="tt"||c==="tv"){A("Tamil panchangam","See the full details just below","Date, year, tithi, nakshatra, yogam, karanam, Rahu kalam and more","கீழே முழு பஞ்சாங்கம்");}
+  else if(c==="chinese"||c==="dangi"){x=chinese(c,dt);if(x){var yi=((x.y-4)%60+60)%60,jdn=Math.floor(CAL.jd(y,m,d,12)+0.5),di=((jdn+49)%60+60)%60,kr=c==="dangi";
+    A("Lunar date",ord(x.d)+" day of the "+ord(x.m)+(x.leap?" (leap)":"")+" month","",kr?intl("ko-KR","dangi",dt,{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}):(x.leap?"闰":"")+CM[x.m-1]+CD[x.d-1]);
+    A("Zodiac year","Year of the "+EL[yi%10]+" "+ZO[yi%12],"Began in "+x.y+". The animal repeats every 12 years",kr?"":ELC.charAt(yi%10)+ZC.charAt(yi%12)+"年");
+    A("Year name (stem and branch)",STEM[yi%10]+"-"+BR[yi%12],"Year "+(yi+1)+" of the 60-year cycle",GZ[0].charAt(yi%10)+GZ[1].charAt(yi%12)+"年");
+    A("Day name (stem and branch)",STEM[di%10]+"-"+BR[di%12]+" · "+ZO[di%12]+" day","Day "+(di+1)+" of the 60-day cycle",GZ[0].charAt(di%10)+GZ[1].charAt(di%12)+"日");
+    A("Moon",moonPhase(J),"The lunar month starts at the new moon; day 15 is near the full moon");
+    var si=Math.floor(CAL.sunLon(CAL.jd(y,m,d,16))/15),nx=scan(new Date(dt.getTime()+864e5),function(q){return Math.floor(CAL.sunLon(CAL.jd(q.getUTCFullYear(),q.getUTCMonth()+1,q.getUTCDate(),16))/15)!==si;},20);
+    A("Solar term (season marker)",ST[si][0]+" · "+ST[si][2],"The year has 24 solar terms",kr?"":ST[si][1]);
+    if(nx)A("Next solar term",ST[(si+1)%24][0]+" · "+ST[(si+1)%24][2],gd(nx),kr?"":ST[(si+1)%24][1]);
+    if(kr)F([["Seollal (Lunar New Year)",1,1,"","설날"],["Daeboreum (first full moon)",1,15,"","정월 대보름"],["Buddha's Birthday",4,8,"","부처님 오신 날"],["Dano",5,5,"","단오"],["Chuseok (harvest festival)",8,15,"","추석"]],c);
+    else F([["Chinese New Year (Spring Festival)",1,1,"","春节"],["Lantern Festival",1,15,"","元宵节"],["Dragon Boat Festival",5,5,"","端午节"],["Qixi Festival",7,7,"","七夕"],["Mid-Autumn Festival",8,15,"","中秋节"],["Double Ninth Festival",9,9,"","重阳节"]],c);}}
+  else if(c==="islamic-umalqura"){x=basic(c,"ar-SA"," AH");A("Moon",moonPhase(J),"Each month begins with the new crescent moon");var sm=["Sacred month (Muharram)","","","","","","Sacred month (Rajab)","","Month of fasting (Ramadan)","","Sacred month (Dhu al-Qadah)","Month of Hajj (sacred month)"][x.m-1];if(sm)A("Special month",sm,"");
+    F([["Islamic New Year (1 Muharram)",1,1,"","رأس السنة الهجرية"],["Ashura",1,10,"","عاشوراء"],["Mawlid (Prophet's birthday)",3,12,"Date kept by many Sunni communities","المولد النبوي"],["Start of Ramadan",9,1,"","رمضان"],["Eid al-Fitr",10,1,"","عيد الفطر"],["Day of Arafah",12,9,"","يوم عرفة"],["Eid al-Adha",12,10,"","عيد الأضحى"]],c);A("Note","Dates can differ by a day","Many countries wait to see the new moon");}
+  else if(c==="hebrew"){x=basic(c,"he-IL","");var hy=parseInt(parts(c,dt).year,10);A("Year type",[0,3,6,8,11,14,17].indexOf(hy%19)>=0?"Leap year (13 months)":"Ordinary year (12 months)","");A("Moon",moonPhase(J),"The day begins at sunset the evening before");
+    F([["Rosh Hashanah (New Year)","Tishri",1,"","ראש השנה"],["Yom Kippur","Tishri",10,"","יום כיפור"],["Sukkot","Tishri",15,"","סוכות"],["Hanukkah (first day)","Kislev",25,"","חנוכה"],["Passover (first day)","Nisan",15,"","פסח"],["Shavuot","Sivan",6,"","שבועות"]],c);A("Note","Each holiday begins at sunset the evening before the date shown","");}
+  else if(c==="persian"){x=basic(c,"fa-IR"," AP");A("Season",["Spring","Summer","Autumn","Winter"][Math.floor((x.m-1)/3)],"",["بهار","تابستان","پاییز","زمستان"][Math.floor((x.m-1)/3)]);F([["Nowruz (New Year)",1,1,"","نوروز"],["Sizdah Bedar (Nature Day)",1,13,"","سیزده‌بدر"],["Tirgan",4,13,"","تیرگان"],["Mehregan",7,16,"","مهرگان"],["Yalda Night",9,30,"The longest night of the year","شب یلدا"]],c);}
+  else if(c==="indian"){x=basic(c,"hi-IN"," Saka");A("Season (ritu)",["Vasanta (spring)","Grishma (summer)","Varsha (monsoon)","Sharad (autumn)","Hemanta (pre-winter)","Shishira (winter)"][Math.floor(((x.m+10)%12)/2)],"");F([["New Year (1 Chaitra)",1,1]],c);}
+  else if(c==="lunar"){x=CAL.lunar(y,m,d);var nk=CAL.nakAt(CAL.jd(y,m,d,0.5),"t");A("Month",(x.adhik?"Adhika ":"")+LM[x.mi],"Month runs new moon to new moon",LMT[x.mi]+" · "+LMK[x.mi]);A("Paksha",x.ti<15?"Shukla (bright half, moon growing)":"Krishna (dark half, moon shrinking)","",x.ti<15?"శుక్ల పక్షం · ಶುಕ್ಲ ಪಕ್ಷ":"కృష్ణ పక్షం · ಕೃಷ್ಣ ಪಕ್ಷ");A("Tithi at sunrise",x.ti===14?"Purnima (full moon)":x.ti===29?"Amavasya (new moon)":CAL.TI[x.ti%15],"Timed for India");A("Nakshatra at sunrise",CAL.NK[nk],"");A("Year name",x.yr,"From the 60-year cycle");A("Shalivahana Saka year",String(x.saka),"");A("Moon",moonPhase(J));
+    var ug=scan(new Date(dt.getTime()+864e5),function(q){var a=CAL.lunar(q.getUTCFullYear(),q.getUTCMonth()+1,q.getUTCDate()),b=new Date(q.getTime()-864e5),pb=CAL.lunar(b.getUTCFullYear(),b.getUTCMonth()+1,b.getUTCDate());return a.mi===0&&!a.adhik&&!(pb.mi===0&&!pb.adhik);},420);
+    if(ug){var ua=CAL.lunar(ug.getUTCFullYear(),ug.getUTCMonth()+1,ug.getUTCDate());if(ua.ti>0)ug=new Date(ug.getTime()-864e5);A("Ugadi / Gudi Padwa (New Year)",gd(ug),"May differ by a day","ఉగాది · ಯುಗಾದಿ · गुढीपाडवा");}}
+  else if(c==="ml"){x=CAL.tamil(y,m,d,"t");var ky=y-(((m>8)||(m===8&&x.rasi>=4))?824:825),nk2=CAL.nakAt(CAL.jd(y,m,d,0.5),"t");A("Date",x.day+" "+ML[x.rasi]+" "+ky,"May differ by a day from a Kerala calendar",x.day+" "+MLN[x.rasi]+" "+ky);A("Day of the week",wdn("en"),"",wdn("ml-IN"));A("Month",ML[x.rasi],"A solar month, like the Tamil one",MLN[x.rasi]);A("Kollam era year",String(ky),"The year begins on 1 Chingam, in mid-August");A("Nakshatra (nal) at sunrise",CAL.NK[nk2],"Tamil-style spelling. Timed for India");A("Moon",moonPhase(J));
+    var ch=scan(new Date(dt.getTime()+864e5),function(q){var a=CAL.tamil(q.getUTCFullYear(),q.getUTCMonth()+1,q.getUTCDate(),"t");return a.rasi===4&&a.day===1;},400),vi=scan(new Date(dt.getTime()+864e5),function(q){var a=CAL.tamil(q.getUTCFullYear(),q.getUTCMonth()+1,q.getUTCDate(),"t");return a.rasi===0&&a.day===1;},400);
+    if(ch)A("New Year (1 Chingam)",gd(ch),"May differ by a day","ചിങ്ങം 1");if(vi)A("Vishu (1 Medam)",gd(vi),"May differ by a day","വിഷു");}
+  else if(c==="bn"){x=bengali(y,m,d);var q2=x[0].split(" "),bi=BN.indexOf(q2[1]);A("Date",x[0]+" BS","Bangladesh national version",x[1]);A("Day of the week",wdn("en"),"",wdn("bn-BD"));A("Month",q2[1],"Month "+(bi+1)+" of 12",BNN[bi]);A("Season (ritu)",["Grishmo (summer)","Borsha (monsoon)","Shorot (autumn)","Hemonto (late autumn)","Sheet (winter)","Boshonto (spring)"][Math.floor(bi/2)],"",["গ্রীষ্ম","বর্ষা","শরৎ","হেমন্ত","শীত","বসন্ত"][Math.floor(bi/2)]);
+    A("Pohela Boishakh (New Year)",gd(new Date(Date.UTC(Date.UTC(y,3,14)>dt.getTime()?y:y+1,3,14))),"14 April in Bangladesh. West Bengal often keeps 15 April","পহেলা বৈশাখ");}
+  else if(c==="ethiopic"){x=basic(c,"am-ET","");F([["Enkutatash (New Year)",1,1,"","እንቁጣጣሽ"],["Meskel",1,17,"","መስቀል"],["Genna (Christmas)",4,29,"","ገና"],["Timkat (Epiphany)",5,11,"","ጥምቀት"]],c);A("About","13 months: 12 of 30 days and a short one of 5 or 6 days","The year is 7 to 8 years behind the English calendar");}
+  else if(c==="coptic"){x=basic(c,"ar-EG","");F([["Nayrouz (New Year)",1,1,"","عيد النيروز"],["Christmas",4,29,"","عيد الميلاد"],["Epiphany",5,11,"","عيد الغطاس"]],c);A("About","13 months: 12 of 30 days and a short one of 5 or 6 days","Years are counted from 284 AD");}
+  else if(c==="buddhist"){x=basic(c,"th-TH"," BE");A("About","Same months and days as the English calendar","The year is 543 ahead");A("Moon",moonPhase(J),"Buddhist holy days follow the moon");}
+  else if(c==="japanese"){var jq=parts(c,dt);A("Date",jq.month+" "+jq.day+", "+(jq.era||"")+" "+jq.year,"",intl("ja-JP","japanese",dt,{era:"long",year:"numeric",month:"long",day:"numeric",timeZone:"UTC"}));A("Day of the week",wdn("en"),"",wdn("ja-JP"));A("Era",(jq.era||"")+" "+jq.year,"Years are counted from the start of the emperor's reign");A("Zodiac year (eto)","Year of the "+ZO[((y-4)%12+12)%12],"Japan uses the same 12 animals, starting on 1 January","子丑寅卯辰巳午未申酉戌亥".charAt(((y-4)%12+12)%12)+"年");}
+  else if(c==="roc"){x=basic(c,"zh-TW","");A("About","Same months and days as the English calendar","Years are counted from 1912, the first year of the Republic");}
+  else if(c==="julian"){x=CAL.julian(y,m,d);A("Date",x.d+" "+MN[x.m-1]+" "+x.y,"Used by some Orthodox churches");A("Day of the week",wdn("en"));A("Days behind the English calendar",String(Math.round((dt.getTime()-Date.UTC(x.y,x.m-1,x.d))/864e5)),"The gap grows by 3 days every 400 years");var oc=new Date(Date.UTC(y,0,7));if(oc<dt)oc=new Date(Date.UTC(y+1,0,7));A("Orthodox Christmas (25 December, Julian)",gd(oc),"7 January in the English calendar");A("Julian New Year (Old New Year)",gd(new Date(Date.UTC(dt>new Date(Date.UTC(y,0,14))?y+1:y,0,14))),"14 January in the English calendar");}
+  el("dth").textContent="Details · "+nm;el("det").innerHTML=R.map(function(r){return row(r[0],r[1],r[2],r[3]);}).join("");}
 el("mg").addEventListener("click",function(e){var b=e.target.closest(".dc");if(!b)return;el("d").value=b.getAttribute("data-d");show();});
-el("mc").addEventListener("change",month);
+el("mc").addEventListener("change",function(){month();details();});
 function mshift(n){var v=el("d").value;if(!v)return;var p=v.split("-").map(Number),t=new Date(Date.UTC(p[0],p[1]-1+n,1)),last=new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth()+1,0)).getUTCDate();setD(new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),Math.min(p[2],last))));}
 el("mp").addEventListener("click",function(){mshift(-1);});el("mn").addEventListener("click",function(){mshift(1);});
 function setD(dt){el("d").value=dt.getUTCFullYear()+"-"+String(dt.getUTCMonth()+1).padStart(2,"0")+"-"+String(dt.getUTCDate()).padStart(2,"0");show();}
 function shift(n){var v=el("d").value;if(!v)return;var p=v.split("-").map(Number);setD(new Date(Date.UTC(p[0],p[1]-1,p[2]+n)));}
 function now(){var t=new Date();setD(new Date(Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())));}
+window.FNS_SHARE=function(){var v=el("d").value;if(!v)return null;var p=v.split("-").map(Number),pl=PL[+el("pl").value||0],a=CAL.panchang(p[0],p[1],p[2],pl[1],pl[2],sys);
+  return {url:location.origin+location.pathname+"?d="+v,text:el("long").textContent.split(" · ")[0]+" = Tamil: "+a.month+" "+a.day+" ("+a.monthT+" "+a.day+"), "+a.year+" year. Nakshatra: "+a.nak+" ("+a.nakT+"). Tithi: "+a.tithi+". See the full panchangam and other calendars:"};};
 function pick(k){sys=k;el("bT").setAttribute("aria-pressed",k==="t");el("bV").setAttribute("aria-pressed",k==="v");show();thithi();}
 el("d").addEventListener("input",show);el("pl").addEventListener("change",function(){show();thithi();});el("dd").addEventListener("input",thithi);el("dt").addEventListener("input",thithi);el("today").addEventListener("click",now);el("prev").addEventListener("click",function(){shift(-1);});el("next").addEventListener("click",function(){shift(1);});
 el("bT").addEventListener("click",function(){pick("t");});el("bV").addEventListener("click",function(){pick("v");});
-now();
+var qd=(location.search.match(/[?&]d=(\d{4}-\d{2}-\d{2})/)||[])[1];if(qd){el("d").value=qd;show();if(!el("pan").innerHTML)now();}else now();
 })();
 </script>
 </body>

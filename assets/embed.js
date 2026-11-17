@@ -13,6 +13,37 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addChrome); else addChrome();
 
+  // Share and send buttons under every tool. Only the page link (and a short result line, if the tool gives one) is shared. Nothing typed into the tool is sent by us.
+  function addShare(){
+    var w = document.querySelector('.wrap'); if (!w || document.querySelector('.fns-share')) return;
+    var st = document.createElement('style');
+    st.textContent = ".fns-share{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:18px 0 0}.fns-share span{font-weight:700;color:#33415c;font-size:15px;margin-right:4px}.fns-share button,.fns-share a{font:inherit;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:999px;border:1.5px solid #cfd9ea;background:#fff;color:#172033;line-height:1}.fns-share button:hover,.fns-share a:hover{border-color:#2563eb;color:#2563eb}.fns-share .main{background:#2563eb;border-color:#2563eb;color:#fff}.fns-share .main:hover{color:#fff;background:#1d4fd8}@media print{.fns-share{display:none!important}}";
+    document.head.appendChild(st);
+    function data(){
+      var d = null; try { if (typeof window.FNS_SHARE === 'function') d = window.FNS_SHARE(); } catch (e) {}
+      d = d || {};
+      var t = (document.querySelector('h1') || {}).textContent || document.title;
+      return { title: t, text: d.text || (t + ' (free tool on freenetsave)'), url: d.url || (location.origin + location.pathname) };
+    }
+    var b = document.createElement('div'); b.className = 'fns-share';
+    b.innerHTML = '<span>Share this:</span>' + (navigator.share && !inFrame ? '<button type="button" class="main" data-s="native">📤 Share</button>' : '') +
+      '<a data-s="wa" target="_blank" rel="noopener">💬 WhatsApp</a><a data-s="mail">✉️ Email</a><a data-s="sms">📱 Text</a><button type="button" data-s="copy">🔗 Copy link</button>';
+    function fill(){
+      var d = data(), msg = d.text + '\n' + d.url;
+      b.querySelector('[data-s=wa]').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+      b.querySelector('[data-s=mail]').href = 'mailto:?subject=' + encodeURIComponent(d.title) + '&body=' + encodeURIComponent(msg);
+      b.querySelector('[data-s=sms]').href = 'sms:?&body=' + encodeURIComponent(msg);
+    }
+    b.addEventListener('pointerdown', fill); b.addEventListener('focusin', fill); fill();
+    b.addEventListener('click', function(e){
+      var k = e.target.closest('[data-s]'); if (!k) return; var s = k.getAttribute('data-s'), d = data();
+      if (s === 'native') { navigator.share({ title: d.title, text: d.text, url: d.url }).catch(function(){}); }
+      else if (s === 'copy') { window.copyText(d.text + '\n' + d.url); }
+    });
+    var n = w.querySelector('.note'); if (n) w.insertBefore(b, n); else w.appendChild(b);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addShare); else setTimeout(addShare, 0);
+
   // Tell the freenetsave.com page how tall this tool is, so the frame fits with no scroll bar.
   function sendHeight(){
     if (!inFrame) return;

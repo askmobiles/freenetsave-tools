@@ -6,7 +6,7 @@
 <title>Split PDF, Rotate Pages, Add Page Numbers — free</title>
 <meta name="description" content="Free PDF tool. Take out the pages you want, rotate pages, or add page numbers. It all happens on your device and nothing is uploaded.">
 <link rel="canonical" href="https://tools.freenetsave.com/pdf-split/">
-<link rel="stylesheet" href="../assets/style.css?v=6">
+<link rel="stylesheet" href="../assets/style.css?v=7">
 <style>
   [hidden]{display:none !important}
   .box b{word-break:normal;overflow-wrap:anywhere;font-size:clamp(20px,5.6vw,26px)}
@@ -40,7 +40,7 @@
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
 <script src="../assets/lib/pdf-lib.min.js"></script>
-<script src="../assets/embed.js?v=6"></script>
+<script src="../assets/embed.js?v=7"></script>
 <script>
 let bytes=null,name="",count=0,M="split";
 function parsePages(s,n){s=s.trim();if(!s)return null;const out=[];for(const part of s.split(",")){const m=part.trim().match(/^(\d+)(?:\s*-\s*(\d+))?$/);if(!m)return null;let a=+m[1],b=m[2]?+m[2]:a;if(a<1||b>n||a>b)return null;for(let i=a;i<=b;i++)out.push(i-1);}return out;}
