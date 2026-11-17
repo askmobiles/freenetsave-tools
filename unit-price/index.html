@@ -32,7 +32,7 @@
   <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
 </div>
-<script src="../assets/embed.js?v=10"></script>
+<script src="../assets/embed.js?v=11"></script>
 <script>
 const U={g:["w",1],kg:["w",1000],lb:["w",453.59237],oz:["w",28.349523],mL:["v",1],L:["v",1000],"fl oz":["v",29.5735],items:["c",1]};
 let n=0;function add(){n++;const d=document.createElement("div");d.className="up";d.innerHTML='<b>Product '+n+'</b><div class="upg"><div class="field"><label>Price ($)</label><input type="number" inputmode="decimal" min="0" step="0.01" class="pr" placeholder="e.g. 4.99"></div><div class="field"><label>Size</label><input type="number" inputmode="decimal" min="0" step="any" class="sz" placeholder="e.g. 750"></div><div class="field"><label>Unit</label><select class="un">'+Object.keys(U).map(u=>'<option>'+u+'</option>').join("")+'</select></div><div class="field"><label>Packs <small>(optional)</small></label><input type="number" inputmode="numeric" min="1" step="1" class="pk" placeholder="1"></div></div>';$("rows").appendChild(d);}
