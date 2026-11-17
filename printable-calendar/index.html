@@ -22,7 +22,7 @@
   #cal{width:100%;border-collapse:collapse;table-layout:fixed}
   #cal th{border:1px solid #000;padding:6px 2px;font-size:14px;background:#eee}
   #cal td{border:1px solid #000;height:clamp(54px,11vw,104px);vertical-align:top;padding:4px 6px;font-size:15px;font-weight:700}
-  @media print{#cal td{height:32mm}@page{size:landscape;margin:10mm}}
+  @media print{@page{size:landscape;margin:10mm}html,body{height:auto!important;min-height:0!important;margin:0!important;padding:0!important}body>*:not(.wrap),.wrap>*:not(#sheet){display:none!important}.wrap{margin:0!important}#sheet h2{font-size:22pt;margin:0 0 3mm;line-height:10mm}#cal{page-break-inside:avoid;break-inside:avoid}#cal th{height:8mm;padding:0 2px}#cal td{height:calc(152mm / var(--rows,5))}}
 </style>
 </head>
 <body>
@@ -48,7 +48,7 @@ $("mo").innerHTML=MN.map((m,i)=>'<option value="'+i+'">'+m+"</option>").join("")
 function draw(){const m=+$("mo").value,y=parseInt($("yr").value,10);if(!(y>=1900&&y<=2200))return;const f=+$("first").value,start=(new Date(y,m,1).getDay()-f+7)%7,days=new Date(y,m+1,0).getDate();
   let h="<h2>"+($("ttl").value?E($("ttl").value)+" · ":"")+MN[m]+" "+y+'</h2><table id="cal"><tr>';for(let i=0;i<7;i++)h+="<th>"+DN[(i+f)%7]+"</th>";h+="</tr><tr>";
   let cell=0;for(let i=0;i<start;i++,cell++)h+="<td></td>";for(let d=1;d<=days;d++,cell++){if(cell&&cell%7===0)h+="</tr><tr>";h+="<td>"+d+"</td>";}while(cell%7){h+="<td></td>";cell++;}
-  $("sheet").innerHTML=h+"</tr></table>";}
+  $("sheet").innerHTML=h+"</tr></table>";$("sheet").style.setProperty("--rows",Math.ceil(cell/7));}
 function step(n){let m=+$("mo").value+n,y=+$("yr").value;if(m<0){m=11;y--;}if(m>11){m=0;y++;}$("mo").value=m;$("yr").value=y;draw();}
 $("prev").addEventListener("click",()=>step(-1));$("next").addEventListener("click",()=>step(1));$("print").addEventListener("click",()=>window.print());
 ["mo","yr","first","ttl"].forEach(i=>$(i).addEventListener("input",draw));
