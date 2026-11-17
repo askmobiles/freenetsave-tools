@@ -31,6 +31,21 @@
   table.cal td:first-child small{display:block;color:var(--muted);font-size:.9em}
   table.cal td:last-child{font-weight:700;font-size:1.12em;line-height:1.35}
   h2.sec{font-size:clamp(19px,1vw + 15px,26px);margin:26px 0 10px}
+  .mhead{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:end;margin-bottom:10px}
+  .mhead .field{margin:0;flex:1 1 260px;max-width:460px}
+  .mhead .btn{width:auto;padding-left:16px;padding-right:16px}
+  #mt{font-weight:700;font-size:1.1em;margin:8px 0}
+  #mt small{display:block;font-weight:500;color:#33415c;font-size:.85em}
+  .mg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:clamp(2px,.5vw,8px)}
+  .mg .wd{text-align:center;font-weight:700;font-size:.8em;color:#33415c;padding:4px 0}
+  .mg .dc{font:inherit;text-align:left;background:#f4f7fc;border:1px solid #dde5f2;border-radius:clamp(6px,1vw,14px);padding:clamp(4px,.8vw,12px);min-height:clamp(64px,9vw,132px);cursor:pointer;color:inherit;overflow:hidden;display:block;width:100%}
+  .mg .dc:hover{border-color:var(--brand)}
+  .mg .dc.sel{border:2px solid var(--brand);background:#e8f0ff}
+  .mg .dc.tdy b{color:var(--brand)}
+  .mg .dc b{display:block;font-size:clamp(15px,1.6vw,24px);line-height:1.1}
+  .mg .dc .o{display:block;font-weight:700;color:#b4530a;font-size:clamp(12px,1.1vw,17px);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mg .dc small{display:block;font-size:clamp(10px,.85vw,13.5px);color:#33415c;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  @media(max-width:700px){.mg .dc small.x{display:none}}
   .fine{font-size:13.5px;color:var(--muted);line-height:1.55;margin-top:14px}
   .fine b{color:#33415c}
   .tabs{display:flex;gap:8px;margin:6px 0 10px}
@@ -54,6 +69,13 @@
     <div class="btnrow"><button type="button" class="btn line" id="prev">← Day before</button><button type="button" class="btn" id="today">Today</button><button type="button" class="btn line" id="next">Day after →</button></div></div>
     <p class="err" id="err"></p>
     <p class="lead" id="long" style="margin-top:14px"></p>
+
+    <h2 class="sec">Month calendar · மாத நாட்காட்டி</h2>
+    <div class="mhead"><div class="field"><label for="mc">Show the month in this calendar</label><select id="mc"></select></div>
+    <button type="button" class="btn line" id="mp">← Month before</button><button type="button" class="btn line" id="mn">Month after →</button></div>
+    <div id="mt"></div>
+    <div class="mg" id="mg"></div>
+    <p class="fine" style="margin-top:8px">The big number is the English date. The orange line is the date in the calendar you picked. Tap any day to see all its details below.</p>
 
     <h2 class="sec">Tamil panchangam · தமிழ் பஞ்சாங்கம்</h2>
     <div class="field" style="max-width:560px"><label for="pl">Place for the times · இடம்</label><select id="pl"></select></div>
@@ -143,8 +165,9 @@ function lunar(y,m,d){var J=jd(y,m,d,0.5);function el(x){return n360(moon(x)-sun
  var a=nm(J),b=nm(a+32),r=Math.floor(sidSun(a)/30),r2=Math.floor(sidSun(b)/30),ti=Math.floor(el(J)/12),mi=(r+1)%12,adhik=r===r2;
  var saka=y-78;if(m<=4&&mi>=9)saka=y-79;
  return {mi:mi,adhik:adhik,ti:ti,saka:saka,yr:YR[((saka+11)%60+60)%60]};}
+function nakAt(J,k){return Math.floor(SYS[k||"t"].moon(J)/(360/27));}
 function tithiAt(J,k){var s=SYS[k||"t"];return Math.floor(n360(s.moon(J)-s.sun(J))/12);}
-return {tamil:tamil,panchang:panchang,julian:julian,jd:jd,SYS:SYS,tithiAt:tithiAt,lunar:lunar,TI:TI,tithiName:tithiName,sunTimes:sunTimes,ssSun:ssSun,ssMoon:ssMoon,sidSun:sidSun,sidMoon:sidMoon};
+return {tamil:tamil,panchang:panchang,julian:julian,jd:jd,SYS:SYS,tithiAt:tithiAt,nakAt:nakAt,NK:NK,NKT:NKT,lunar:lunar,TI:TI,tithiName:tithiName,sunTimes:sunTimes,ssSun:ssSun,ssMoon:ssMoon,sidSun:sidSun,sidMoon:sidMoon};
 })();
 
 (function(){
@@ -219,7 +242,7 @@ function show(){var v=el("d").value,p=v?v.split("-").map(Number):null;el("err").
   h+=row("ISO week",isoWeek(dt),"Used in business and Europe");
   h+=row("Day of the year","Day "+doy+" of "+y);
   h+=row("Julian Day Number",String(Math.floor(CAL.jd(y,m,d,12)+0.5)),"Used by astronomers");
-  el("tbl").innerHTML=h;}
+  el("tbl").innerHTML=h;month();}
 function tzOff(ms,tz){var f=new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric"}),o={};f.formatToParts(new Date(ms)).forEach(function(p){o[p.type]=+p.value;});return Date.UTC(o.year,o.month-1,o.day,o.hour,o.minute)-Math.floor(ms/6e4)*6e4;}
 function thithi(){var v=el("dd").value,out=el("thi"),er=el("derr");er.textContent="";out.innerHTML="";el("thinote").hidden=true;if(!v)return;
   var p=v.split("-").map(Number),y=p[0],m=p[1],d=p[2],now=new Date(),ty=now.getFullYear(),todayS=ty+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
@@ -242,8 +265,31 @@ function thithi(){var v=el("dd").value,out=el("thi"),er=el("derr");er.textConten
   var G=[find(ty-1),find(ty),find(ty+1),find(ty+2)],inY=[],nxt=null;
   G.forEach(function(g){var k=g.filter(function(c){return c.getUTCFullYear()===ty;});if(k.length)inY=inY.concat(g.length>1&&k.length===g.length?[g]:k.map(function(c){return [c];}));if(!nxt&&g.length&&g[g.length-1].toISOString().slice(0,10)>=todayS&&g[g.length-1].getUTCFullYear()>ty)nxt=g;});
   var a=inY.length?[inY.map(function(g){return cell(g)[0];}).join("<br>and "),inY.map(function(g){return cell(g)[1];}).join(" / ")]:["No thithi day falls inside "+ty+". See the next one below.","இந்த ஆண்டில் திதி நாள் இல்லை."],b=cell(nxt||[]);
-  out.innerHTML=r2("Tamil month of passing","இறந்த தமிழ் மாதம்",tm0.month+" "+tm0.day,tm0.monthT+" "+tm0.day)+r2("Thithi of passing","இறந்த திதி",tn[0],tn[1])+r2("Thithi in "+ty,ty+" திதி நாள்",a[0],a[1])+r2("The one after that","அதற்கு அடுத்த திதி நாள்",b[0],b[1]);
+  out.innerHTML=r2("Tamil month of passing","இறந்த தமிழ் மாதம்",tm0.month+" "+tm0.day,tm0.monthT+" "+tm0.day)+r2("Thithi of passing","இறந்த திதி",tn[0],tn[1])+r2("Thithi in "+ty,ty+" திதி நாள்",a[0],a[1])+r2("Thithi after "+ty,ty+"க்குப் பின் திதி நாள்",b[0],b[1]);
   el("thinote").hidden=false;}
+var MC=[["tt","Tamil (Thirukanitham) · திருக்கணிதம்"],["tv","Tamil (Vakyam) · வாக்கியம்"],["chinese","Chinese lunar · 农历"],["islamic-umalqura","Islamic (Hijri)"],["hebrew","Hebrew (Jewish)"],["persian","Persian (Solar Hijri)"],["indian","Indian national (Saka)"],["lunar","Telugu / Kannada / Marathi (lunar)"],["ml","Malayalam (Kollam era)"],["bn","Bengali"],["dangi","Korean lunar"],["ethiopic","Ethiopian"],["coptic","Coptic"],["buddhist","Buddhist era"],["japanese","Japanese"],["roc","Minguo (Taiwan)"],["julian","Julian"]];
+MC.forEach(function(c){var o=document.createElement("option");o.value=c[0];o.textContent=c[1];el("mc").appendChild(o);});
+var pf={};function parts(cal,dt){var f=pf[cal]||(pf[cal]=new Intl.DateTimeFormat("en-u-ca-"+cal,{day:"numeric",month:"long",year:"numeric",era:cal==="japanese"?"short":undefined,timeZone:"UTC"})),o={};f.formatToParts(dt).forEach(function(p){o[p.type]=p.value;});return o;}
+function cellFor(c,y,m,d,dt){var t,x,J;
+  if(c==="tt"||c==="tv"){var k=c==="tt"?"t":"v";t=CAL.tamil(y,m,d,k);J=CAL.jd(y,m,d,0.5);var ti=CAL.tithiAt(J,k),nk=CAL.nakAt(J,k),tn=CAL.tithiName(ti);
+    return {o:t.day+" "+t.month,s:t.monthT+" "+t.day,x:(ti===14?"🌕 ":ti===29?"🌑 ":"")+CAL.NK[nk]+" · "+tn[0].split(",")[0].replace(/ \(.*/,""),yr:t.year,mo:t.month};}
+  if(c==="chinese"||c==="dangi"){x=chinese(c,dt);if(!x)return null;return {o:(x.leap?"Leap ":"")+"M"+x.m+" · D"+x.d,s:c==="chinese"?(x.leap?"闰":"")+CM[x.m-1]+CD[x.d-1]:"",x:x.d===1?"🌑 New moon":x.d===15?"🌕 Full moon":"",yr:"Year of the "+ZO[((x.y-4)%12+12)%12],mo:ord(x.m)+" month"};}
+  if(c==="lunar"){x=CAL.lunar(y,m,d);return {o:(x.ti<15?"S":"K")+(x.ti%15+1)+" "+LM[x.mi],s:(x.adhik?"Adhika ":"")+(x.ti<15?"Shukla":"Krishna"),x:x.ti===14?"🌕 Purnima":x.ti===29?"🌑 Amavasya":LMT[x.mi],yr:"Saka "+x.saka+" · "+x.yr,mo:LM[x.mi]};}
+  if(c==="ml"){t=CAL.tamil(y,m,d,"t");var ky=y-(((m>8)||(m===8&&t.rasi>=4))?824:825);return {o:t.day+" "+ML[t.rasi],s:MLN[t.rasi],x:"",yr:"Kollam "+ky,mo:ML[t.rasi]};}
+  if(c==="bn"){x=bengali(y,m,d);var q=x[0].split(" ");return {o:q[0]+" "+q[1],s:x[1].split(" ").slice(0,2).join(" "),x:"",yr:q[2]+" BS",mo:q[1]};}
+  if(c==="julian"){x=CAL.julian(y,m,d);return {o:x.d+" "+MN[x.m-1],s:"",x:"",yr:String(x.y),mo:MN[x.m-1]};}
+  try{x=parts(c,dt);if(pf[c].resolvedOptions().calendar!==c)return null;return {o:x.day+" "+x.month,s:"",x:"",yr:(x.era&&c==="japanese"?x.era+" ":"")+(x.relatedYear||x.year)+(c==="islamic-umalqura"?" AH":c==="persian"?" AP":c==="buddhist"?" BE":c==="roc"?" Minguo":""),mo:x.month};}catch(e){return null;}}
+function month(){var v=el("d").value;if(!v)return;var p=v.split("-").map(Number),y=p[0],m=p[1],c=el("mc").value,n=new Date(Date.UTC(y,m,0)).getUTCDate(),st=new Date(Date.UTC(y,m-1,1)).getUTCDay(),now=new Date(),ts=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+  var h=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(function(w){return "<div class='wd'>"+w+"</div>";}).join(""),mos=[],yrs=[];for(var i=0;i<st;i++)h+="<div></div>";
+  for(var d=1;d<=n;d++){var ds=y+"-"+String(m).padStart(2,"0")+"-"+String(d).padStart(2,"0"),x=cellFor(c,y,m,d,new Date(Date.UTC(y,m-1,d)));
+    if(x){if(mos.indexOf(x.mo)<0)mos.push(x.mo);if(yrs.indexOf(x.yr)<0)yrs.push(x.yr);}
+    h+="<button type='button' class='dc"+(ds===v?" sel":"")+(ds===ts?" tdy":"")+"' data-d='"+ds+"'><b>"+d+"</b>"+(x?"<span class='o'>"+x.o+"</span>"+(x.s?"<small>"+x.s+"</small>":"")+(x.x?"<small class='x'>"+x.x+"</small>":""):"")+"</button>";}
+  el("mg").innerHTML=h;var nm=MC.filter(function(q){return q[0]===c;})[0][1];
+  el("mt").innerHTML=MN[m-1]+" "+y+"<small>"+nm+": "+(mos.length?mos.join(" – ")+" · "+yrs.join(" – "):"not available in this browser")+"</small>";}
+el("mg").addEventListener("click",function(e){var b=e.target.closest(".dc");if(!b)return;el("d").value=b.getAttribute("data-d");show();});
+el("mc").addEventListener("change",month);
+function mshift(n){var v=el("d").value;if(!v)return;var p=v.split("-").map(Number),t=new Date(Date.UTC(p[0],p[1]-1+n,1)),last=new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth()+1,0)).getUTCDate();setD(new Date(Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),Math.min(p[2],last))));}
+el("mp").addEventListener("click",function(){mshift(-1);});el("mn").addEventListener("click",function(){mshift(1);});
 function setD(dt){el("d").value=dt.getUTCFullYear()+"-"+String(dt.getUTCMonth()+1).padStart(2,"0")+"-"+String(dt.getUTCDate()).padStart(2,"0");show();}
 function shift(n){var v=el("d").value;if(!v)return;var p=v.split("-").map(Number);setD(new Date(Date.UTC(p[0],p[1]-1,p[2]+n)));}
 function now(){var t=new Date();setD(new Date(Date.UTC(t.getFullYear(),t.getMonth(),t.getDate())));}
