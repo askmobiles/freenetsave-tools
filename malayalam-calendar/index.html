@@ -11,8 +11,8 @@
 <meta property="og:url" content="https://tools.freenetsave.com/malayalam-calendar/">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="../assets/style.css?v=8">
-<link rel="stylesheet" href="../assets/almanac.css?v=1">
-<style>.mhead .field{display:none}</style>
+<link rel="stylesheet" href="../assets/almanac.css?v=2">
+<style>.s-grid .mhead .field{display:none}</style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Malayalam Calendar", "url": "https://tools.freenetsave.com/malayalam-calendar/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free Malayalam calendar for any date: Malayalam month and date in the Kollam era, nakshatra, and the dates of Chingam 1 (New Year) and Vishu, in English and Malayalam."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "When does the Malayalam year begin?", "acceptedAnswer": {"@type": "Answer", "text": "On 1 Chingam, in mid-August."}}, {"@type": "Question", "name": "When is Vishu?", "acceptedAnswer": {"@type": "Answer", "text": "On 1 Medam, on 14 or 15 April."}}]}]}</script>
 </head>
 <body>
@@ -36,11 +36,14 @@
     <p class="fine" style="margin-top:8px">The big number is the English date. The orange line is the date in this calendar. Tap any day to see its details. Print this month gives a clean one-page calendar with both dates.</p></section>
     <section class="s-oth"><h2 class="sec">The same day in other calendars</h2>
     <table class="cal" id="tbl"></table></section>
-    <div hidden><section class="s-pan"><h2 class="sec"></h2>
-    <div class="field" style="max-width:560px"><label for="pl"></label><select id="pl"></select></div>
+    <div hidden><section class="s-plc"><div class="mhead" style="margin-top:14px"><div class="field"><label for="pl"></label><select id="pl"></select></div>
+    <button type="button" class="btn line" id="geo">📍 Use my location</button></div><p class="fine" id="geomsg" style="margin:0 0 6px"></p></section><section class="s-pan"><h2 class="sec"></h2>
     <div class="tabs"><button type="button" id="bT" aria-pressed="true">Thirukanitham<small>திருக்கணிதம்</small></button><button type="button" id="bV" aria-pressed="false">Vakyam<small>வாக்கியம்</small></button></div>
     <table class="cal" id="pan"></table>
-    <p class="diff" id="diff" hidden></p></section><section class="s-thi"><h2 class="sec">Yearly thithi (remembrance day) · வருட திதி</h2>
+    <p class="diff" id="diff" hidden></p></section><section class="s-tim"><h2 class="sec"></h2>
+    <div class="mhead tsel"><div class="field"><label for="pm">Calculation method</label><select id="pm"><option value="mwl">Muslim World League</option><option value="isna">ISNA (North America)</option><option value="uq">Umm al-Qura (Makkah)</option><option value="egypt">Egyptian General Authority</option><option value="karachi">Karachi (South Asia)</option></select></div>
+    <div class="field"><label for="asr">Asr</label><select id="asr"><option value="1">Standard (Shafi, Maliki, Hanbali)</option><option value="2">Hanafi</option></select></div></div>
+    <table class="cal" id="tim"></table><p class="fine" id="timn"></p></section><section class="s-thi"><h2 class="sec">Yearly thithi (remembrance day) · வருட திதி</h2>
     <p class="lead">Enter the date a loved one passed away. You get the Tamil month and thithi of that day, and the date it falls on this year.<br>இறந்த தேதியை இடுங்கள். அந்த நாளின் தமிழ் மாதம், திதி மற்றும் இந்த ஆண்டு திதி வரும் தேதி கிடைக்கும்.</p>
     <div class="top"><div class="field"><label for="dd">Date of passing · இறந்த தேதி</label><input id="dd" type="date"></div>
     <div class="field"><label for="dt">Time of passing, if known (place chosen on this page) · நேரம் (தெரிந்தால்)</label><input id="dt" type="time"></div></div>
@@ -50,12 +53,12 @@
     <table class="cal" id="chi"></table></section></div>
     <section class="about"><h2>About this page</h2><p>The Malayalam calendar of Kerala is a solar calendar, like the Tamil one. Its year, counted in the Kollam era, begins on 1 Chingam in mid-August. Dates here are calculated and can differ by a day from a printed Kerala calendar near the start of a month.</p><p class="fine">Dates are calculated on your device. Please check with your temple, mosque, synagogue, church or a local calendar for religious dates.</p>
     <h2>Questions</h2><details><summary>When does the Malayalam year begin?</summary><p>On 1 Chingam, in mid-August.</p></details><details><summary>When is Vishu?</summary><p>On 1 Medam, on 14 or 15 April.</p></details>
-    <h2>More calendars and panchangams</h2><div class="links"><a href="../calendar-converter/"><b>World Calendar Converter</b><span>All calendars on one page</span></a><a href="../tamil-panchangam/"><b>Tamil Panchangam</b><span>தமிழ் பஞ்சாங்கம் · Thirukanitham and Vakyam</span></a><a href="../thithi-calculator/"><b>Thithi Calculator</b><span>திதி · yearly remembrance day</span></a><a href="../hindu-panchang/"><b>Hindu Panchang</b><span>हिन्दी पंचांग · tithi, nakshatra, Rahu Kaal</span></a><a href="../chinese-almanac/"><b>Chinese Almanac</b><span>农历 · zodiac, solar terms, festivals</span></a><a href="../islamic-hijri-calendar/"><b>Islamic Hijri Calendar</b><span>التقويم الهجري · Ramadan and Eid dates</span></a><a href="../hebrew-jewish-calendar/"><b>Hebrew (Jewish) Calendar</b><span>לוח עברי · holiday dates</span></a><a href="../persian-calendar/"><b>Persian Calendar</b><span>تقویم شمسی · Nowruz and Yalda</span></a><a href="../korean-lunar-calendar/"><b>Korean Lunar Calendar</b><span>음력 · Seollal and Chuseok</span></a><a href="../bengali-calendar/"><b>Bengali Calendar</b><span>বাংলা ক্যালেন্ডার · Pohela Boishakh</span></a><a href="../ethiopian-calendar/"><b>Ethiopian Calendar</b><span>የኢትዮጵያ ዘመን አቆጣጠር · 13 months</span></a><a href="../printable-calendar/"><b>Printable calendar</b><span>A plain English month to print</span></a></div></section>
+    <h2>More calendars and panchangams</h2><div class="links"><a href="../calendar-converter/"><b>World Calendar Converter</b><span>All calendars on one page</span></a><a href="../tamil-panchangam/"><b>Tamil Panchangam</b><span>தமிழ் பஞ்சாங்கம் · Thirukanitham and Vakyam</span></a><a href="../thithi-calculator/"><b>Thithi Calculator</b><span>திதி · yearly remembrance day</span></a><a href="../hindu-panchang/"><b>Hindu Panchang</b><span>हिन्दी पंचांग · tithi, nakshatra, Rahu Kaal</span></a><a href="../chinese-almanac/"><b>Chinese Almanac</b><span>农历 · zodiac, solar terms, festivals</span></a><a href="../islamic-hijri-calendar/"><b>Islamic Hijri Calendar</b><span>التقويم الهجري · Ramadan and Eid dates</span></a><a href="../hebrew-jewish-calendar/"><b>Hebrew (Jewish) Calendar</b><span>לוח עברי · holiday dates</span></a><a href="../persian-calendar/"><b>Persian Calendar</b><span>تقویم شمسی · Nowruz and Yalda</span></a><a href="../korean-lunar-calendar/"><b>Korean Lunar Calendar</b><span>음력 · Seollal and Chuseok</span></a><a href="../bengali-calendar/"><b>Bengali Calendar</b><span>বাংলা ক্যালেন্ডার · Pohela Boishakh</span></a><a href="../japanese-calendar-rokuyo/"><b>Japanese Calendar &amp; Rokuyō</b><span>六曜 · Taian, Butsumetsu lucky days</span></a><a href="../buddhist-calendar/"><b>Buddhist Calendar</b><span>พ.ศ. · Poya and holy days</span></a><a href="../ethiopian-calendar/"><b>Ethiopian Calendar</b><span>የኢትዮጵያ ዘመን አቆጣጠር · 13 months</span></a><a href="../printable-calendar/"><b>Printable calendar</b><span>A plain English month to print</span></a></div></section>
   </div>
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
 <script src="../assets/embed.js?v=7"></script>
 <script>window.ALM={"mc": "ml", "shareName": "Malayalam date"};</script>
-<script src="../assets/almanac.js?v=1"></script>
+<script src="../assets/almanac.js?v=2"></script>
 </body>
 </html>

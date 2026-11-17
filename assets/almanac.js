@@ -40,6 +40,13 @@ var KR=["Bavam","Balavam","Kaulavam","Thaithulam","Garasai","Vanisai","Bathirai"
 function karana(k){if(k===0)return ["Kimsthugnam","கிம்ஸ்துக்னம்"];if(k===57)return ["Sakuni","சகுனி"];if(k===58)return ["Chathushpadam","சதுஷ்பாதம்"];if(k===59)return ["Nagavam","நாகவம்"];return [KR[(k-1)%7],KRT[(k-1)%7]];}
 function tithiName(ti){if(ti===14)return ["Pournami (full moon)","பௌர்ணமி"];if(ti===29)return ["Amavasai (new moon)","அமாவாசை"];return [TI[ti%15]+(ti<15?", growing moon (Valarpirai)":", shrinking moon (Theipirai)"),(ti<15?"வளர்பிறை ":"தேய்பிறை ")+TIT[ti%15]];}
 /* sunrise and sunset in UT hours for a place (NOAA method) */
+function solar(y,m,d,lon){var J0=jd(y,m,d,12)-lon/360,T=(J0-2451545)/36525,L=n360(280.46646+36000.76983*T),M=357.52911+35999.05029*T,ec=0.016708634-0.000042037*T,
+ C=(1.914602-0.004817*T)*S(M)+(0.019993-0.000101*T)*S(2*M)+0.000289*S(3*M),lam=L+C-0.00569-0.00478*S(125.04-1934.136*T),ob=23.439291-0.0130042*T+0.00256*Math.cos((125.04-1934.136*T)*R),
+ dec=Math.asin(S(ob)*S(lam))/R,yy=Math.pow(Math.tan(ob/2*R),2),eq=4/R*(yy*S(2*L)-2*ec*S(M)+4*ec*yy*S(M)*Math.cos(2*L*R)-0.5*yy*yy*S(4*L)-1.25*ec*ec*S(2*M));return {noon:(720-4*lon-eq)/60,dec:dec};}
+/* hours from solar noon until the Sun is at the given altitude (degrees); NaN if it never gets there */
+function hourAngle(alt,lat,dec){return Math.acos((S(alt)-S(lat)*S(dec))/(Math.cos(lat*R)*Math.cos(dec*R)))/R/15;}
+/* next time the Moon is at a given angle from the Sun (0 new, 90 first quarter, 180 full, 270 last quarter) */
+function nextPhase(J,ang){function f(x){var e=n360(moon(x)-sun(x)-ang);return e>180?e-360:e;}var a=J+n360(ang-(moon(J)-sun(J)))/12.19;for(var i=0;i<8;i++)a-=f(a)/12.19;return a;}
 function sunTimes(y,m,d,lat,lon){var J0=jd(y,m,d,12)-lon/360,T=(J0-2451545)/36525,L=n360(280.46646+36000.76983*T),M=357.52911+35999.05029*T,ec=0.016708634-0.000042037*T,
  C=(1.914602-0.004817*T)*S(M)+(0.019993-0.000101*T)*S(2*M)+0.000289*S(3*M),lam=L+C-0.00569-0.00478*S(125.04-1934.136*T),ob=23.439291-0.0130042*T+0.00256*Math.cos((125.04-1934.136*T)*R),
  dec=Math.asin(S(ob)*S(lam))/R,yy=Math.pow(Math.tan(ob/2*R),2),eq=4/R*(yy*S(2*L)-2*ec*S(M)+4*ec*yy*S(M)*Math.cos(2*L*R)-0.5*yy*yy*S(4*L)-1.25*ec*ec*S(2*M)),
@@ -63,7 +70,7 @@ function lunar(y,m,d){var J=jd(y,m,d,0.5);function el(x){return n360(moon(x)-sun
  return {mi:mi,adhik:adhik,ti:ti,saka:saka,yr:YR[((saka+11)%60+60)%60]};}
 function nakAt(J,k){return Math.floor(SYS[k||"t"].moon(J)/(360/27));}
 function tithiAt(J,k){var s=SYS[k||"t"];return Math.floor(n360(s.moon(J)-s.sun(J))/12);}
-return {tamil:tamil,panchang:panchang,julian:julian,jd:jd,SYS:SYS,tithiAt:tithiAt,nakAt:nakAt,newMoon:newMoon,sunLon:sun,elong:function(J){return n360(moon(J)-sun(J));},NK:NK,NKT:NKT,lunar:lunar,TI:TI,tithiName:tithiName,sunTimes:sunTimes,ssSun:ssSun,ssMoon:ssMoon,sidSun:sidSun,sidMoon:sidMoon};
+return {tamil:tamil,panchang:panchang,julian:julian,jd:jd,SYS:SYS,tithiAt:tithiAt,nakAt:nakAt,solar:solar,hourAngle:hourAngle,nextPhase:nextPhase,newMoon:newMoon,sunLon:sun,elong:function(J){return n360(moon(J)-sun(J));},NK:NK,NKT:NKT,lunar:lunar,TI:TI,tithiName:tithiName,sunTimes:sunTimes,ssSun:ssSun,ssMoon:ssMoon,sidSun:sidSun,sidMoon:sidMoon};
 })();
 
 (function(){
@@ -83,7 +90,10 @@ var CD=["初一","初二","初三","初四","初五","初六","初七","初八",
 var PL=[["Chennai, India",13.0827,80.2707,"Asia/Kolkata"],["Madurai, India",9.9252,78.1198,"Asia/Kolkata"],["Jaffna, Sri Lanka",9.6615,80.0255,"Asia/Colombo"],["Colombo, Sri Lanka",6.9271,79.8612,"Asia/Colombo"],["Singapore",1.3521,103.8198,"Asia/Singapore"],["Kuala Lumpur, Malaysia",3.139,101.6869,"Asia/Kuala_Lumpur"],["Dubai, UAE",25.2048,55.2708,"Asia/Dubai"],["London, UK",51.5074,-0.1278,"Europe/London"],["Paris, France",48.8566,2.3522,"Europe/Paris"],["Toronto, Canada",43.6532,-79.3832,"America/Toronto"],["New York, USA",40.7128,-74.006,"America/New_York"],["Sydney, Australia",-33.8688,151.2093,"Australia/Sydney"],["New Delhi, India",28.6139,77.209,"Asia/Kolkata"],["Mumbai, India",19.076,72.8777,"Asia/Kolkata"],["Kolkata, India",22.5726,88.3639,"Asia/Kolkata"],["Bengaluru, India",12.9716,77.5946,"Asia/Kolkata"],["Hyderabad, India",17.385,78.4867,"Asia/Kolkata"],["Ahmedabad, India",23.0225,72.5714,"Asia/Kolkata"],["Pune, India",18.5204,73.8567,"Asia/Kolkata"],["Kathmandu, Nepal",27.7172,85.324,"Asia/Kathmandu"]];
 if(CFG.region==="in")PL.sort(function(a,b){return (/India|Nepal/.test(b[0])?1:0)-(/India|Nepal/.test(a[0])?1:0);});
 var sys="t";
-PL.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.textContent=p[0];el("pl").appendChild(o);});
+function fillPl(sel){el("pl").innerHTML="";PL.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.textContent=p[0];el("pl").appendChild(o);});if(sel!=null)el("pl").value=sel;}
+fillPl();if(CFG.place){for(var pi=0;pi<PL.length;pi++)if(PL[pi][0].indexOf(CFG.place)===0)el("pl").value=pi;}
+el("geo").addEventListener("click",function(){var g=el("geomsg");if(!navigator.geolocation){g.textContent="This device cannot share its location.";return;}g.textContent="Finding your location…";
+  navigator.geolocation.getCurrentPosition(function(q){var tz="UTC";try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC";}catch(e){}if(PL[PL.length-1][4])PL.pop();PL.push(["My location",q.coords.latitude,q.coords.longitude,tz,1]);fillPl(PL.length-1);g.textContent="Using your location. It stays on this device.";show();thithi();},function(){g.textContent="Could not get your location. Pick a city instead.";},{maximumAge:6e5,timeout:15000});});
 function num(n,loc){try{return Number(n).toLocaleString(loc,{useGrouping:false});}catch(e){return String(n);}}
 function ord(n){var s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);}
 function intl(loc,cal,dt,opt){try{var f=new Intl.DateTimeFormat(loc+"-u-ca-"+cal,opt||{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"});if(f.resolvedOptions().calendar!==cal)return null;return f.format(dt);}catch(e){return null;}}
@@ -170,8 +180,23 @@ function show(){var v=el("d").value,p=v?v.split("-").map(Number):null;el("err").
   h+=row("Gregorian (English)",wd+", "+MN[m-1]+" "+d+", "+y,"The world's civil calendar");
   h+=row("ISO week",isoWeek(dt),"Used in business and Europe");
   h+=row("Day of the year","Day "+doy+" of "+y);
+  var md=Math.floor(CAL.jd(y,m,d,12)+0.5)-584283,TZ=["Imix","Ik'","Ak'bal","K'an","Chikchan","Kimi","Manik'","Lamat","Muluk","Ok","Chuwen","Eb","Ben","Ix","Men","Kib","Kaban","Etz'nab","Kawak","Ajaw"],HB=["Pop","Wo'","Sip","Sotz'","Sek","Xul","Yaxk'in","Mol","Ch'en","Yax","Sak'","Keh","Mak","K'ank'in","Muwan","Pax","K'ayab","Kumk'u","Wayeb"],hb=((md+348)%365+365)%365;
+  if(md>=0)h+=row("Maya",(((md+3)%13)+1)+" "+TZ[(md+19)%20]+" · "+(hb%20)+" "+HB[Math.floor(hb/20)],"Tzolk'in (260-day count) and Haab'. Long Count "+[Math.floor(md/144000),Math.floor(md%144000/7200),Math.floor(md%7200/360),Math.floor(md%360/20),md%20].join("."));
   h+=row("Julian Day Number",String(Math.floor(CAL.jd(y,m,d,12)+0.5)),"Used by astronomers");
-  el("tbl").innerHTML=h;month();details();}
+  el("tbl").innerHTML=h;month();details();times();}
+var PM={mwl:["Muslim World League",18,17,0],isna:["ISNA (North America)",15,15,0],uq:["Umm al-Qura (Makkah)",18.5,0,90],egypt:["Egyptian General Authority",19.5,17.5,0],karachi:["Karachi (South Asia)",18,18,0]};
+function times(){var T=el("tim");if(!CFG.times||!T)return;var v=el("d").value;if(!v){T.innerHTML="";return;}var p=v.split("-").map(Number),pl=PL[+el("pl").value||0],lat=pl[1],lon=pl[2],tz=pl[3],tf=new Intl.DateTimeFormat("en",{hour:"numeric",minute:"2-digit",timeZone:tz}),h="";
+  function at(y,m,d,hrs){if(isNaN(hrs))return "—";return tf.format(new Date((CAL.jd(y,m,d,0)+hrs/24-2440587.5)*864e5));}
+  if(CFG.times==="pray"){var s=CAL.solar(p[0],p[1],p[2],lon),M=PM[el("pm").value]||PM.mwl,f=el("asr").value==="2"?2:1,ha=function(a){return CAL.hourAngle(a,lat,s.dec);},
+     sr=s.noon-ha(-0.833),ss=s.noon+ha(-0.833),asr=s.noon+ha(Math.atan(1/(f+Math.tan(Math.abs(lat-s.dec)*Math.PI/180)))*180/Math.PI),isha=M[3]?ss+M[3]/60:s.noon+ha(-M[2]);
+    h=row("Fajr",at(p[0],p[1],p[2],s.noon-ha(-M[1])),"Dawn prayer","الفجر")+row("Sunrise",at(p[0],p[1],p[2],sr),"Fajr ends","الشروق")+row("Dhuhr",at(p[0],p[1],p[2],s.noon+1/60),"Just after midday","الظهر")+row("Asr",at(p[0],p[1],p[2],asr),f===2?"Hanafi":"Shafi, Maliki, Hanbali","العصر")+row("Maghrib",at(p[0],p[1],p[2],ss),"Sunset. The fast ends","المغرب")+row("Isha",at(p[0],p[1],p[2],isha),"Night prayer","العشاء");
+    el("timn").textContent="Times for "+pl[0]+", "+M[0]+" method. Mosques may add a few minutes, so follow your local mosque's timetable. Very far north in summer some times cannot be worked out.";}
+  else if(CFG.times==="shabbat"){var dt=new Date(Date.UTC(p[0],p[1]-1,p[2])),w=dt.getUTCDay(),fr=new Date(dt.getTime()+((5-w+7)%7)*864e5),sa=new Date(fr.getTime()+864e5);if(w===6){sa=dt;fr=new Date(dt.getTime()-864e5);}
+    function st(c,alt){var y=c.getUTCFullYear(),m=c.getUTCMonth()+1,d=c.getUTCDate(),s=CAL.solar(y,m,d,lon);return [y,m,d,s.noon+CAL.hourAngle(alt,lat,s.dec)];}
+    var a=st(fr,-0.833),b=st(sa,-8.5),t0=CAL.solar(p[0],p[1],p[2],lon),h0=CAL.hourAngle(-0.833,lat,t0.dec);
+    h=row("Shabbat candle lighting",at(a[0],a[1],a[2],a[3]-18/60),gd(fr)+" · 18 minutes before sunset","הדלקת נרות")+row("Shabbat ends (Havdalah)",at(b[0],b[1],b[2],b[3]),gd(sa)+" · nightfall, Sun 8.5° below the horizon","הבדלה")+row("Sunrise on the chosen day",at(p[0],p[1],p[2],t0.noon-h0),"","זריחה")+row("Sunset on the chosen day",at(p[0],p[1],p[2],t0.noon+h0),"The Jewish date changes at sunset","שקיעה");
+    el("timn").textContent="Times for "+pl[0]+". Some communities light earlier (Jerusalem lights 40 minutes before sunset) or end Shabbat later, so follow your own community's times.";}
+  T.innerHTML=h;}
 function tzOff(ms,tz){var f=new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric"}),o={};f.formatToParts(new Date(ms)).forEach(function(p){o[p.type]=+p.value;});return Date.UTC(o.year,o.month-1,o.day,o.hour,o.minute)-Math.floor(ms/6e4)*6e4;}
 function thithi(){var v=el("dd").value,out=el("thi"),er=el("derr");er.textContent="";out.innerHTML="";el("thinote").hidden=true;if(!v)return;
   var p=v.split("-").map(Number),y=p[0],m=p[1],d=p[2],now=new Date(),ty=now.getFullYear(),todayS=ty+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
@@ -207,6 +232,7 @@ function cellFor(c,y,m,d,dt){var t,x,J;
   if(c==="ml"){t=CAL.tamil(y,m,d,"t");var ky=y-(((m>8)||(m===8&&t.rasi>=4))?824:825);return {o:t.day+" "+ML[t.rasi],s:MLN[t.rasi],x:"",yr:"Kollam "+ky,mo:ML[t.rasi]};}
   if(c==="bn"){x=bengali(y,m,d);var q=x[0].split(" ");return {o:q[0]+" "+q[1],s:x[1].split(" ").slice(0,2).join(" "),x:"",yr:q[2]+" BS",mo:q[1]};}
   if(c==="julian"){x=CAL.julian(y,m,d);return {o:x.d+" "+MN[x.m-1],s:"",x:"",yr:String(x.y),mo:MN[x.m-1]};}
+  if(c==="japanese"){var rk=rokuyo(dt),jp=parts(c,dt);return {o:rk?rk[0]:"",s:rk?rk[1]:"",x:"",yr:(jp.era||"")+" "+jp.year,mo:jp.month};}
   try{x=parts(c,dt);if(pf[c].resolvedOptions().calendar!==c)return null;return {o:x.day+" "+x.month,s:"",x:"",yr:(x.era&&c==="japanese"?x.era+" ":"")+(x.relatedYear||x.year)+(c==="islamic-umalqura"?" AH":c==="persian"?" AP":c==="buddhist"?" BE":c==="roc"?" Minguo":""),mo:x.month};}catch(e){return null;}}
 function month(){var v=el("d").value;if(!v)return;var p=v.split("-").map(Number),y=p[0],m=p[1],c=el("mc").value,n=new Date(Date.UTC(y,m,0)).getUTCDate(),st=new Date(Date.UTC(y,m-1,1)).getUTCDay(),now=new Date(),ts=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
   var h=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map(function(w){return "<div class='wd'>"+w+"</div>";}).join(""),mos=[],yrs=[];for(var i=0;i<st;i++)h+="<div></div>";
@@ -224,6 +250,8 @@ function nextOn(cal,mon,day,dt){return scan(dt,function(c){if(cal==="chinese"||c
 function fest(list,cal,dt){return list.map(function(f){var c=nextOn(cal,f[1],f[2],dt);return c?[f[0],gd(c),f[3]||"",f[4]||""]:null;}).filter(Boolean);}
 function mlen(cal,dt){var a=np(cal,dt),n=a.d;for(var i=1;i<40;i++){var b=np(cal,new Date(dt.getTime()+i*864e5));if(b.d===1)break;n=b.d;}return n;}
 function moonPhase(J){var e=CAL.elong(J),nm=["New moon","Waxing crescent","First quarter","Waxing gibbous","Full moon","Waning gibbous","Last quarter","Waning crescent"],ic="🌑🌒🌓🌔🌕🌖🌗🌘";var i=Math.floor(((e+22.5)%360)/45);return Array.from(ic)[i]+" "+nm[i]+" · "+Math.round((1-Math.cos(e*Math.PI/180))/2*100)+"% lit";}
+var RK=[["Taian","大安","The luckiest day. Good for weddings, moving and starting things"],["Shakkō","赤口","Unlucky, except around midday"],["Senshō","先勝","Lucky in the morning, unlucky in the afternoon"],["Tomobiki","友引","Good day, but funerals are avoided"],["Senbu","先負","Unlucky in the morning, lucky in the afternoon"],["Butsumetsu","仏滅","The unluckiest day. Weddings are avoided"]];
+function rokuyo(dt){var x=chinese("dangi",dt);if(!x)return null;var r=RK[(x.m+x.d)%6];return [r[0],r[1],r[2],x.m,x.d];}
 function details(){var v=el("d").value,c=el("mc").value,R=[],nm=MC.filter(function(q){return q[0]===c;})[0][1];if(!v)return;var p=v.split("-").map(Number),y=p[0],m=p[1],d=p[2],dt=new Date(Date.UTC(y,m-1,d)),J=CAL.jd(y,m,d,4),x,i,wdn=function(loc){try{return dt.toLocaleDateString(loc,{weekday:"long",timeZone:"UTC"});}catch(e){return "";}};
   function A(a,b,s,n){R.push([a,b,s||"",n||""]);}
   function F(list,cal){fest(list,cal,dt).forEach(function(f){A(f[0],f[1],f[2],f[3]);});}
@@ -256,8 +284,11 @@ function details(){var v=el("d").value,c=el("mc").value,R=[],nm=MC.filter(functi
     A("Pohela Boishakh (New Year)",gd(new Date(Date.UTC(Date.UTC(y,3,14)>dt.getTime()?y:y+1,3,14))),"14 April in Bangladesh. West Bengal often keeps 15 April","পহেলা বৈশাখ");}
   else if(c==="ethiopic"){x=basic(c,"am-ET","");F([["Enkutatash (New Year)",1,1,"","እንቁጣጣሽ"],["Meskel",1,17,"","መስቀል"],["Genna (Christmas)",4,29,"","ገና"],["Timkat (Epiphany)",5,11,"","ጥምቀት"]],c);A("About","13 months: 12 of 30 days and a short one of 5 or 6 days","The year is 7 to 8 years behind the English calendar");}
   else if(c==="coptic"){x=basic(c,"ar-EG","");F([["Nayrouz (New Year)",1,1,"","عيد النيروز"],["Christmas",4,29,"","عيد الميلاد"],["Epiphany",5,11,"","عيد الغطاس"]],c);A("About","13 months: 12 of 30 days and a short one of 5 or 6 days","Years are counted from 284 AD");}
-  else if(c==="buddhist"){x=basic(c,"th-TH"," BE");A("About","Same months and days as the English calendar","The year is 543 ahead");A("Moon",moonPhase(J),"Buddhist holy days follow the moon");}
-  else if(c==="japanese"){var jq=parts(c,dt);A("Date",jq.month+" "+jq.day+", "+(jq.era||"")+" "+jq.year,"",intl("ja-JP","japanese",dt,{era:"long",year:"numeric",month:"long",day:"numeric",timeZone:"UTC"}));A("Day of the week",wdn("en"),"",wdn("ja-JP"));A("Era",(jq.era||"")+" "+jq.year,"Years are counted from the start of the emperor's reign");A("Zodiac year (eto)","Year of the "+ZO[((y-4)%12+12)%12],"Japan uses the same 12 animals, starting on 1 January","子丑寅卯辰巳午未申酉戌亥".charAt(((y-4)%12+12)%12)+"年");}
+  else if(c==="buddhist"){x=basic(c,"th-TH"," BE");
+    var J0=CAL.jd(y,m,d,0),PY=["Duruthu","Navam","Medin","Bak","Vesak","Poson","Esala","Nikini","Binara","Vap","Il","Unduvap"],fm=CAL.nextPhase(J0-5.5/24,180),fl=new Date((fm-2440587.5)*864e5+5.5*36e5);
+    A("Next Poya day (Sri Lanka)",gd(new Date(Date.UTC(fl.getUTCFullYear(),fl.getUTCMonth(),fl.getUTCDate()))),PY[fl.getUTCMonth()]+" full moon Poya. May differ by a day from the official list","පෝය");
+    [[0,"New moon"],[90,"Waxing half moon"],[180,"Full moon"],[270,"Waning half moon"]].map(function(q){var t=CAL.nextPhase(J0-7/24,q[0]),l=new Date((t-2440587.5)*864e5+7*36e5);return [Date.UTC(l.getUTCFullYear(),l.getUTCMonth(),l.getUTCDate()),q[1]];}).sort(function(a,b){return a[0]-b[0];}).forEach(function(q,i){A(i?"Then":"Next holy day (Wan Phra, Thailand)",gd(new Date(q[0])),q[1]+". The Thai temple calendar can differ by a day",i?"":"วันพระ");});A("About","Same months and days as the English calendar","The year is 543 ahead");A("Moon",moonPhase(J),"Buddhist holy days follow the moon");}
+  else if(c==="japanese"){var jq=parts(c,dt),rk=rokuyo(dt);if(rk)A("Rokuyō (lucky day cycle)",rk[0]+" · "+rk[2],"From the old lunar date: "+ord(rk[4])+" day of the "+ord(rk[3])+" month",rk[1]);A("Date",jq.month+" "+jq.day+", "+(jq.era||"")+" "+jq.year,"",intl("ja-JP","japanese",dt,{era:"long",year:"numeric",month:"long",day:"numeric",timeZone:"UTC"}));A("Day of the week",wdn("en"),"",wdn("ja-JP"));A("Era",(jq.era||"")+" "+jq.year,"Years are counted from the start of the emperor's reign");A("Zodiac year (eto)","Year of the "+ZO[((y-4)%12+12)%12],"Japan uses the same 12 animals, starting on 1 January","子丑寅卯辰巳午未申酉戌亥".charAt(((y-4)%12+12)%12)+"年");}
   else if(c==="roc"){x=basic(c,"zh-TW","");A("About","Same months and days as the English calendar","Years are counted from 1912, the first year of the Republic");}
   else if(c==="julian"){x=CAL.julian(y,m,d);A("Date",x.d+" "+MN[x.m-1]+" "+x.y,"Used by some Orthodox churches");A("Day of the week",wdn("en"));A("Days behind the English calendar",String(Math.round((dt.getTime()-Date.UTC(x.y,x.m-1,x.d))/864e5)),"The gap grows by 3 days every 400 years");var oc=new Date(Date.UTC(y,0,7));if(oc<dt)oc=new Date(Date.UTC(y+1,0,7));A("Orthodox Christmas (25 December, Julian)",gd(oc),"7 January in the English calendar");A("Julian New Year (Old New Year)",gd(new Date(Date.UTC(dt>new Date(Date.UTC(y,0,14))?y+1:y,0,14))),"14 January in the English calendar");}
   el("dth").textContent="Details · "+nm;el("det").innerHTML=R.map(function(r){return row(r[0],r[1],r[2],r[3]);}).join("");}
@@ -276,7 +307,7 @@ window.FNS_SHARE=function(){var v=el("d").value;if(!v)return null;var p=v.split(
   else{var r=el("det").querySelector("tr");t=day+(r?" = "+r.querySelector("td:last-child").textContent.trim().split("\n")[0]:"")+". "+(CFG.shareName||"See it in other calendars")+":";}
   return {url:u,text:t};};
 function pick(k){sys=k;el("bT").setAttribute("aria-pressed",k==="t");el("bV").setAttribute("aria-pressed",k==="v");show();thithi();}
-el("d").addEventListener("input",show);el("pl").addEventListener("change",function(){show();thithi();});el("dd").addEventListener("input",thithi);el("dt").addEventListener("input",thithi);el("today").addEventListener("click",now);el("prev").addEventListener("click",function(){shift(-1);});el("next").addEventListener("click",function(){shift(1);});
+el("d").addEventListener("input",show);el("pl").addEventListener("change",function(){show();thithi();});el("pm").addEventListener("change",times);el("asr").addEventListener("change",times);el("dd").addEventListener("input",thithi);el("dt").addEventListener("input",thithi);el("today").addEventListener("click",now);el("prev").addEventListener("click",function(){shift(-1);});el("next").addEventListener("click",function(){shift(1);});
 el("bT").addEventListener("click",function(){pick("t");});el("bV").addEventListener("click",function(){pick("v");});
 var qd=(location.search.match(/[?&]d=(\d{4}-\d{2}-\d{2})/)||[])[1];if(qd){el("d").value=qd;show();if(!el("pan").innerHTML)now();}else now();
 })();
