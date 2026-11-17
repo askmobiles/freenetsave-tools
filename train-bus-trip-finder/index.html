@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Regional Train &amp; Bus Trip Finder: Toronto and Hamilton area schedule times (free, unofficial)</title>
+<meta name="description" content="Pick where you start and where you are going in the Toronto and Hamilton area and see the next scheduled regional train and bus trips, with one change if needed. Free, no sign-up. Scheduled times only, not live.">
+<link rel="canonical" href="https://tools.freenetsave.com/train-bus-trip-finder/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .pick{position:relative}
+  .sug{position:absolute;left:0;right:0;top:100%;z-index:20;background:#fff;border:1.5px solid var(--brand);border-radius:10px;margin-top:4px;max-height:260px;overflow-y:auto;box-shadow:0 8px 24px rgba(23,32,51,.14)}
+  .sug button{display:block;width:100%;text-align:left;font:inherit;font-size:15.5px;padding:10px 12px;border:0;border-bottom:1px solid #eef2f8;background:#fff;color:inherit;cursor:pointer}
+  .sug button:hover,.sug button:focus{background:#eef4ff;outline:0}
+  .sug small{color:var(--muted)}
+  .swap{align-self:flex-end;font:inherit;font-weight:700;border:1.5px solid #cfd8e6;background:#fff;border-radius:10px;padding:11px 12px;cursor:pointer;white-space:nowrap}
+  .trip{border:1.5px solid #dde5f2;border-radius:12px;padding:12px 14px;margin:10px 0;background:#fff}
+  .trip .hd{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+  .trip .tm{font-size:21px;font-weight:800}
+  .trip .du{color:var(--muted);font-weight:600}
+  .trip .tag{font-size:13px;font-weight:700;border-radius:999px;padding:2px 9px;background:#e8f6ec;color:#17603a}
+  .trip .tag.ch{background:#fff1d6;color:#7a4b00}
+  .leg{margin:8px 0 0;padding-left:12px;border-left:4px solid #9bb7e8;font-size:15px}
+  .leg.train{border-left-color:#3b7a57}
+  .leg b{font-weight:700}
+  .wait{margin:8px 0 0;font-size:14.5px;color:#7a4b00;font-weight:600}
+  .msg{padding:12px 14px;border-radius:10px;background:#fff7e0;border:1px solid #f0d58a;margin-top:12px;font-size:15px}
+  .legal{font-size:13.5px;color:var(--muted);margin-top:14px;line-height:1.5}
+  h2.sm{font-size:19px;margin:20px 0 4px}
+  @media (max-width:560px){.trip .tm{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Regional Train &amp; Bus Trip Finder</h1>
+    <p class="sub">Scheduled regional train and bus times in the Toronto and Hamilton area. Unofficial.</p>
+  </div>
+  <div class="card">
+    <p class="lead">Type a station or stop name and choose it from the list. Leave "To" empty to see every departure from one place.</p>
+    <div class="row">
+      <div class="field pick"><label for="from">From</label><input id="from" type="text" autocomplete="off" placeholder="Start typing a station or stop"><div class="sug" id="sfrom" hidden></div></div>
+      <div class="field pick"><label for="to">To</label><input id="to" type="text" autocomplete="off" placeholder="Start typing a station or stop"><div class="sug" id="sto" hidden></div></div>
+      <button type="button" class="swap" id="swap" aria-label="Swap From and To">⇅ Swap</button>
+    </div>
+    <div class="row">
+      <div class="field"><label for="d">Date</label><input id="d" type="date"></div>
+      <div class="field"><label for="t">Leave at or after</label><input id="t" type="time"></div>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="go">Find trips</button>
+      <button type="button" class="btn line" id="now">Use the time now</button>
+    </div>
+    <div id="out" aria-live="polite"></div>
+    <div class="btnrow" id="morerow" hidden><button type="button" class="btn line" id="more">Show later trips</button></div>
+    <p class="legal" id="cover"></p>
+    <p class="legal"><b>Scheduled times only.</b> This page does not know about delays, cancellations or track changes, and it does not include local city buses. Check the transit company's own service updates before you travel. This page is not made, approved or endorsed by Metrolinx.<br>
+    <span id="legend">Data used in this product or service is provided with the permission of Metrolinx. Metrolinx makes no representations or warranties of any kind, express or implied, with respect to the Data and assumes no responsibility for the accuracy or currency of the data used in this product or service.</span></p>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+(function(){
+var E=function(i){return document.getElementById(i);},D=null,sel={from:-1,to:-1},shown=0,all=[],MAXT=8;
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function torontoNow(){var o={};new Intl.DateTimeFormat("en-CA",{timeZone:"America/Toronto",hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).formatToParts(new Date()).forEach(function(p){o[p.type]=p.value;});return {d:o.year+"-"+o.month+"-"+o.day,t:o.hour+":"+o.minute};}
+function setNow(){var n=torontoNow();E("d").value=n.d;E("t").value=n.t;}
+function hm(m){var nx=m>=1440;m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mi=m%60,ap=h<12?"am":"pm";h=h%12||12;return h+":"+(mi<10?"0":"")+mi+" "+ap+(nx?" (next day)":"");}
+function dur(m){var h=Math.floor(m/60),r=m%60;return (h?h+" h ":"")+r+" min";}
+function niceDate(s){var p=s.length===8?[s.slice(0,4),s.slice(4,6),s.slice(6,8)]:s.split("-");return new Date(Date.UTC(+p[0],p[1]-1,+p[2])).toLocaleDateString("en-CA",{timeZone:"UTC",year:"numeric",month:"long",day:"numeric"});}
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9]+/g," ").trim();}
+
+// ---- place picker
+function match(q){q=norm(q);if(!q)return [];var w=q.split(" "),r=[];D.places.forEach(function(p,i){var n=p.k,ok=w.every(function(x){return n.indexOf(x)>=0;});if(ok){var nm=" "+norm(p[0])+" ",s=(nm.indexOf(" "+q+" ")===0?0:nm.indexOf(" "+q)===0?.6:1.2)+(w.every(function(x){return nm.indexOf(" "+x+" ")>=0;})?0:.5)+(p.rail?0:.5)+(nm.indexOf(w[0])>=0?0:1);r.push([s,p[0].length,i]);}});r.sort(function(a,b){return a[0]-b[0]||a[1]-b[1];});return r.slice(0,12).map(function(x){return x[2];});}
+function wire(id){var inp=E(id),box=E("s"+id);
+  function close(){box.hidden=true;}
+  function open(){if(!D)return;var m=match(inp.value);if(!m.length){close();return;}
+    box.innerHTML=m.map(function(i){var p=D.places[i];return '<button type="button" data-i="'+i+'">'+esc(p[0])+(p[3].length?' <small>· also '+esc(p[3].join(", "))+'</small>':'')+'</button>';}).join("");box.hidden=false;}
+  inp.addEventListener("input",function(){sel[id]=-1;open();});
+  inp.addEventListener("focus",function(){if(sel[id]<0)open();});
+  inp.addEventListener("keydown",function(e){if(e.key==="Enter"){var b=box.querySelector("button");if(!box.hidden&&b){b.click();e.preventDefault();}else E("go").click();}if(e.key==="Escape")close();});
+  box.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;sel[id]=+b.dataset.i;inp.value=D.places[sel[id]][0];close();});
+  document.addEventListener("click",function(e){if(!e.target.closest("#"+id)&&!e.target.closest("#s"+id))close();});
+}
+function resolve(id){if(sel[id]>=0)return sel[id];var v=E(id).value;if(!norm(v))return -1;var m=match(v);if(m.length&&(m.length===1||norm(D.places[m[0]][0])===norm(v))){sel[id]=m[0];E(id).value=D.places[m[0]][0];return m[0];}return -2;}
+
+// ---- timetable for one calendar day (plus trips that started the day before and run past midnight)
+function dayTrips(date){var out=[];[[date,0],[shift(date,-1),-1440]].forEach(function(x){var di=D.dates.indexOf(x[0].replace(/-/g,""));if(di<0)return;var pw=Math.pow(2,di);
+    D.trips.forEach(function(tr){if(Math.floor(tr[1]/pw)%2!==1)return;var tm=[tr[2]+x[1]];for(var k=3;k<tr.length;k++)tm.push(tm[tm.length-1]+tr[k]);if(tm[tm.length-1]<0)return;out.push({p:D.patterns[tr[0]],tm:tm});});});return out;}
+function shift(d,n){var p=d.split("-"),x=new Date(Date.UTC(+p[0],p[1]-1,+p[2]+n));return x.toISOString().slice(0,10);}
+function leg(T,i,j){var r=D.routes[T.p[0]];return {train:r[2]===2,name:(r[2]===2?"Train · "+r[1]+" line":"Bus "+r[0]+" · "+r[1]),head:T.p[1].replace(/^\S+\s+-\s+/,""),a:T.p[2][i],b:T.p[2][j],dep:T.tm[i],arr:T.tm[j],stops:j-i};}
+function search(A,B,date,t0){var trips=dayTrips(date),by={},opts=[];
+  trips.forEach(function(T,ti){T.p[2].forEach(function(pl,i){(by[pl]=by[pl]||[]).push([ti,i]);});});
+  var va=(by[A]||[]).filter(function(v){var T=trips[v[0]];return T.tm[v[1]]>=t0&&v[1]<T.tm.length-1;});
+  if(B<0){va.forEach(function(v){var T=trips[v[0]],n=T.tm.length-1;opts.push({dep:T.tm[v[1]],arr:T.tm[n],legs:[leg(T,v[1],n)],list:true});});opts.sort(function(a,b){return a.dep-b.dep;});return opts;}
+  function toB(T,from){var pl=T.p[2];for(var j=from+1;j<pl.length;j++)if(pl[j]===B)return j;return -1;}
+  va.forEach(function(v){var T=trips[v[0]],i=v[1],j=toB(T,i);
+    if(j>0){opts.push({dep:T.tm[i],arr:T.tm[j],legs:[leg(T,i,j)]});return;}
+    var best=null;
+    for(var x=i+1;x<T.tm.length;x++){var X=T.p[2][x],ax=T.tm[x];if(X===A)break;
+      (by[X]||[]).forEach(function(w){if(w[0]===v[0])return;var U=trips[w[0]],dx=U.tm[w[1]];if(dx<ax+5||dx>ax+90)return;var l=toB(U,w[1]);if(l<0)return;
+        for(var q=0;q<w[1];q++)if(U.p[2][q]===A)return; // that trip also serves the start: the direct ride covers it
+        var c={dep:T.tm[i],arr:U.tm[l],wait:dx-ax,legs:[leg(T,i,x),leg(U,w[1],l)]};
+        if(!best||c.arr<best.arr||(c.arr===best.arr&&c.wait<best.wait))best=c;});}
+    if(best)opts.push(best);});
+  // drop choices that leave earlier (or same) and arrive later (or same) than another one
+  opts=opts.filter(function(o,n){return !opts.some(function(p,m){if(m===n)return false;if(p.dep>=o.dep&&p.arr<=o.arr){if(p.dep>o.dep||p.arr<o.arr)return true;if(p.legs.length<o.legs.length)return true;if(p.legs.length===o.legs.length&&m<n)return true;}return false;});});
+  opts.sort(function(a,b){return a.dep-b.dep||a.arr-b.arr;});return opts;}
+
+function legHtml(l){return '<div class="leg'+(l.train?" train":"")+'"><b>'+esc(l.name)+'</b> toward '+esc(l.head)+'<br>'+hm(l.dep)+' leave '+esc(D.places[l.a][0])+'<br>'+hm(l.arr)+' arrive '+esc(D.places[l.b][0])+(l.stops>1?' <small style="color:var(--muted)">· '+(l.stops-1)+' stop'+(l.stops>2?"s":"")+' in between</small>':' <small style="color:var(--muted)">· no stops in between</small>')+'</div>';}
+function card(o){if(o.list){var l=o.legs[0];return '<div class="trip"><div class="hd"><span class="tm">'+hm(o.dep)+'</span><span class="du">'+esc(l.name)+'</span></div><div class="leg'+(l.train?" train":"")+'">toward <b>'+esc(l.head)+'</b> · last stop '+esc(D.places[l.b][0])+' at '+hm(l.arr)+'</div></div>';}
+  var h='<div class="trip"><div class="hd"><span class="tm">'+hm(o.dep)+' → '+hm(o.arr)+'</span><span class="du">'+dur(o.arr-o.dep)+'</span><span class="tag'+(o.legs.length>1?" ch":"")+'">'+(o.legs.length>1?"1 change":"Direct")+'</span></div>'+legHtml(o.legs[0]);
+  if(o.legs.length>1)h+='<div class="wait">Change at '+esc(D.places[o.legs[0].b][0])+' · wait '+dur(o.wait)+(o.wait<10?" (short, be ready)":"")+'</div>'+legHtml(o.legs[1]);
+  return h+'</div>';}
+function render(){E("out").innerHTML=E("out").dataset.head+all.slice(0,shown).map(card).join("");E("morerow").hidden=shown>=all.length;}
+function say(m){E("out").dataset.head="";E("out").innerHTML='<div class="msg">'+m+'</div>';E("morerow").hidden=true;}
+function find(){if(!D){say("The schedule is still loading. Try again in a moment.");return;}
+  var A=resolve("from"),B=resolve("to"),date=E("d").value,t=E("t").value;
+  if(A===-1){say("Choose where you start: type a name in <b>From</b> and pick it from the list.");return;}
+  if(A===-2){say("Pick the <b>From</b> place from the list that opens when you type.");E("from").focus();return;}
+  if(B===-2){say("Pick the <b>To</b> place from the list that opens when you type.");E("to").focus();return;}
+  if(A===B){say("From and To are the same place.");return;}
+  if(!date||!t){say("Choose a date and a time.");return;}
+  var key=date.replace(/-/g,"");
+  if(D.dates.indexOf(key)<0){say("This schedule only covers <b>"+niceDate(D.dates[0])+"</b> to <b>"+niceDate(D.dates[D.dates.length-1])+"</b>. Choose a date in that range.");return;}
+  var q=t.split(":"),t0=q[0]*60+ +q[1];all=search(A,B,date,t0);
+  if(!all.length){say(B<0?"No more departures from <b>"+esc(D.places[A][0])+"</b> after "+hm(t0)+" on that day.":"No trip found after "+hm(t0)+" on that day with a direct ride or one change. Try an earlier time, or a bigger station nearby. Trips that need two changes or a local city bus are not shown.");return;}
+  E("out").dataset.head='<h2 class="sm">'+(B<0?"Departures from "+esc(D.places[A][0]):esc(D.places[A][0])+" to "+esc(D.places[B][0]))+'</h2><p class="lead">'+niceDate(date)+", from "+hm(t0)+" · "+all.length+(B<0?" departure":" choice")+(all.length>1?"s":"")+" found</p>";
+  shown=MAXT;render();}
+E("go").addEventListener("click",find);
+E("more").addEventListener("click",function(){shown+=MAXT;render();});
+E("now").addEventListener("click",function(){setNow();if(resolve("from")>=0)find();});
+E("swap").addEventListener("click",function(){var a=E("from").value,s=sel.from;E("from").value=E("to").value;sel.from=sel.to;E("to").value=a;sel.to=s;});
+setNow();wire("from");wire("to");
+fetch("data.json",{cache:"no-cache"}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+  j.places.forEach(function(p){p.k=norm(p[0]+" "+p[3].join(" "));p.rail=/ GO$/.test(p[0]);});D=j;
+  E("cover").innerHTML="Schedule in this tool: <b>"+niceDate(j.dates[0])+"</b> to <b>"+niceDate(j.dates[j.dates.length-1])+"</b>.";
+  if(j.legend)E("legend").textContent=j.legend;
+}).catch(function(){say("The schedule file could not be loaded. Check your connection and reload the page.");});
+})();
+</script>
+</body>
+</html>
