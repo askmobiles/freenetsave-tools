@@ -195,7 +195,7 @@
         <tr><td data-t="luckyColours"></td><td id="lkColors"></td></tr>
         <tr><td data-t="luckyGem"></td><td id="lkGem"></td></tr>
         <tr><td data-t="luckyDates"></td><td id="lkDates"></td></tr>
-        <tr id="avoidDatesRow"><td>Dates to avoid</td><td id="lkAvoidDates"></td></tr>
+        <tr id="avoidDatesRow"><td>Dates to be careful on</td><td id="lkAvoidDates"></td></tr>
         <tr><td>Lucky ages</td><td id="lkAges"></td></tr>
       </table>
     </div>
@@ -549,7 +549,7 @@ function todayCheck(birth, dest){
   const now=new Date(), td=now.getDate(), tm=now.getMonth()+1, ty=now.getFullYear();
   const dayN=reduceSteps(td).at(-1);
   const full=reduceSteps((String(td).padStart(2,"0")+String(tm).padStart(2,"0")+ty).split("").reduce((a,c)=>a+ +c,0)).at(-1);
-  const D=DATA[birth], eightBad=[1,2,4,7,8].includes(birth)||[1,2,4,7,8].includes(dest);
+  const D=DATA[birth], eightBad=true;
   const good=n=>n===birth||n===dest||D.lucky.includes(n), bad=n=>D.avoid.includes(n)||(eightBad&&n===8);
   const score=(good(dayN)?1:0)+(good(full)?1:0)-(bad(dayN)?2:0)-(bad(full)?1:0);
   const dateStr=`${td} ${MONTHS[tm-1]} ${ty}`, v=$("todayVerdict");
@@ -643,10 +643,10 @@ $("form").addEventListener("submit", e=>{
   $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ");
   $("lkGem").textContent = D.gem;
   const luckyDates=[]; for(let i=1;i<=31;i++) if(D.lucky.includes(reduceSteps(i).at(-1))) luckyDates.push(i);
-  const eightBad = [1,2,4,7,8].includes(birth) || [1,2,4,7,8].includes(dest);
+  const eightBad = true, own8 = birth===8 || dest===8;   // dates adding up to 8 are "be careful" dates for everyone
   $("lkDates").textContent = (eightBad ? luckyDates.filter(x=>reduceSteps(x).at(-1)!==8) : luckyDates).join(", ");
   $("avoidDatesRow").style.display = eightBad ? "" : "none";
-  $("lkAvoidDates").innerHTML = eightBad ? `<div class="chips"><span class="chip bad">8</span><span class="chip bad">17</span><span class="chip bad">26</span></div><div class="calc" style="margin-top:4px">For people with birth or destiny number 1, 2, 4, 7 or 8, tradition advises against starting new things on these dates.</div>` : "";
+  $("lkAvoidDates").innerHTML = `<div class="chips"><span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">8</span><span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">17</span><span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">26</span></div><div class="calc" style="margin-top:4px">${own8 ? "These dates carry your own number (8), and many people born under 8 feel lucky on them. Tradition still advises care, so go by your own experience." : "Dates adding up to 8 (the 8th, 17th and 26th) are traditionally days to be careful on, though some people do feel lucky on them."}</div>`;
   const ageNums = [...new Set([birth, dest, ...D.lucky])].filter(n=>!D.avoid.includes(n));
   const nextAges = []; for(let a=Math.max(age,1); a<=110 && nextAges.length<8; a++) if(ageNums.includes(reduceSteps(a).at(-1))) nextAges.push(a);
   $("lkAges").innerHTML = `<div class="chips">` + nextAges.map(a=>`<span class="chip${a===age?" good":""}">${a}${a===age?" · now":""}</span>`).join("") + `</div><div class="calc" style="margin-top:4px">With a suitable name, tradition says progress comes at these ages.</div>`;
