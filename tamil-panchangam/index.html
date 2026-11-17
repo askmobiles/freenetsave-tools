@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://tools.freenetsave.com/tamil-panchangam/">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="../assets/style.css?v=8">
-<link rel="stylesheet" href="../assets/almanac.css?v=8">
+<link rel="stylesheet" href="../assets/almanac.css?v=9">
 <style></style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Tamil Panchangam", "url": "https://tools.freenetsave.com/tamil-panchangam/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free Tamil panchangam for any date: Tamil date, tithi, nakshatra, yogam, karanam, Rahu kalam, Yamagandam and Kuligai, by Thirukanitham and Vakyam, in English and Tamil."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between Thirukanitham and Vakyam?", "acceptedAnswer": {"@type": "Answer", "text": "Thirukanitham is calculated from the true positions of the Sun and Moon. Vakyam follows older traditional rules. The Tamil date is usually the same, but tithi and nakshatra end times can differ."}}, {"@type": "Question", "name": "How is Rahu kalam worked out?", "acceptedAnswer": {"@type": "Answer", "text": "The time from sunrise to sunset is cut into eight equal parts. Rahu kalam is a fixed part for each day of the week, so it changes with your city and the season."}}, {"@type": "Question", "name": "Why does the Tamil date change with the place?", "acceptedAnswer": {"@type": "Answer", "text": "The Tamil date follows the rule used in Tamil Nadu. The clock times, such as sunrise and Rahu kalam, are shown for the city you pick."}}, {"@type": "Question", "name": "Can I print a Tamil month calendar?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Press Print this month under the Tamil month calendar."}}]}]}</script>
 </head>
@@ -44,6 +44,9 @@
     <div class="top"><div class="field"><label for="dd">Date of passing · இறந்த தேதி</label><input id="dd" type="date"></div>
     <div class="field"><label for="dt">Time of passing, if known (local time there) · நேரம் (தெரிந்தால்)</label><input id="dt" type="time"></div></div>
     <div class="mhead" style="margin-top:10px"><div class="field"><label for="dp">Place of passing · இறந்த இடம்</label><select id="dp"></select></div></div>
+    <p class="fine" style="margin:14px 0 6px">If you already know the thithi or the Tamil month of passing, choose them here. They are used in place of the ones worked out from the date. With both chosen, you can leave the date empty.</p>
+    <div class="top"><div class="field"><label for="dti">Thithi of passing, if you know it · திதி</label><select id="dti"></select></div>
+    <div class="field"><label for="dmo">Tamil month of passing, if you know it · தமிழ் மாதம்</label><select id="dmo"></select></div></div>
     <p class="err" id="derr"></p>
     <table class="cal" id="thi"></table>
     <p class="fine" id="thinote" hidden>The yearly thithi is found the Tamil way: the same Tamil month and the same thithi, on the day that thithi covers the afternoon. The thithi of passing is worked out for the place of passing. This year's date is worked out for the place chosen at the top of the page, which should be where you will keep the day, using the method (Thirukanitham or Vakyam) chosen there. Without a time, the thithi at sunrise on the day of passing is used. Families and temples follow slightly different rules, so please confirm the date with your priest.<br>ஒரே தமிழ் மாதம், ஒரே திதி என்ற முறையில் கணிக்கப்படுகிறது. தேதியை உங்கள் குருக்களிடம் உறுதி செய்யுங்கள்.</p></section>
@@ -63,6 +66,6 @@
 </div>
 <script src="../assets/embed.js?v=11"></script>
 <script>window.ALM={"mc": "tt", "share": "tamil"};</script>
-<script src="../assets/almanac.js?v=8"></script>
+<script src="../assets/almanac.js?v=9"></script>
 </body>
 </html>

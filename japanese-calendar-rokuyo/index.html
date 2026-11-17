@@ -11,7 +11,7 @@
 <meta property="og:url" content="https://tools.freenetsave.com/japanese-calendar-rokuyo/">
 <meta property="og:type" content="website">
 <link rel="stylesheet" href="../assets/style.css?v=8">
-<link rel="stylesheet" href="../assets/almanac.css?v=8">
+<link rel="stylesheet" href="../assets/almanac.css?v=9">
 <style>.s-grid .mhead .field{display:none}</style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Japanese Calendar & Rokuyō", "url": "https://tools.freenetsave.com/japanese-calendar-rokuyo/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free Japanese calendar for any date: the era year (Reiwa), zodiac animal, and the Rokuyō lucky-day cycle with Taian, Tomobiki and Butsumetsu shown for the whole month."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which Rokuyō day is best for a wedding?", "acceptedAnswer": {"@type": "Answer", "text": "Taian is the most popular. Butsumetsu is usually avoided."}}, {"@type": "Question", "name": "Why are funerals avoided on Tomobiki?", "acceptedAnswer": {"@type": "Answer", "text": "The name is read as \"pulling friends along\", so many crematoriums in Japan close on that day."}}, {"@type": "Question", "name": "How is Rokuyō worked out?", "acceptedAnswer": {"@type": "Answer", "text": "Add the old lunar month and day together and divide by six. The remainder gives the day name."}}]}]}</script>
 </head>
@@ -49,6 +49,9 @@
     <div class="top"><div class="field"><label for="dd">Date of passing · இறந்த தேதி</label><input id="dd" type="date"></div>
     <div class="field"><label for="dt">Time of passing, if known (local time there) · நேரம் (தெரிந்தால்)</label><input id="dt" type="time"></div></div>
     <div class="mhead" style="margin-top:10px"><div class="field"><label for="dp">Place of passing · இறந்த இடம்</label><select id="dp"></select></div></div>
+    <p class="fine" style="margin:14px 0 6px">If you already know the thithi or the Tamil month of passing, choose them here. They are used in place of the ones worked out from the date. With both chosen, you can leave the date empty.</p>
+    <div class="top"><div class="field"><label for="dti">Thithi of passing, if you know it · திதி</label><select id="dti"></select></div>
+    <div class="field"><label for="dmo">Tamil month of passing, if you know it · தமிழ் மாதம்</label><select id="dmo"></select></div></div>
     <p class="err" id="derr"></p>
     <table class="cal" id="thi"></table>
     <p class="fine" id="thinote" hidden>The yearly thithi is found the Tamil way: the same Tamil month and the same thithi, on the day that thithi covers the afternoon. The thithi of passing is worked out for the place of passing. This year's date is worked out for the place chosen at the top of the page, which should be where you will keep the day, using the method (Thirukanitham or Vakyam) chosen there. Without a time, the thithi at sunrise on the day of passing is used. Families and temples follow slightly different rules, so please confirm the date with your priest.<br>ஒரே தமிழ் மாதம், ஒரே திதி என்ற முறையில் கணிக்கப்படுகிறது. தேதியை உங்கள் குருக்களிடம் உறுதி செய்யுங்கள்.</p></section><section class="s-chi"><h2 class="sec">Chinese calendar · 农历</h2>
@@ -61,6 +64,6 @@
 </div>
 <script src="../assets/embed.js?v=11"></script>
 <script>window.ALM={"mc": "japanese", "shareName": "Japanese date and Rokuy\u014d"};</script>
-<script src="../assets/almanac.js?v=8"></script>
+<script src="../assets/almanac.js?v=9"></script>
 </body>
 </html>
