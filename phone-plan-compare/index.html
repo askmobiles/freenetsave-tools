@@ -38,7 +38,7 @@
   </div>
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
-<script src="../assets/embed.js?v=7"></script>
+<script src="../assets/embed.js?v=8"></script>
 <script>
 const F=[["m","Plan price each month","Monthly plan price"],["p","Phone payment each month","0 if you own your phone"],["o","One-time costs","Activation, SIM, money down"],["c","Credits or gift cards you get","Bill credits, trade-in"],["n","Months","Length of the deal, e.g. 24"]];
 $("plans").innerHTML=["A","B"].map(k=>'<div class="pl"><h2>Plan '+k+'</h2><div class="row">'+F.map(f=>'<div class="field"><label for="'+f[0]+k+'">'+f[1]+'</label><input id="'+f[0]+k+'" type="number" inputmode="decimal" min="0" placeholder="'+f[2]+'"></div>').join("")+"</div></div>").join("");
