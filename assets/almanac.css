@@ -62,3 +62,7 @@
    body.pm .mg>div:not(.wd),body.pm .mg .dc{border:0;border-right:1px solid #000;border-bottom:1px solid #000;border-radius:0;background:#fff!important;min-height:0;height:calc(158mm / var(--rows,5));padding:1.5mm 2mm}
    body.pm .mg .dc b{font-size:15pt;color:#000!important}body.pm .mg .dc .o{font-size:9.5pt;color:#000}body.pm .mg .dc small{font-size:8pt;color:#222;display:block!important}}
   .crumb{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 4px}.crumb a{color:var(--brand);text-decoration:none}
+  .top>*,.mhead>*{min-width:0}
+  .top .field input,.mhead .field select,.top .field select{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
+  .top input[type=date],.top input[type=time]{-webkit-appearance:none;appearance:none;min-height:48px;text-align:left}
+  .top input[type=date]::-webkit-date-and-time-value{text-align:left}

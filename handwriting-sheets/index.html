@@ -17,7 +17,7 @@
   .btn.alt{background:var(--accent)}
   .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
   #sheet{background:#fff;color:#000;border:1px solid var(--line);border-radius:6px;padding:26px;margin-top:16px;overflow-x:auto}
-  @media print{body{background:#fff}.card,.hide-embed,.note,.fh,.ff{display:none!important}.wrap{max-width:none;padding:0}#sheet{border:0;padding:0;margin:0;overflow:visible}@page{margin:14mm}}
+  @media print{@page{size:portrait;margin:12mm}html,body{background:#fff;height:auto!important;min-height:0!important;margin:0!important;padding:0!important}body>*:not(.wrap),.wrap>*:not(#sheet){display:none!important}.wrap{max-width:none!important;padding:0!important;margin:0!important}#sheet{border:0;padding:0;margin:0;overflow:visible;--h:var(--hp)!important}#sheet h2{font-size:16pt;margin:0 0 2mm}.ln{break-inside:avoid}}
   #sheet h2{margin:0 0 6px;font-size:20px}
   .ln{position:relative;height:var(--h);margin:calc(var(--h)*.42) 0;border-top:1.5px solid #555;border-bottom:1.5px solid #555;white-space:nowrap;overflow:hidden}
   .ln:before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.5px dashed #9ab}
@@ -35,7 +35,7 @@
     <div class="field"><label for="txt">What should the child trace?</label><input id="txt" placeholder="A name, word, letters or numbers"></div>
     <div class="btnrow" style="margin:0 0 14px"><button class="btn line" type="button" data-fill="Aa Bb Cc Dd Ee Ff Gg">A to G</button><button class="btn line" type="button" data-fill="Hh Ii Jj Kk Ll Mm Nn">H to N</button><button class="btn line" type="button" data-fill="Oo Pp Qq Rr Ss Tt Uu">O to U</button><button class="btn line" type="button" data-fill="Vv Ww Xx Yy Zz">V to Z</button><button class="btn line" type="button" data-fill="0 1 2 3 4 5 6 7 8 9">Numbers</button></div>
     <div class="row"><div class="field"><label for="size">Letter size</label><select id="size"><option value="64">Big (ages 3 to 5)</option><option value="46" selected>Medium (ages 5 to 7)</option><option value="32">Small (ages 7 and up)</option></select></div>
-    <div class="field"><label for="rows">Lines on the page</label><select id="rows"><option>4</option><option selected>6</option><option>8</option><option>10</option></select></div></div>
+    <div class="field"><label for="rows">Lines on the page</label><select id="rows"><option value="0" selected>Fill the page</option><option>4</option><option>6</option><option>8</option><option>10</option></select></div></div>
     <button class="btn alt" id="print" type="button">Print</button>
   </div>
   <div id="sheet"></div>
@@ -44,9 +44,9 @@
 <script src="../assets/embed.js?v=7"></script>
 <script>
 const E=s=>String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
-function draw(){const t=$("txt").value.trim(),n=+$("rows").value;let h='<h2>Name: ______________________</h2>';
+function draw(){const t=$("txt").value.trim(),hp={64:22,46:16,32:11.5}[$("size").value]||16,n=+$("rows").value||Math.floor(238/(hp*1.42+0.8));let h='<h2>Name: ______________________</h2>';
   for(let i=0;i<n;i++){const rep=t?(t+"   ").repeat(i===0?1:12):"";h+='<div class="ln'+(i===0?" solid":"")+'"><span>'+(i%2===0||i===0?E(rep):"")+"</span></div>";}
-  $("sheet").style.setProperty("--h",$("size").value+"px");$("sheet").innerHTML=h;}
+  $("sheet").style.setProperty("--h",$("size").value+"px");$("sheet").style.setProperty("--hp",hp+"mm");$("sheet").innerHTML=h;}
 document.querySelectorAll("[data-fill]").forEach(b=>b.addEventListener("click",()=>{$("txt").value=b.dataset.fill;draw();}));
 ["txt","size","rows"].forEach(i=>$(i).addEventListener("input",draw));$("print").addEventListener("click",()=>window.print());draw();
 </script>
