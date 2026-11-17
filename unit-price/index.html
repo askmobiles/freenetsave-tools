@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit Price Calculator: compare grocery prices by weight or volume (free)</title>
+<meta name="description" content="Free unit price calculator. Compare two to four products by price per 100 g, per kg, per litre or per item and see which is the better buy. Works with grams, kilograms, pounds, ounces, millilitres and litres.">
+<link rel="canonical" href="https://tools.freenetsave.com/unit-price/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .up{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}.upg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:6px}.upg .field{margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Unit Price Calculator</h1>
+    <p class="sub">Which pack is the better buy? Compare by weight, volume or count.</p>
+  </div>
+  <div class="card">
+    <p class="lead">Type the price and the size of each product. The cheapest per unit is marked.</p>
+    <div id="rows"></div>
+    <div class="btnrow"><button type="button" class="btn line" id="add">+ Add another product</button><button type="button" class="btn line" id="clear">Clear</button></div>
+    <div id="out" style="margin-top:14px"></div>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+const U={g:["w",1],kg:["w",1000],lb:["w",453.59237],oz:["w",28.349523],mL:["v",1],L:["v",1000],"fl oz":["v",29.5735],items:["c",1]};
+let n=0;function add(){n++;const d=document.createElement("div");d.className="up";d.innerHTML='<b>Product '+n+'</b><div class="upg"><div class="field"><label>Price ($)</label><input type="number" inputmode="decimal" min="0" step="0.01" class="pr" placeholder="e.g. 4.99"></div><div class="field"><label>Size</label><input type="number" inputmode="decimal" min="0" step="any" class="sz" placeholder="e.g. 750"></div><div class="field"><label>Unit</label><select class="un">'+Object.keys(U).map(u=>'<option>'+u+'</option>').join("")+'</select></div><div class="field"><label>Packs <small>(optional)</small></label><input type="number" inputmode="numeric" min="1" step="1" class="pk" placeholder="1"></div></div>';$("rows").appendChild(d);}
+function calc(){const r=[...document.querySelectorAll(".up")].map((d,i)=>{const p=parseFloat(d.querySelector(".pr").value),s=parseFloat(d.querySelector(".sz").value),u=U[d.querySelector(".un").value],k=parseFloat(d.querySelector(".pk").value)||1;return (p>0&&s>0)?{i:i+1,kind:u[0],per:p/(s*u[1]*k)}:null;}).filter(Boolean);
+  if(r.length<1){$("out").innerHTML="";return;}const kinds=new Set(r.map(x=>x.kind));if(kinds.size>1){$("out").innerHTML='<p class="err">Use the same kind of unit for every product: all weight, all volume, or all items.</p>';return;}
+  const k=r[0].kind,best=Math.min(...r.map(x=>x.per)),lab=k==="w"?["per 100 g",100,"per kg",1000]:k==="v"?["per 100 mL",100,"per litre",1000]:["per item",1,"",0];
+  $("out").innerHTML='<div class="result">'+r.map(x=>'<div class="box'+(x.per===best&&r.length>1?' main':'')+'"><span>Product '+x.i+(x.per===best&&r.length>1?' · best buy ✅':'')+'</span><b>'+money(x.per*lab[1])+'</b><span>'+lab[0]+(lab[3]?' · '+money(x.per*lab[3])+' '+lab[2]:'')+(x.per>best?' · '+Math.round((x.per/best-1)*100)+'% more':'')+'</span></div>').join("")+'</div>';}
+$("add").addEventListener("click",()=>{if(n<6)add();});$("clear").addEventListener("click",()=>{$("rows").innerHTML="";n=0;add();add();calc();});$("rows").addEventListener("input",calc);add();add();
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Text to Speech Reader: paste text and listen (free, no sign-up)</title>
+<meta name="description" content="Free text-to-speech reader. Paste any text and have it read aloud in English, French, Tamil, Hindi and other languages, with speed control and pause. Uses the voices already on your device.">
+<link rel="canonical" href="https://tools.freenetsave.com/text-to-speech/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  textarea{width:100%;box-sizing:border-box;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;resize:vertical}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Text to Speech Reader</h1>
+    <p class="sub">Paste text and listen to it read aloud.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label for="tx">Text to read</label><textarea id="tx" rows="8" placeholder="Paste or type your text here"></textarea></div>
+    <div class="row"><div class="field"><label for="vo">Voice</label><select id="vo"></select></div>
+    <div class="field"><label for="sp">Speed: <b id="spv">1.0</b>×</label><input id="sp" type="range" min="0.5" max="2" step="0.1" value="1" style="padding:0;border:0"></div></div>
+    <div class="btnrow"><button type="button" class="btn" id="play">▶ Read aloud</button><button type="button" class="btn line" id="pause">⏸ Pause</button><button type="button" class="btn line" id="stop">⏹ Stop</button></div>
+    <p class="lead" id="st" style="margin-top:10px"></p><p class="err" id="err"></p>
+  </div>
+  <p class="note">🔒 The reading is done by the voices on your own device. Your text is not sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+const S=window.speechSynthesis;let V=[],q=[],on=false;
+function voices(){V=S?S.getVoices():[];const keep=$("vo").value;$("vo").innerHTML=V.map((v,i)=>'<option value="'+i+'">'+v.name+' ('+v.lang+')</option>').join("")||'<option>Default voice</option>';if(keep)$("vo").value=keep;else{const d=V.findIndex(v=>/^en/i.test(v.lang)&&v.default);if(d>=0)$("vo").value=d;}}
+if(!S){$("err").textContent="This browser cannot read text aloud. Try Chrome, Edge or Safari.";}else{voices();S.onvoiceschanged=voices;}
+function next(){if(!on)return;const t=q.shift();if(!t){on=false;$("st").textContent="Finished.";return;}const u=new SpeechSynthesisUtterance(t),v=V[+$("vo").value];if(v){u.voice=v;u.lang=v.lang;}u.rate=+$("sp").value;u.onend=next;u.onerror=()=>{on=false;};$("st").textContent="Reading… "+q.length+" part"+(q.length===1?"":"s")+" left";S.speak(u);}
+$("play").addEventListener("click",()=>{if(!S)return;$("err").textContent="";if(S.paused){S.resume();$("st").textContent="Reading…";return;}const t=$("tx").value.trim();if(!t){$("err").textContent="Please type or paste some text first.";return;}S.cancel();q=t.match(/[^.!?\n]+[.!?\n]*/g)||[t];q=q.map(s=>s.trim()).filter(Boolean);on=true;next();});
+$("pause").addEventListener("click",()=>{if(S&&S.speaking){S.pause();$("st").textContent="Paused. Press Read aloud to carry on.";}});
+$("stop").addEventListener("click",()=>{if(S){on=false;q=[];S.cancel();$("st").textContent="";}});$("sp").addEventListener("input",()=>$("spv").textContent=(+$("sp").value).toFixed(1));window.addEventListener("pagehide",()=>{if(S)S.cancel();});
+</script>
+</body>
+</html>

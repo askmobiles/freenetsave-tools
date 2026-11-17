@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>World Time and Time Zone Converter: compare cities and plan a call (free)</title>
+<meta name="description" content="Free world clock and time zone converter. See the time now in cities around the world, change a time from one city to others, and find a good hour for a call across time zones.">
+<link rel="canonical" href="https://tools.freenetsave.com/world-time/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .tb{width:100%;border-collapse:collapse;font-size:14.5px}.tb th,.tb td{padding:7px 8px;border-bottom:1px solid #fff;text-align:center;white-space:nowrap}.tb th{font-size:13px;color:var(--muted)}
+  .tb td.g{background:#dcf5e3}.tb td.y{background:#fff3c9}.tb td.n{background:#e6e9ef;color:#667}.rm{font:inherit;border:0;background:none;color:var(--muted);cursor:pointer;padding:0 0 0 4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>World Time &amp; Time Zone Converter</h1>
+    <p class="sub">Compare the time in different cities and find a good time for a call.</p>
+  </div>
+  <div class="card">
+    <div class="row"><div class="field"><label for="d">Date</label><input id="d" type="date"></div><div class="field"><label for="t">Time</label><input id="t" type="time"></div></div>
+    <div class="row"><div class="field"><label for="from">This time is in</label><select id="from"></select></div><div class="field"><label for="add">Add a city to compare</label><select id="add"></select></div></div>
+    <div class="btnrow"><button type="button" class="btn line" id="now">Use the time now</button></div>
+    <div id="out" style="margin-top:14px"></div>
+    <h2 style="font-size:19px;margin:22px 0 8px">Meeting planner</h2>
+    <p class="lead">Each row is one hour in the first city. Green is daytime (8 am to 6 pm), yellow is early or late, grey is night.</p>
+    <div style="overflow-x:auto"><table class="tb" id="tb"></table></div>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+var PL=[["Toronto, Canada",43.6532,-79.3832,"America/Toronto"],["Vancouver, Canada",49.2827,-123.1207,"America/Vancouver"],["Calgary, Canada",51.0447,-114.0719,"America/Edmonton"],["Winnipeg, Canada",49.8951,-97.1384,"America/Winnipeg"],["Montreal, Canada",45.5019,-73.5674,"America/Toronto"],["Halifax, Canada",44.6488,-63.5752,"America/Halifax"],["St. John's, Canada",47.5615,-52.7126,"America/St_Johns"],["New York, USA",40.7128,-74.006,"America/New_York"],["Chicago, USA",41.8781,-87.6298,"America/Chicago"],["Los Angeles, USA",34.0522,-118.2437,"America/Los_Angeles"],["Mexico City, Mexico",19.4326,-99.1332,"America/Mexico_City"],["São Paulo, Brazil",-23.5505,-46.6333,"America/Sao_Paulo"],["London, UK",51.5074,-0.1278,"Europe/London"],["Paris, France",48.8566,2.3522,"Europe/Paris"],["Berlin, Germany",52.52,13.405,"Europe/Berlin"],["Cairo, Egypt",30.0444,31.2357,"Africa/Cairo"],["Lagos, Nigeria",6.5244,3.3792,"Africa/Lagos"],["Nairobi, Kenya",-1.2921,36.8219,"Africa/Nairobi"],["Johannesburg, South Africa",-26.2041,28.0473,"Africa/Johannesburg"],["Istanbul, Türkiye",41.0082,28.9784,"Europe/Istanbul"],["Dubai, UAE",25.2048,55.2708,"Asia/Dubai"],["Tehran, Iran",35.6892,51.389,"Asia/Tehran"],["Karachi, Pakistan",24.8607,67.0011,"Asia/Karachi"],["New Delhi, India",28.6139,77.209,"Asia/Kolkata"],["Mumbai, India",19.076,72.8777,"Asia/Kolkata"],["Chennai, India",13.0827,80.2707,"Asia/Kolkata"],["Colombo, Sri Lanka",6.9271,79.8612,"Asia/Colombo"],["Jaffna, Sri Lanka",9.6615,80.0255,"Asia/Colombo"],["Dhaka, Bangladesh",23.8103,90.4125,"Asia/Dhaka"],["Kathmandu, Nepal",27.7172,85.324,"Asia/Kathmandu"],["Bangkok, Thailand",13.7563,100.5018,"Asia/Bangkok"],["Singapore",1.3521,103.8198,"Asia/Singapore"],["Kuala Lumpur, Malaysia",3.139,101.6869,"Asia/Kuala_Lumpur"],["Manila, Philippines",14.5995,120.9842,"Asia/Manila"],["Hong Kong",22.3193,114.1694,"Asia/Hong_Kong"],["Beijing, China",39.9042,116.4074,"Asia/Shanghai"],["Seoul, South Korea",37.5665,126.978,"Asia/Seoul"],["Tokyo, Japan",35.6762,139.6503,"Asia/Tokyo"],["Sydney, Australia",-33.8688,151.2093,"Australia/Sydney"],["Auckland, New Zealand",-36.8509,174.7645,"Pacific/Auckland"]];
+var from=0,list=[25,12,35,38];try{var tz0=Intl.DateTimeFormat().resolvedOptions().timeZone;for(var i=0;i<PL.length;i++)if(PL[i][3]===tz0){from=i;break;}}catch(e){}
+list=list.filter(function(i){return i!==from;});
+function opts(sel,first){sel.innerHTML=(first?'<option value="">'+first+'</option>':'')+PL.map(function(p,i){return '<option value="'+i+'">'+p[0]+'</option>';}).join("");}
+opts($("from"));$("from").value=from;opts($("add"),"Choose a city…");
+function off(ms,tz){var f=new Intl.DateTimeFormat("en-US",{timeZone:tz,hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric"}),o={};f.formatToParts(new Date(ms)).forEach(function(p){o[p.type]=+p.value;});return Date.UTC(o.year,o.month-1,o.day,o.hour,o.minute)-Math.floor(ms/6e4)*6e4;}
+function inst(){var d=$("d").value,t=$("t").value;if(!d||!t)return null;var p=d.split("-").map(Number),q=t.split(":").map(Number),g=Date.UTC(p[0],p[1]-1,p[2],q[0],q[1]),tz=PL[from][3],u=g-off(g,tz);return g-off(u,tz);}
+function fmt(ms,tz,o){return new Intl.DateTimeFormat("en",Object.assign({timeZone:tz},o)).format(new Date(ms));}
+function show(){var ms=inst();if(ms===null)return;var all=[from].concat(list),base=off(ms,PL[from][3]);
+  $("out").innerHTML='<div class="result">'+all.map(function(i,k){var p=PL[i],df=(off(ms,p[3])-base)/36e5;return '<div class="box'+(k===0?" main":"")+'"><span>'+p[0]+(k?' <button type="button" class="rm" data-i="'+i+'" aria-label="Remove '+p[0]+'">✕</button>':"")+'</span><b>'+fmt(ms,p[3],{hour:"numeric",minute:"2-digit"})+'</b><span>'+fmt(ms,p[3],{weekday:"short",day:"numeric",month:"short"})+(k?" · "+(df===0?"same time":(df>0?"+":"−")+Math.abs(df)+" h"):"")+'</span></div>';}).join("")+'</div>';
+  var d=$("d").value.split("-").map(Number),g0=Date.UTC(d[0],d[1]-1,d[2],0,0),tz=PL[from][3],m0=g0-off(g0-off(g0,tz),tz),h="<tr>"+all.map(function(i){return "<th>"+PL[i][0].split(",")[0]+"</th>";}).join("")+"</tr>";
+  for(var hr=0;hr<24;hr++){var m=m0+hr*36e5;h+="<tr>"+all.map(function(i){var lh=+fmt(m,PL[i][3],{hour:"numeric",hourCycle:"h23"}),cls=lh>=8&&lh<18?"g":(lh>=6&&lh<22?"y":"n");return '<td class="'+cls+'">'+fmt(m,PL[i][3],{hour:"numeric",minute:"2-digit"})+"</td>";}).join("")+"</tr>";}
+  $("tb").innerHTML=h;}
+function setNow(){var n=new Date(),tz=PL[from][3];$("d").value=fmt(n.getTime(),tz,{year:"numeric"})+"-"+fmt(n.getTime(),tz,{month:"2-digit"})+"-"+fmt(n.getTime(),tz,{day:"2-digit"});$("t").value=String(fmt(n.getTime(),tz,{hour:"2-digit",hourCycle:"h23"})).padStart(2,"0").slice(0,2)+":"+String(n.getMinutes()).padStart(2,"0");show();}
+$("d").addEventListener("input",show);$("t").addEventListener("input",show);$("now").addEventListener("click",setNow);
+$("from").addEventListener("change",function(){var ms=inst();from=+$("from").value;list=list.filter(function(i){return i!==from;});if(ms!==null){var tz=PL[from][3];$("d").value=fmt(ms,tz,{year:"numeric"})+"-"+fmt(ms,tz,{month:"2-digit"})+"-"+fmt(ms,tz,{day:"2-digit"});$("t").value=fmt(ms,tz,{hour:"2-digit",minute:"2-digit",hourCycle:"h23"});}show();});
+$("add").addEventListener("change",function(){var i=$("add").value;if(i!==""){i=+i;if(i!==from&&list.indexOf(i)<0&&list.length<7)list.push(i);$("add").value="";show();}});
+$("out").addEventListener("click",function(e){var b=e.target.closest(".rm");if(b){list=list.filter(function(i){return i!==+b.dataset.i;});show();}});setNow();
+</script>
+</body>
+</html>

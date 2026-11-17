@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Passport Photo Maker: crop a photo to passport and visa size (free)</title>
+<meta name="description" content="Free passport photo maker. Crop your photo to the right size for Canada, USA, UK, Europe, India, Australia and China, line up your head with the guide, and download one photo or a 4×6 print sheet. Photos never leave your device.">
+<link rel="canonical" href="https://tools.freenetsave.com/passport-photo/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .stage{display:flex;justify-content:center;background:#eef2f8;border-radius:14px;padding:14px}#cv{background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.2);touch-action:none;cursor:move;max-width:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Passport Photo Maker</h1>
+    <p class="sub">Crop a photo to passport or visa size and make a 4×6 print sheet.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a photo"><div style="font-size:34px">🪪</div><b>Choose a photo or drop it here</b><span>Face the camera, plain light background, no shadows</span><span class="pick">Choose photo</span><input type="file" accept="image/*"></div>
+    <div id="ed" hidden>
+      <div class="row" style="margin-top:14px"><div class="field"><label for="ps">Photo size</label><select id="ps"></select></div><div class="field"><label for="zm">Zoom</label><input id="zm" type="range" min="1" max="4" step="0.01" value="1" style="padding:0;border:0"></div></div>
+      <p class="lead">Drag the photo so your head fits the oval: top of the head on the top line, chin on the bottom line.</p>
+      <div class="stage"><canvas id="cv"></canvas></div>
+      <p class="lead" id="spec" style="margin-top:10px"></p>
+      <div class="btnrow"><button type="button" class="btn" id="one">⬇ Download one photo</button><button type="button" class="btn alt" id="sheet">⬇ Download 4×6 print sheet</button><button type="button" class="btn line" id="again">Choose another photo</button></div>
+      <p class="lead" style="margin-top:10px"><b>Please check the official rules before you apply.</b> Each country has rules on background, expression, glasses and how recent the photo is. <b>Canada:</b> paper passport applications need a photo taken by a commercial photographer, with the studio name, address and date on the back, so a home-made print is usually not accepted. Print the 4×6 sheet at "actual size" (100%), not "fit to page".</p>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+  <p class="note">🔒 Your photo is handled inside your browser. It is never uploaded or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+const P=[["Canada passport · 50 × 70 mm",50,70,31,36],["USA passport and visa · 2 × 2 in (51 × 51 mm)",50.8,50.8,25,35],["UK passport · 35 × 45 mm",35,45,29,34],["Europe / Schengen visa · 35 × 45 mm",35,45,32,36],["India passport · 2 × 2 in (51 × 51 mm)",50.8,50.8,25,35],["Australia passport · 35 × 45 mm",35,45,32,36],["China visa · 33 × 48 mm",33,48,28,33]];
+$("ps").innerHTML=P.map((p,i)=>'<option value="'+i+'">'+p[0]+'</option>').join("");
+const c=$("cv"),x=c.getContext("2d");let img=null,ox=0,oy=0,z=1,base=1,dragp=null,W=0,H=0;
+function spec(){return P[+$("ps").value];}
+function layout(){const s=spec(),maxW=Math.min(420,c.parentNode.clientWidth),k=Math.min(maxW/s[1],460/s[2]);W=Math.round(s[1]*k);H=Math.round(s[2]*k);const d=Math.max(1,window.devicePixelRatio||1);c.style.width=W+"px";c.style.height=H+"px";c.width=W*d;c.height=H*d;x.setTransform(d,0,0,d,0,0);if(img){base=Math.max(W/img.naturalWidth,H/img.naturalHeight);clamp();}draw();
+  $("spec").textContent="Size "+s[1]+" × "+s[2]+" mm. Head height (chin to top of head) should be "+s[3]+" to "+s[4]+" mm.";}
+function clamp(){const w=img.naturalWidth*base*z,h=img.naturalHeight*base*z;ox=Math.min(0,Math.max(W-w,ox));oy=Math.min(0,Math.max(H-h,oy));}
+function paint(ctx,w,h,guides){ctx.fillStyle="#fff";ctx.fillRect(0,0,w,h);if(img){const k=w/W;ctx.imageSmoothingQuality="high";ctx.drawImage(img,ox*k,oy*k,img.naturalWidth*base*z*k,img.naturalHeight*base*z*k);}
+  if(guides){const s=spec(),mm=h/s[2],hh=(s[3]+s[4])/2*mm,top=(s[2]>s[1]*1.2?0.12:0.1)*h,bot=top+hh;ctx.strokeStyle="rgba(37,99,235,.95)";ctx.lineWidth=1.5;ctx.setLineDash([6,5]);ctx.beginPath();ctx.ellipse(w/2,(top+bot)/2,hh*0.38,hh/2,0,0,7);ctx.stroke();ctx.beginPath();ctx.moveTo(w*0.15,top);ctx.lineTo(w*0.85,top);ctx.moveTo(w*0.15,bot);ctx.lineTo(w*0.85,bot);ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.stroke();ctx.setLineDash([]);}}
+function draw(){paint(x,W,H,true);}
+function load(files){const f=files[0];if(!f)return;const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{img=im;z=1;$("zm").value=1;$("drop").hidden=true;$("ed").hidden=false;layout();ox=(W-img.naturalWidth*base)/2;oy=(H-img.naturalHeight*base)/2;clamp();draw();$("status").textContent="";};im.onerror=()=>{$("status").innerHTML='<span class="bad">This picture could not be opened. iPhone HEIC photos only open in Safari.</span>';};im.src=u;}
+c.addEventListener("pointerdown",e=>{c.setPointerCapture(e.pointerId);dragp=[e.clientX-ox,e.clientY-oy];});c.addEventListener("pointermove",e=>{if(!dragp||!img)return;ox=e.clientX-dragp[0];oy=e.clientY-dragp[1];clamp();draw();});["pointerup","pointercancel"].forEach(n=>c.addEventListener(n,()=>{dragp=null;}));
+$("zm").addEventListener("input",()=>{if(!img)return;const cx=(W/2-ox)/(base*z),cy=(H/2-oy)/(base*z);z=+$("zm").value;ox=W/2-cx*base*z;oy=H/2-cy*base*z;clamp();draw();});
+$("ps").addEventListener("change",()=>{layout();if(img){ox=(W-img.naturalWidth*base*z)/2;oy=(H-img.naturalHeight*base*z)/2;clamp();draw();}});window.addEventListener("resize",()=>{if(img)layout();});
+function photo(dpi){const s=spec(),w=Math.round(s[1]/25.4*dpi),h=Math.round(s[2]/25.4*dpi),o=document.createElement("canvas");o.width=w;o.height=h;paint(o.getContext("2d"),w,h,false);return o;}
+function save(cv,name){cv.toBlob(b=>saveFile(b,name),"image/jpeg",0.95);}
+$("one").onclick=()=>save(photo(600),"passport-photo.jpg");
+$("sheet").onclick=()=>{const dpi=300,s=spec(),ph=photo(dpi),o=document.createElement("canvas");o.width=6*dpi;o.height=4*dpi;const g=o.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,o.width,o.height);const gap=Math.round(0.12*dpi),cols=Math.floor((o.width+gap)/(ph.width+gap)),rows=Math.floor((o.height+gap)/(ph.height+gap)),tw=cols*ph.width+(cols-1)*gap,th=rows*ph.height+(rows-1)*gap,x0=(o.width-tw)/2,y0=(o.height-th)/2;g.strokeStyle="#bbb";g.lineWidth=1;for(let r=0;r<rows;r++)for(let q=0;q<cols;q++){const px=Math.round(x0+q*(ph.width+gap)),py=Math.round(y0+r*(ph.height+gap));g.drawImage(ph,px,py);g.strokeRect(px-0.5,py-0.5,ph.width+1,ph.height+1);}save(o,"passport-photos-4x6.jpg");$("status").textContent="✅ Sheet saved with "+(rows*cols)+" photos. Print it as a 4 × 6 inch photo at actual size.";};
+$("again").onclick=()=>{img=null;$("ed").hidden=true;$("drop").hidden=false;$("status").textContent="";};setupDrop($("drop"),load);
+</script>
+</body>
+</html>

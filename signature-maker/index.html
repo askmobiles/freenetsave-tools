@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signature Maker: draw your signature and download a transparent PNG (free)</title>
+<meta name="description" content="Free signature maker. Draw your signature with a finger, mouse or pen and download it as a transparent PNG to put on PDFs, letters and forms. It never leaves your device.">
+<link rel="canonical" href="https://tools.freenetsave.com/signature-maker/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  #pad{width:100%;height:clamp(180px,34vw,320px);border:2px dashed #b9c6de;border-radius:14px;background:#fff;touch-action:none;display:block;cursor:crosshair}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Signature Maker</h1>
+    <p class="sub">Draw your signature and save it as a see-through picture.</p>
+  </div>
+  <div class="card">
+    <p class="lead">Sign in the box with your finger, mouse or pen.</p>
+    <canvas id="pad" aria-label="Signature drawing area"></canvas>
+    <div class="row" style="margin-top:12px"><div class="field"><label for="col">Ink colour</label><select id="col"><option value="#111111">Black</option><option value="#0b3d91">Blue</option><option value="#1d4ed8">Bright blue</option></select></div>
+    <div class="field"><label for="th">Pen thickness</label><select id="th"><option value="2">Fine</option><option value="3.2" selected>Medium</option><option value="5">Bold</option></select></div></div>
+    <div class="btnrow"><button type="button" class="btn" id="save">⬇ Download PNG (see-through)</button><button type="button" class="btn line" id="savew">⬇ Download with white background</button><button type="button" class="btn line" id="undo">Undo</button><button type="button" class="btn line" id="clr">Clear</button></div>
+    <p class="err" id="err"></p>
+  </div>
+  <p class="note">🔒 Your signature is drawn on your device. It is never uploaded or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+const c=$("pad"),x=c.getContext("2d");let strokes=[],cur=null,dpr=Math.max(1,window.devicePixelRatio||1);
+function size(){const w=c.clientWidth,h=c.clientHeight;c.width=w*dpr;c.height=h*dpr;draw();}
+function draw(){x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,c.width,c.height);x.lineCap="round";x.lineJoin="round";strokes.forEach(s=>{x.strokeStyle=s.c;x.fillStyle=s.c;x.lineWidth=s.w;if(s.p.length===1){x.beginPath();x.arc(s.p[0][0],s.p[0][1],s.w/2,0,7);x.fill();return;}x.beginPath();x.moveTo(s.p[0][0],s.p[0][1]);for(let i=1;i<s.p.length-1;i++){const mx=(s.p[i][0]+s.p[i+1][0])/2,my=(s.p[i][1]+s.p[i+1][1])/2;x.quadraticCurveTo(s.p[i][0],s.p[i][1],mx,my);}const l=s.p[s.p.length-1];x.lineTo(l[0],l[1]);x.stroke();});}
+function pt(e){const r=c.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top];}
+c.addEventListener("pointerdown",e=>{e.preventDefault();c.setPointerCapture(e.pointerId);cur={c:$("col").value,w:+$("th").value,p:[pt(e)]};strokes.push(cur);draw();});
+c.addEventListener("pointermove",e=>{if(!cur)return;e.preventDefault();cur.p.push(pt(e));draw();});
+["pointerup","pointercancel","pointerleave"].forEach(n=>c.addEventListener(n,()=>{cur=null;}));
+$("undo").addEventListener("click",()=>{strokes.pop();draw();});$("clr").addEventListener("click",()=>{strokes=[];draw();});
+function out(white){$("err").textContent="";if(!strokes.length){$("err").textContent="Please sign in the box first.";return;}let a=1e9,b=1e9,m=0,n=0;strokes.forEach(s=>s.p.forEach(p=>{a=Math.min(a,p[0]);b=Math.min(b,p[1]);m=Math.max(m,p[0]);n=Math.max(n,p[1]);}));const pad=14,sx=Math.max(0,a-pad)*dpr,sy=Math.max(0,b-pad)*dpr,sw=Math.min(c.width-sx,(m-a+2*pad)*dpr),sh=Math.min(c.height-sy,(n-b+2*pad)*dpr),o=document.createElement("canvas");o.width=sw;o.height=sh;const ox=o.getContext("2d");if(white){ox.fillStyle="#fff";ox.fillRect(0,0,sw,sh);}ox.drawImage(c,sx,sy,sw,sh,0,0,sw,sh);o.toBlob(bl=>{const u=URL.createObjectURL(bl),l=document.createElement("a");l.href=u;l.download=white?"signature-white.png":"signature.png";document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);},"image/png");}
+$("save").addEventListener("click",()=>out(false));$("savew").addEventListener("click",()=>out(true));window.addEventListener("resize",size);size();
+</script>
+</body>
+</html>

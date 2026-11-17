@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sunrise and Sunset Times: today or any date, for your city (free)</title>
+<meta name="description" content="Free sunrise and sunset calculator. See sunrise, sunset, solar noon, day length and twilight times for any date and city, or use your own location. Includes the whole month in a table.">
+<link rel="canonical" href="https://tools.freenetsave.com/sunrise-sunset/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .tb{width:100%;border-collapse:collapse;font-size:15px;min-width:420px}.tb th,.tb td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left}.tb th{font-size:13px;color:var(--muted)}.tb tr.on td{background:#eaf1ff;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Sunrise &amp; Sunset Times</h1>
+    <p class="sub">Sunrise, sunset, day length and twilight for any date and place.</p>
+  </div>
+  <div class="card">
+    <div class="row"><div class="field"><label for="d">Date</label><input id="d" type="date"></div><div class="field"><label for="pl">Place</label><select id="pl"></select></div></div>
+    <div class="btnrow"><button type="button" class="btn line" id="geo">📍 Use my location</button><button type="button" class="btn line" id="today">Today</button></div>
+    <p class="lead" id="gm" style="margin-top:8px"></p>
+    <div class="result" id="out"></div>
+    <h2 style="font-size:19px;margin:22px 0 8px" id="mh"></h2>
+    <div style="overflow-x:auto"><table class="tb" id="tb"></table></div>
+    <p class="lead" style="margin-top:10px">Times are worked out for a flat horizon at sea level, so hills, buildings and weather can shift what you see by a few minutes. Your location is used on your device only.</p>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+var PL=[["Toronto, Canada",43.6532,-79.3832,"America/Toronto"],["Vancouver, Canada",49.2827,-123.1207,"America/Vancouver"],["Calgary, Canada",51.0447,-114.0719,"America/Edmonton"],["Winnipeg, Canada",49.8951,-97.1384,"America/Winnipeg"],["Montreal, Canada",45.5019,-73.5674,"America/Toronto"],["Halifax, Canada",44.6488,-63.5752,"America/Halifax"],["St. John's, Canada",47.5615,-52.7126,"America/St_Johns"],["New York, USA",40.7128,-74.006,"America/New_York"],["Chicago, USA",41.8781,-87.6298,"America/Chicago"],["Los Angeles, USA",34.0522,-118.2437,"America/Los_Angeles"],["Mexico City, Mexico",19.4326,-99.1332,"America/Mexico_City"],["São Paulo, Brazil",-23.5505,-46.6333,"America/Sao_Paulo"],["London, UK",51.5074,-0.1278,"Europe/London"],["Paris, France",48.8566,2.3522,"Europe/Paris"],["Berlin, Germany",52.52,13.405,"Europe/Berlin"],["Cairo, Egypt",30.0444,31.2357,"Africa/Cairo"],["Lagos, Nigeria",6.5244,3.3792,"Africa/Lagos"],["Nairobi, Kenya",-1.2921,36.8219,"Africa/Nairobi"],["Johannesburg, South Africa",-26.2041,28.0473,"Africa/Johannesburg"],["Istanbul, Türkiye",41.0082,28.9784,"Europe/Istanbul"],["Dubai, UAE",25.2048,55.2708,"Asia/Dubai"],["Tehran, Iran",35.6892,51.389,"Asia/Tehran"],["Karachi, Pakistan",24.8607,67.0011,"Asia/Karachi"],["New Delhi, India",28.6139,77.209,"Asia/Kolkata"],["Mumbai, India",19.076,72.8777,"Asia/Kolkata"],["Chennai, India",13.0827,80.2707,"Asia/Kolkata"],["Colombo, Sri Lanka",6.9271,79.8612,"Asia/Colombo"],["Jaffna, Sri Lanka",9.6615,80.0255,"Asia/Colombo"],["Dhaka, Bangladesh",23.8103,90.4125,"Asia/Dhaka"],["Kathmandu, Nepal",27.7172,85.324,"Asia/Kathmandu"],["Bangkok, Thailand",13.7563,100.5018,"Asia/Bangkok"],["Singapore",1.3521,103.8198,"Asia/Singapore"],["Kuala Lumpur, Malaysia",3.139,101.6869,"Asia/Kuala_Lumpur"],["Manila, Philippines",14.5995,120.9842,"Asia/Manila"],["Hong Kong",22.3193,114.1694,"Asia/Hong_Kong"],["Beijing, China",39.9042,116.4074,"Asia/Shanghai"],["Seoul, South Korea",37.5665,126.978,"Asia/Seoul"],["Tokyo, Japan",35.6762,139.6503,"Asia/Tokyo"],["Sydney, Australia",-33.8688,151.2093,"Australia/Sydney"],["Auckland, New Zealand",-36.8509,174.7645,"Pacific/Auckland"]];
+PL.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.textContent=p[0];$("pl").appendChild(o);});
+var R=Math.PI/180;function S(x){return Math.sin(x*R);}function n360(x){x%=360;return x<0?x+360:x;}
+function jd(y,m,d,h){if(m<=2){y--;m+=12;}var A=Math.floor(y/100),B=2-A+Math.floor(A/4);return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5+(h||0)/24;}
+function solar(y,m,d,lon){var J0=jd(y,m,d,12)-lon/360,T=(J0-2451545)/36525,L=n360(280.46646+36000.76983*T),M=357.52911+35999.05029*T,ec=0.016708634-0.000042037*T,C=(1.914602-0.004817*T)*S(M)+(0.019993-0.000101*T)*S(2*M)+0.000289*S(3*M),lam=L+C-0.00569-0.00478*S(125.04-1934.136*T),ob=23.439291-0.0130042*T+0.00256*Math.cos((125.04-1934.136*T)*R),dec=Math.asin(S(ob)*S(lam))/R,yy=Math.pow(Math.tan(ob/2*R),2),eq=4/R*(yy*S(2*L)-2*ec*S(M)+4*ec*yy*S(M)*Math.cos(2*L*R)-0.5*yy*yy*S(4*L)-1.25*ec*ec*S(2*M));return {noon:(720-4*lon-eq)/60,dec:dec};}
+function ha(alt,lat,dec){return Math.acos((S(alt)-S(lat)*S(dec))/(Math.cos(lat*R)*Math.cos(dec*R)))/R/15;}
+function day(y,m,d,pl){var s=solar(y,m,d,pl[2]),h=ha(-0.833,pl[1],s.dec),c=ha(-6,pl[1],s.dec);return {noon:s.noon,rise:s.noon-h,set:s.noon+h,dawn:s.noon-c,dusk:s.noon+c,len:2*h};}
+function show(){var v=$("d").value;if(!v)return;var p=v.split("-").map(Number),pl=PL[+$("pl").value],tf=new Intl.DateTimeFormat("en",{hour:"numeric",minute:"2-digit",timeZone:pl[3]});
+  function at(y,m,d,h){return isNaN(h)?"—":tf.format(new Date((jd(y,m,d,0)+h/24-2440587.5)*864e5));}function len(h){if(isNaN(h))return "—";var mn=Math.round(h*60);return Math.floor(mn/60)+" h "+(mn%60)+" min";}
+  var t=day(p[0],p[1],p[2],pl),pd=new Date(Date.UTC(p[0],p[1]-1,p[2]-1)),t0=day(pd.getUTCFullYear(),pd.getUTCMonth()+1,pd.getUTCDate(),pl),df=Math.round((t.len-t0.len)*3600),polar=isNaN(t.rise);
+  $("out").innerHTML=polar?'<div class="box main"><span>'+pl[0]+'</span><b>'+(S(pl[1])*S(solar(p[0],p[1],p[2],pl[2]).dec)>0?"The Sun does not set today":"The Sun does not rise today")+'</b></div>':
+   '<div class="box main"><span>🌅 Sunrise</span><b>'+at(p[0],p[1],p[2],t.rise)+'</b></div><div class="box main"><span>🌇 Sunset</span><b>'+at(p[0],p[1],p[2],t.set)+'</b></div><div class="box"><span>Day length</span><b>'+len(t.len)+'</b><span>'+(isNaN(df)?"":(df>=0?"+":"−")+Math.floor(Math.abs(df)/60)+" min "+(Math.abs(df)%60)+" s vs the day before")+'</span></div><div class="box"><span>Solar noon (Sun highest)</span><b>'+at(p[0],p[1],p[2],t.noon)+'</b></div><div class="box"><span>First light (civil dawn)</span><b>'+at(p[0],p[1],p[2],t.dawn)+'</b></div><div class="box"><span>Last light (civil dusk)</span><b>'+at(p[0],p[1],p[2],t.dusk)+'</b></div>';
+  var n=new Date(Date.UTC(p[0],p[1],0)).getUTCDate(),h="<tr><th>Date</th><th>Sunrise</th><th>Sunset</th><th>Day length</th></tr>";for(var i=1;i<=n;i++){var q=day(p[0],p[1],i,pl);h+="<tr"+(i===p[2]?' class="on"':"")+"><td>"+new Date(Date.UTC(p[0],p[1]-1,i)).toLocaleDateString("en",{weekday:"short",day:"numeric",month:"short",timeZone:"UTC"})+"</td><td>"+at(p[0],p[1],i,q.rise)+"</td><td>"+at(p[0],p[1],i,q.set)+"</td><td>"+len(q.len)+"</td></tr>";}
+  $("tb").innerHTML=h;$("mh").textContent=new Date(Date.UTC(p[0],p[1]-1,1)).toLocaleDateString("en",{month:"long",year:"numeric",timeZone:"UTC"})+" in "+pl[0];}
+function now(){var t=new Date();$("d").value=t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");show();}
+$("d").addEventListener("input",show);$("pl").addEventListener("change",show);$("today").addEventListener("click",now);
+$("geo").addEventListener("click",function(){var g=$("gm");if(!navigator.geolocation){g.textContent="This device cannot share its location.";return;}g.textContent="Finding your location…";navigator.geolocation.getCurrentPosition(function(q){var tz="UTC";try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||"UTC";}catch(e){}if(PL[PL.length-1][4])PL.pop();PL.push(["My location",q.coords.latitude,q.coords.longitude,tz,1]);var o=$("pl").querySelector("[data-me]")||document.createElement("option");o.setAttribute("data-me","1");o.value=PL.length-1;o.textContent="My location";$("pl").appendChild(o);$("pl").value=PL.length-1;g.textContent="Using your location. It stays on this device.";show();},function(){g.textContent="Could not get your location. Pick a city instead.";},{maximumAge:6e5,timeout:15000});});
+window.FNS_SHARE=function(){var b=$("out").querySelectorAll(".box.main b");return b.length>1?{text:"Sunrise "+b[0].textContent+", sunset "+b[1].textContent+" in "+PL[+$("pl").value][0]+" on "+$("d").value+". Check your city:"}:null;};now();
+</script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Make a Picture Smaller — compress & resize photos (free) — freenetsave.com</title>
-<meta name="description" content="Free photo compressor and resizer. Make pictures smaller to email or upload, change JPG/PNG/WebP, and remove hidden location details. Photos never leave your device.">
+<meta name="description" content="Free photo compressor and resizer. Shrink a picture to under 50 KB, 100 KB or 200 KB for forms, make photos smaller to email or upload, change JPG/PNG/WebP, and remove hidden location details. Photos never leave your device.">
 <link rel="canonical" href="https://freenetsave.com/make-picture-smaller/">
 <link rel="stylesheet" href="../assets/style.css?v=8">
 </head>
@@ -44,6 +44,10 @@
         </select>
       </div>
     </div>
+    <div class="field" style="margin-top:14px">
+      <label for="tgt">Target file size <small>— for forms that ask for "under 100 KB"</small></label>
+      <select id="tgt"><option value="0" selected>No target (use the quality slider)</option><option value="20">Under 20 KB</option><option value="50">Under 50 KB</option><option value="100">Under 100 KB</option><option value="200">Under 200 KB</option><option value="500">Under 500 KB</option><option value="1024">Under 1 MB</option><option value="2048">Under 2 MB</option></select>
+    </div>
     <div class="field" style="margin-top:14px" id="qBox">
       <label for="q">Quality: <b id="qVal">80</b>% <small>— lower = smaller file</small></label>
       <input id="q" type="range" min="40" max="95" value="80" style="padding:0;border:0">
@@ -61,7 +65,7 @@
   <p class="note">🔒 Pictures are handled inside your browser. Nothing is uploaded or saved.<br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
 </div>
-<script src="../assets/embed.js?v=8"></script>
+<script src="../assets/embed.js?v=9"></script>
 <script>
 let items = []; // {file, url, out:{blob,name}|null}
 const ext = {"image/jpeg":"jpg","image/webp":"webp","image/png":"png"};
@@ -88,7 +92,8 @@ $("list").addEventListener("click", e=>{
 });
 $("clear").addEventListener("click", ()=>{ items.forEach(i=>URL.revokeObjectURL(i.url)); items=[]; render(); $("status").textContent=""; });
 $("q").addEventListener("input", ()=> $("qVal").textContent = $("q").value);
-$("fmt").addEventListener("change", ()=> $("qBox").style.display = $("fmt").value==="image/png" ? "none" : "");
+function qShow(){ $("qBox").style.display = ($("fmt").value==="image/png" || +$("tgt").value) ? "none" : ""; }
+$("fmt").addEventListener("change", qShow); $("tgt").addEventListener("change", qShow);
 
 function loadImg(url){ return new Promise((ok,bad)=>{ const im=new Image(); im.onload=()=>ok(im); im.onerror=bad; im.src=url; }); }
 
@@ -103,7 +108,19 @@ async function shrink(it){
   if(type === "image/jpeg"){ x.fillStyle = "#fff"; x.fillRect(0,0,w,h); } // JPG has no see-through areas
   x.imageSmoothingQuality = "high";
   x.drawImage(img, 0, 0, w, h);
-  const blob = await new Promise(r=> c.toBlob(r, type, +$("q").value/100));
+  const tgt = +$("tgt").value * 1024, mk = (cv,q)=> new Promise(r=> cv.toBlob(r, type, q));
+  let blob;
+  if(tgt){ // try lower quality first, then a smaller picture, until it fits
+    let cv = c, tries = 0;
+    while(true){
+      if(type === "image/png"){ blob = await mk(cv); }
+      else { let lo = 0.2, hi = 0.95, best = null; for(let i=0;i<7;i++){ const q=(lo+hi)/2, b=await mk(cv,q); if(b && b.size<=tgt){ best=b; lo=q; } else hi=q; } blob = best || await mk(cv,0.2); }
+      if(!blob || blob.size<=tgt || tries++>12 || cv.width<120) break;
+      const s = Math.max(0.5, Math.min(0.9, Math.sqrt(tgt/blob.size))), n = document.createElement("canvas"); n.width = Math.round(cv.width*s); n.height = Math.round(cv.height*s);
+      const nx = n.getContext("2d"); if(type === "image/jpeg"){ nx.fillStyle="#fff"; nx.fillRect(0,0,n.width,n.height); } nx.imageSmoothingQuality="high"; nx.drawImage(cv,0,0,n.width,n.height); cv = n;
+    }
+    if(blob && blob.size>tgt) it.note = "Could not get under the target";
+  } else blob = await mk(c, +$("q").value/100);
   if(!blob || (type==="image/webp" && blob.type!=="image/webp")) throw new Error("This browser can't save that type — try JPG.");
   return {blob, name: baseName(it.file.name) + "-small." + ext[type]};
 }

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colour Palette Generator: make colour schemes and copy HEX codes (free)</title>
+<meta name="description" content="Free colour palette generator. Pick one colour and get matching schemes: complementary, analogous, triadic, shades and tints. Tap any colour to copy its HEX code, with contrast shown for black and white text.">
+<link rel="canonical" href="https://tools.freenetsave.com/colour-palette/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .ph{font-size:17px;margin:20px 0 8px}.pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+  .sw{font:inherit;border:1px solid rgba(0,0,0,.12);border-radius:14px;padding:22px 10px 12px;cursor:pointer;text-align:left;min-height:96px}.sw b{display:block;font-size:17px}.sw span{font-size:12.5px;opacity:.9}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Colour Palette Generator</h1>
+    <p class="sub">Pick a colour and get matching colours. Tap one to copy its code.</p>
+  </div>
+  <div class="card">
+    <div class="row"><div class="field"><label for="base">Start colour</label><input id="base" type="color" value="#2563eb" style="height:52px;padding:4px"></div>
+    <div class="field"><label for="hex">HEX code</label><input id="hex" value="#2563eb" maxlength="7" autocapitalize="off" spellcheck="false"></div></div>
+    <div class="btnrow"><button type="button" class="btn alt" id="rnd">🎲 Surprise me</button></div>
+    <div id="out"></div>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+function h2r(h){h=h.replace("#","");if(h.length===3)h=h.split("").map(c=>c+c).join("");const n=parseInt(h,16);return [(n>>16)&255,(n>>8)&255,n&255];}
+function r2h(r,g,b){return "#"+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,"0")).join("");}
+function r2hsl(r,g,b){r/=255;g/=255;b/=255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2;let h=0,s=0;if(mx!==mn){const d=mx-mn;s=l>0.5?d/(2-mx-mn):d/(mx+mn);h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4;h*=60;}return [h,s*100,l*100];}
+function hsl2h(h,s,l){h=((h%360)+360)%360;s/=100;l/=100;const k=n=>(n+h/30)%12,a=s*Math.min(l,1-l),f=n=>l-a*Math.max(-1,Math.min(k(n)-3,Math.min(9-k(n),1)));return r2h(f(0)*255,f(8)*255,f(4)*255);}
+function lum(h){const c=h2r(h).map(v=>{v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});return 0.2126*c[0]+0.7152*c[1]+0.0722*c[2];}
+function sw(h){const L=lum(h),cw=1.05/(L+0.05),cb=(L+0.05)/0.05,t=cw>=cb?"#fff":"#000";return '<button type="button" class="sw" data-h="'+h+'" style="background:'+h+';color:'+t+'"><b>'+h.toUpperCase()+'</b><span>'+(cw>=cb?"white text "+cw.toFixed(1)+":1":"black text "+cb.toFixed(1)+":1")+'</span></button>';}
+function draw(){let v=$("hex").value.trim();if(!/^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v))return;if(v[0]!=="#")v="#"+v;const [r,g,b]=h2r(v),[h,s,l]=r2hsl(r,g,b),S=Math.max(s,25);
+  const G=[["Your colour",[r2h(r,g,b)]],["Complementary (opposite)",[hsl2h(h,s,l),hsl2h(h+180,s,l)]],["Analogous (neighbours)",[hsl2h(h-30,s,l),hsl2h(h,s,l),hsl2h(h+30,s,l)]],["Triadic (three evenly spaced)",[hsl2h(h,s,l),hsl2h(h+120,s,l),hsl2h(h+240,s,l)]],["Split complementary",[hsl2h(h,s,l),hsl2h(h+150,s,l),hsl2h(h+210,s,l)]],["Shades and tints",[12,26,40,54,68,82,94].map(x=>hsl2h(h,S,x))],["Soft and muted",[hsl2h(h,Math.min(S,30),88),hsl2h(h,Math.min(S,35),70),hsl2h(h,Math.min(S,40),50),hsl2h(h,Math.min(S,40),30)]]];
+  $("out").innerHTML=G.map(g=>'<h2 class="ph">'+g[0]+'</h2><div class="pal">'+g[1].map(sw).join("")+'</div>').join("");$("base").value=r2h(r,g,b);}
+$("base").addEventListener("input",()=>{$("hex").value=$("base").value;draw();});$("hex").addEventListener("input",draw);$("rnd").addEventListener("click",()=>{$("hex").value=hsl2h(Math.random()*360,55+Math.random()*35,40+Math.random()*20);draw();});
+$("out").addEventListener("click",e=>{const b=e.target.closest(".sw");if(b)copyText(b.dataset.h.toUpperCase());});draw();
+</script>
+</body>
+</html>

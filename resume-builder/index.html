@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Resume Builder (Canadian style): make and print a resume, no sign-up</title>
+<meta name="description" content="Free resume builder with no account. Fill in your details, see a clean Canadian-style resume, and print it or save it as a PDF. Nothing is uploaded; you can save a draft file on your own device.">
+<link rel="canonical" href="https://tools.freenetsave.com/resume-builder/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  textarea{width:100%;box-sizing:border-box;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;resize:vertical}
+  .sh{font-size:18px;margin:18px 0 8px}.blk{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:10px}.btn.sm{width:auto;padding:9px 14px;font-size:15px}
+  #cv{background:#fff;color:#111;border:1px solid var(--line);border-radius:6px;padding:clamp(18px,4vw,44px);margin-top:18px;font-family:Georgia,"Times New Roman",serif;font-size:15.5px;line-height:1.45;max-width:820px;margin-left:auto;margin-right:auto}
+  #cv h1{font-size:30px;margin:0;color:#111;letter-spacing:0}#cv .tt{margin:2px 0 0;font-size:17px;color:#333}#cv .ct{margin:6px 0 0;font-size:14px;color:#333}
+  #cv h2{font-size:15px;text-transform:none;margin:16px 0 6px;padding-bottom:3px;border-bottom:1.5px solid #111;color:#111}#cv p{margin:0 0 6px}
+  #cv .it{margin-bottom:9px;break-inside:avoid}#cv .hd{display:flex;justify-content:space-between;gap:12px}#cv .hd span{white-space:nowrap;color:#333;font-size:14px}#cv .org{font-style:italic;color:#333}
+  #cv ul{margin:4px 0 0;padding-left:20px}#cv li{margin:0 0 2px}#cv ul.sk{columns:2;column-gap:30px}#cv .rf{margin-top:14px;font-style:italic}
+  #cv.b{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}#cv.b h1{color:#1d4ed8}#cv.b h2{color:#1d4ed8;border-bottom:2px solid #1d4ed8}
+  #cv.c{font-size:13.5px;line-height:1.35;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}#cv.c h1{font-size:25px}#cv.c h2{margin-top:11px}
+  @media print{@page{margin:14mm}html,body{background:#fff!important;margin:0!important;padding:0!important;height:auto!important}body>*:not(.wrap),.wrap>*:not(.card),.card>*:not(#cv),.noprint{display:none!important}.wrap,.card{max-width:none!important;margin:0!important;padding:0!important;border:0!important;box-shadow:none!important;background:#fff!important}#cv{border:0;padding:0;margin:0;max-width:none;font-size:11.5pt}#cv.c{font-size:10pt}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Free Resume Builder</h1>
+    <p class="sub">Fill in the boxes, then print your resume or save it as a PDF.</p>
+  </div>
+  <div class="card">
+    <p class="lead noprint">Canadian resumes do not include a photo, age, marital status or SIN. Keep it to one or two pages.</p>
+    <div class="rb noprint">
+      <div class="row"><div class="field"><label for="nm">Full name</label><input id="nm" autocomplete="off"></div><div class="field"><label for="ti">Job title you want <small>(optional)</small></label><input id="ti" autocomplete="off"></div></div>
+      <div class="row"><div class="field"><label for="ph">Phone</label><input id="ph" autocomplete="off"></div><div class="field"><label for="em">Email</label><input id="em" autocomplete="off"></div></div>
+      <div class="row"><div class="field"><label for="ci">City and province</label><input id="ci" autocomplete="off" placeholder="City, Province"></div><div class="field"><label for="li">LinkedIn or website <small>(optional)</small></label><input id="li" autocomplete="off"></div></div>
+      <div class="field"><label for="su">Summary <small>(2 or 3 lines about you)</small></label><textarea id="su" rows="3"></textarea></div>
+      <h2 class="sh">Work experience</h2><div id="xp"></div><button type="button" class="btn line sm" id="addx">+ Add a job</button>
+      <h2 class="sh">Education</h2><div id="ed"></div><button type="button" class="btn line sm" id="adde">+ Add education</button>
+      <div class="field" style="margin-top:14px"><label for="sk">Skills <small>(one per line, or separated by commas)</small></label><textarea id="sk" rows="3"></textarea></div>
+      <div class="field"><label for="ex">Extra section <small>(optional: volunteering, languages, certificates; one per line)</small></label><input id="exh" placeholder="Section title, e.g. Volunteering" style="margin-bottom:6px"><textarea id="ex" rows="3"></textarea></div>
+      <div class="row"><div class="field"><label for="sty">Look</label><select id="sty"><option value="a">Classic (line under headings)</option><option value="b">Modern (blue headings)</option><option value="c">Compact (smaller text)</option></select></div><div class="field"><label>&nbsp;</label><label style="font-weight:500"><input type="checkbox" id="ref" style="width:auto;margin-right:6px">Add "References available on request"</label></div></div>
+      <div class="btnrow"><button type="button" class="btn alt" id="print">🖨️ Print or save as PDF</button><button type="button" class="btn line" id="savef">💾 Save draft file</button><button type="button" class="btn line" id="openf">📂 Open draft file</button><button type="button" class="btn line" id="clear">Clear all</button></div><input type="file" id="file" accept="application/json,.json" hidden>
+      <p class="lead" style="margin-top:8px">To get a PDF, press Print and choose "Save as PDF". Your details are not saved by this site. Use "Save draft file" to keep a copy on your own device.</p>
+    </div>
+    <div id="cv" class="a"></div>
+  </div>
+  <p class="note">🔒 Your details stay on your device. Nothing is uploaded, and this site does not save your resume.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=9"></script>
+<script>
+const E=s=>String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function blk(kind){const d=document.createElement("div");d.className="blk";d.dataset.kind=kind;d.innerHTML=kind==="x"?'<div class="row"><div class="field"><label>Job title</label><input class="a1" autocomplete="off"></div><div class="field"><label>Employer and city</label><input class="a2" autocomplete="off"></div></div><div class="row"><div class="field"><label>Dates</label><input class="a3" autocomplete="off" placeholder="e.g. May 2022 – Present"></div><div class="field"><label>&nbsp;</label><button type="button" class="btn line sm rm">Remove this job</button></div></div><div class="field"><label>What you did <small>(one point per line; start with an action word)</small></label><textarea class="a4" rows="3"></textarea></div>':'<div class="row"><div class="field"><label>Diploma, degree or program</label><input class="a1" autocomplete="off"></div><div class="field"><label>School and city</label><input class="a2" autocomplete="off"></div></div><div class="row"><div class="field"><label>Dates</label><input class="a3" autocomplete="off" placeholder="e.g. 2018 – 2020"></div><div class="field"><label>&nbsp;</label><button type="button" class="btn line sm rm">Remove</button></div></div>';return d;}
+function get(){const g=id=>$(id).value.trim(),bl=k=>[...document.querySelectorAll('.blk[data-kind="'+k+'"]')].map(d=>({a1:d.querySelector(".a1").value.trim(),a2:d.querySelector(".a2").value.trim(),a3:d.querySelector(".a3").value.trim(),a4:(d.querySelector(".a4")||{value:""}).value}));
+  return {nm:g("nm"),ti:g("ti"),ph:g("ph"),em:g("em"),ci:g("ci"),li:g("li"),su:g("su"),sk:$("sk").value,exh:g("exh"),ex:$("ex").value,sty:$("sty").value,ref:$("ref").checked,xp:bl("x"),ed:bl("e")};}
+function lines(t){return String(t||"").split(/\n/).map(s=>s.replace(/^[-•*\s]+/,"").trim()).filter(Boolean);}
+function draw(){const d=get(),has=d.nm||d.su||d.xp.some(x=>x.a1)||d.ed.some(x=>x.a1);let h="";
+  if(!has){$("cv").innerHTML='<p class="lead noprint" style="text-align:center;margin:30px 0">Your resume will appear here as you type.</p>';return;}
+  h+='<h1>'+E(d.nm||"Your name")+'</h1>'+(d.ti?'<p class="tt">'+E(d.ti)+'</p>':'')+'<p class="ct">'+[d.ci,d.ph,d.em,d.li].filter(Boolean).map(E).join(' &nbsp;|&nbsp; ')+'</p>';
+  if(d.su)h+='<h2>Summary</h2><p>'+E(d.su).replace(/\n/g,"<br>")+'</p>';
+  const xs=d.xp.filter(x=>x.a1||x.a2);if(xs.length)h+='<h2>Work experience</h2>'+xs.map(x=>'<div class="it"><div class="hd"><b>'+E(x.a1)+'</b><span>'+E(x.a3)+'</span></div><div class="org">'+E(x.a2)+'</div>'+(lines(x.a4).length?'<ul>'+lines(x.a4).map(l=>'<li>'+E(l)+'</li>').join("")+'</ul>':'')+'</div>').join("");
+  const es=d.ed.filter(x=>x.a1||x.a2);if(es.length)h+='<h2>Education</h2>'+es.map(x=>'<div class="it"><div class="hd"><b>'+E(x.a1)+'</b><span>'+E(x.a3)+'</span></div><div class="org">'+E(x.a2)+'</div></div>').join("");
+  const sk=d.sk.split(/[\n,]/).map(s=>s.trim()).filter(Boolean);if(sk.length)h+='<h2>Skills</h2><ul class="sk">'+sk.map(s=>'<li>'+E(s)+'</li>').join("")+'</ul>';
+  if(lines(d.ex).length)h+='<h2>'+E(d.exh||"Additional information")+'</h2><ul>'+lines(d.ex).map(l=>'<li>'+E(l)+'</li>').join("")+'</ul>';
+  if(d.ref)h+='<p class="rf">References available on request.</p>';$("cv").className=d.sty;$("cv").innerHTML=h;}
+function set(d){["nm","ti","ph","em","ci","li","su","sk","exh","ex"].forEach(k=>{$(k).value=d[k]||"";});$("sty").value=d.sty||"a";$("ref").checked=!!d.ref;$("xp").innerHTML="";$("ed").innerHTML="";
+  (d.xp&&d.xp.length?d.xp:[{}]).forEach(x=>{const b=blk("x");$("xp").appendChild(b);["a1","a2","a3","a4"].forEach(k=>{b.querySelector("."+k).value=x[k]||"";});});
+  (d.ed&&d.ed.length?d.ed:[{}]).forEach(x=>{const b=blk("e");$("ed").appendChild(b);["a1","a2","a3"].forEach(k=>{b.querySelector("."+k).value=x[k]||"";});});draw();}
+$("addx").onclick=()=>{$("xp").appendChild(blk("x"));};$("adde").onclick=()=>{$("ed").appendChild(blk("e"));};
+document.querySelector(".rb").addEventListener("input",draw);document.querySelector(".rb").addEventListener("click",e=>{const r=e.target.closest(".rm");if(r){r.closest(".blk").remove();draw();}});
+$("print").onclick=()=>window.print();$("clear").onclick=()=>set({});
+$("savef").onclick=()=>saveFile(new Blob([JSON.stringify(get())],{type:"application/json"}),"my-resume-draft.json");
+$("openf").onclick=()=>$("file").click();$("file").addEventListener("change",()=>{const f=$("file").files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{set(JSON.parse(r.result));toast("Draft opened");}catch(e){toast("That file is not a resume draft");}};r.readAsText(f);$("file").value="";});
+window.FNS_SHARE=function(){return {text:"Free resume builder, no sign-up"};};set({});
+</script>
+</body>
+</html>
