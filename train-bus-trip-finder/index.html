@@ -18,7 +18,7 @@
   .sug button{display:block;width:100%;text-align:left;font:inherit;font-size:15.5px;padding:10px 12px;border:0;border-bottom:1px solid #eef2f8;background:#fff;color:inherit;cursor:pointer}
   .sug button:hover,.sug button:focus{background:#eef4ff;outline:0}
   .sug small{color:var(--muted)}
-  .swap{align-self:flex-end;font:inherit;font-weight:700;border:1.5px solid #cfd8e6;background:#fff;border-radius:10px;padding:11px 12px;cursor:pointer;white-space:nowrap}
+  .swap{align-self:flex-end;justify-self:start;flex:0 0 auto;width:auto;font:inherit;font-weight:700;border:1.5px solid #cfd8e6;background:#fff;border-radius:10px;padding:11px 12px;cursor:pointer;white-space:nowrap}
   .trip{border:1.5px solid #dde5f2;border-radius:12px;padding:12px 14px;margin:10px 0;background:#fff}
   .trip .hd{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
   .trip .tm{font-size:21px;font-weight:800}
@@ -31,6 +31,13 @@
   .wait{margin:8px 0 0;font-size:14.5px;color:#7a4b00;font-weight:600}
   .msg{padding:12px 14px;border-radius:10px;background:#fff7e0;border:1px solid #f0d58a;margin-top:12px;font-size:15px}
   .legal{font-size:13.5px;color:var(--muted);margin-top:14px;line-height:1.5}
+  .saved{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+  .saved b{font-size:14px;color:var(--muted);width:100%}
+  .chip{display:inline-flex;align-items:center;border:1.5px solid #cfd8e6;border-radius:999px;background:#f4f8ff;overflow:hidden}
+  .chip button{font:inherit;font-size:14.5px;font-weight:600;border:0;background:none;color:inherit;padding:8px 12px;cursor:pointer}
+  .chip button.x{padding:8px 11px 8px 4px;color:var(--muted)}
+  .chip button:hover{background:#e3edff}
+  .linkbtn{font:inherit;font-size:14px;border:0;background:none;color:var(--brand);text-decoration:underline;cursor:pointer;padding:6px 4px}
   h2.sm{font-size:19px;margin:20px 0 4px}
   @media (max-width:560px){.trip .tm{font-size:19px}}
 </style>
@@ -42,6 +49,7 @@
     <p class="sub">Scheduled regional train and bus times in the Toronto and Hamilton area. Unofficial.</p>
   </div>
   <div class="card">
+    <div class="saved" id="saved" hidden></div>
     <p class="lead">Type a station or stop name and choose it from the list. Leave "To" empty to see every departure from one place.</p>
     <div class="row">
       <div class="field pick"><label for="from">From</label><input id="from" type="text" autocomplete="off" placeholder="Start typing a station or stop"><div class="sug" id="sfrom" hidden></div></div>
@@ -57,12 +65,13 @@
       <button type="button" class="btn line" id="now">Use the time now</button>
     </div>
     <div id="out" aria-live="polite"></div>
+    <div class="btnrow" id="saverow" hidden><button type="button" class="btn line" id="save">☆ Save this route on this device</button></div>
     <div class="btnrow" id="morerow" hidden><button type="button" class="btn line" id="more">Show later trips</button></div>
     <p class="legal" id="cover"></p>
     <p class="legal"><b>Scheduled times only.</b> This page does not know about delays, cancellations or track changes, and it does not include local city buses. Check the transit company's own service updates before you travel. This page is not made, approved or endorsed by Metrolinx.<br>
     <span id="legend">Data used in this product or service is provided with the permission of Metrolinx. Metrolinx makes no representations or warranties of any kind, express or implied, with respect to the Data and assumes no responsibility for the accuracy or currency of the data used in this product or service.</span></p>
   </div>
-  <p class="note">🔒 Works in your browser. Nothing you type is sent or saved.<br>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent anywhere. Routes you save stay only on this device until you clear them.<br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
 </div>
 <script src="../assets/embed.js?v=10"></script>
@@ -119,8 +128,15 @@ function card(o){if(o.list){var l=o.legs[0];return '<div class="trip"><div class
   var h='<div class="trip"><div class="hd"><span class="tm">'+hm(o.dep)+' → '+hm(o.arr)+'</span><span class="du">'+dur(o.arr-o.dep)+'</span><span class="tag'+(o.legs.length>1?" ch":"")+'">'+(o.legs.length>1?"1 change":"Direct")+'</span></div>'+legHtml(o.legs[0]);
   if(o.legs.length>1)h+='<div class="wait">Change at '+esc(D.places[o.legs[0].b][0])+' · wait '+dur(o.wait)+(o.wait<10?" (short, be ready)":"")+'</div>'+legHtml(o.legs[1]);
   return h+'</div>';}
+var KEY="fns_saved_trips",last=null;
+function getS(){try{var v=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
+function putS(v){try{if(v.length)localStorage.setItem(KEY,JSON.stringify(v));else localStorage.removeItem(KEY);return true;}catch(e){return false;}}
+function idx(nm){if(!nm)return -1;for(var i=0;i<D.places.length;i++)if(D.places[i][0]===nm)return i;return -2;}
+function drawS(){var v=getS(),box=E("saved");if(!v.length){box.hidden=true;box.innerHTML="";return;}
+  box.innerHTML="<b>Your saved routes (up to 4, kept only on this device)</b>"+v.map(function(r,i){return '<span class="chip"><button type="button" data-go="'+i+'">'+esc(r[0])+(r[1]?" → "+esc(r[1]):" · departures")+'</button><button type="button" class="x" data-rm="'+i+'" aria-label="Remove this saved route">✕</button></span>';}).join("")+'<button type="button" class="linkbtn" id="clr">Clear all</button>';box.hidden=false;}
+function saveBtn(){var b=E("save");if(!last){E("saverow").hidden=true;return;}var has=getS().some(function(r){return r[0]===last[0]&&r[1]===last[1];});E("saverow").hidden=false;b.textContent=has?"★ Saved on this device":"☆ Save this route on this device";b.disabled=has;}
 function render(){E("out").innerHTML=E("out").dataset.head+all.slice(0,shown).map(card).join("");E("morerow").hidden=shown>=all.length;}
-function say(m){E("out").dataset.head="";E("out").innerHTML='<div class="msg">'+m+'</div>';E("morerow").hidden=true;}
+function say(m){last=null;saveBtn();E("out").dataset.head="";E("out").innerHTML='<div class="msg">'+m+'</div>';E("morerow").hidden=true;}
 function find(){if(!D){say("The schedule is still loading. Try again in a moment.");return;}
   var A=resolve("from"),B=resolve("to"),date=E("d").value,t=E("t").value;
   if(A===-1){say("Choose where you start: type a name in <b>From</b> and pick it from the list.");return;}
@@ -133,16 +149,23 @@ function find(){if(!D){say("The schedule is still loading. Try again in a moment
   var q=t.split(":"),t0=q[0]*60+ +q[1];all=search(A,B,date,t0);
   if(!all.length){say(B<0?"No more departures from <b>"+esc(D.places[A][0])+"</b> after "+hm(t0)+" on that day.":"No trip found after "+hm(t0)+" on that day with a direct ride or one change. Try an earlier time, or a bigger station nearby. Trips that need two changes or a local city bus are not shown.");return;}
   E("out").dataset.head='<h2 class="sm">'+(B<0?"Departures from "+esc(D.places[A][0]):esc(D.places[A][0])+" to "+esc(D.places[B][0]))+'</h2><p class="lead">'+niceDate(date)+", from "+hm(t0)+" · "+all.length+(B<0?" departure":" choice")+(all.length>1?"s":"")+" found</p>";
-  shown=MAXT;render();}
+  shown=MAXT;render();last=[D.places[A][0],B<0?"":D.places[B][0]];saveBtn();}
 E("go").addEventListener("click",find);
 E("more").addEventListener("click",function(){shown+=MAXT;render();});
 E("now").addEventListener("click",function(){setNow();if(resolve("from")>=0)find();});
 E("swap").addEventListener("click",function(){var a=E("from").value,s=sel.from;E("from").value=E("to").value;sel.from=sel.to;E("to").value=a;sel.to=s;});
+E("save").addEventListener("click",function(){if(!last)return;var v=getS();if(!v.some(function(r){return r[0]===last[0]&&r[1]===last[1];})){v.unshift(last);v=v.slice(0,4);}if(!putS(v)){E("save").textContent="This browser does not allow saving";return;}drawS();saveBtn();});
+E("saved").addEventListener("click",function(e){var b=e.target.closest("button");if(!b||!D)return;var v=getS();
+  if(b.id==="clr"){putS([]);drawS();saveBtn();return;}
+  if(b.dataset.rm!=null){v.splice(+b.dataset.rm,1);putS(v);drawS();saveBtn();return;}
+  var r=v[+b.dataset.go];if(!r)return;var a=idx(r[0]),c=idx(r[1]);
+  if(a<0||c===-2){say("This saved stop is not in the current schedule any more. Remove it and save the route again.");return;}
+  sel.from=a;E("from").value=r[0];sel.to=c;E("to").value=r[1]||"";setNow();find();});
 setNow();wire("from");wire("to");
 fetch("data.json",{cache:"no-cache"}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
   j.places.forEach(function(p){p.k=norm(p[0]+" "+p[3].join(" "));p.rail=/ GO$/.test(p[0]);});D=j;
   E("cover").innerHTML="Schedule in this tool: <b>"+niceDate(j.dates[0])+"</b> to <b>"+niceDate(j.dates[j.dates.length-1])+"</b>.";
-  if(j.legend)E("legend").textContent=j.legend;
+  drawS();
 }).catch(function(){say("The schedule file could not be loaded. Check your connection and reload the page.");});
 })();
 </script>
