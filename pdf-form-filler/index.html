@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fill in a PDF Form: type your answers and save (free, no upload)</title>
+<meta name="description" content="Free PDF form filler. Open a PDF form, type your answers, tick the boxes and save the filled form. Runs in your browser; your PDF and answers are not uploaded or saved.">
+<link rel="canonical" href="https://tools.freenetsave.com/pdf-form-filler/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:14px 0 8px}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:10px}
+  .row label{display:block;font-weight:650;font-size:14px}
+  .row select,.row input[type=text],.row input[type=range]{width:100%;margin-top:4px}
+  .view{position:relative;display:inline-block;max-width:100%;margin-top:12px;line-height:0;border:1px solid var(--line);box-shadow:0 2px 10px rgba(23,32,51,.12);touch-action:none}
+  .view canvas{max-width:100%;height:auto;display:block}
+  .cen{text-align:center}
+  .how{margin-top:18px}.how h2{font-size:19px;margin:0 0 8px}.how li{margin:0 0 6px}.how p{margin:0 0 8px}
+  .fld{margin:0 0 12px}.fld label{display:block;font-weight:650;font-size:14px;margin-bottom:4px;word-break:break-word}.fld input[type=text],.fld textarea,.fld select{width:100%}.fld input[type=checkbox]{width:auto;margin-right:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Fill in a PDF Form</h1>
+    <p class="sub">Type your answers into a PDF form and save it.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a PDF"><div style="font-size:34px">📋</div><b>Choose a PDF or drop it here</b><span>Your file stays on your device</span><span class="pick">Choose PDF</span><input type="file" accept="application/pdf,.pdf"></div>
+    <div id="tools" hidden>
+      <p class="lead" id="info"></p>
+      <div id="flds"></div>
+      <label style="font-weight:650"><input type="checkbox" id="flat" style="width:auto"> Lock my answers so they cannot be changed later</label>
+      <div class="btnrow"><button type="button" class="btn" id="save">&#11015; Save filled PDF</button><button type="button" class="btn line" id="reset">Start over</button></div>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+  <div class="card how hide-embed"><h2>How to fill in a PDF form</h2><ol><li>Choose the PDF form.</li><li>Type your answers in the boxes and tick what applies. The boxes are listed in the order they are stored in the form.</li><li>Tap <b>Save filled PDF</b>.</li></ol><p>This works with PDFs that have real form boxes. If your PDF is a plain page or a scan, use the PDF editor to type on top of it instead.</p></div>
+  <p class="note">&#128274; Your PDF is handled inside your browser. Nothing is uploaded or saved.<br>
+  <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> &middot; free online tools</p>
+</div>
+<script src="../assets/embed.js?v=12"></script>
+<script src="../assets/lib/pdf-lib.min.js"></script>
+<script type="module">
+import * as pdfjsLib from "../assets/lib/pdf.min.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("../assets/lib/pdf.worker.min.mjs", import.meta.url).href;
+const $=id=>document.getElementById(id);let bytes=null,name="document";
+function st(t,bad){$("status").innerHTML=bad?'<span class="bad">'+t+'</span>':(t||"");}
+async function pick(files){const f=files[0];if(!f)return false;if(!/pdf$/i.test(f.type)&&!/\.pdf$/i.test(f.name)){st("Please choose a PDF file.",1);return false;}st("Opening\u2026");bytes=new Uint8Array(await f.arrayBuffer());name=window.baseName(f.name);return true;}
+function shown(){$("drop").hidden=true;$("tools").hidden=false;}
+const openJs=()=>pdfjsLib.getDocument({data:bytes.slice()}).promise;
+const openLib=()=>PDFLib.PDFDocument.load(bytes,{ignoreEncryption:true});
+const savePdf=async(doc,suffix)=>{const out=await doc.save();window.saveFile(new Blob([out],{type:"application/pdf"}),name+suffix+".pdf");st("Saved. Look in your Downloads.");};
+async function drawPage(js,n,cv,maxW){const p=await js.getPage(n),v0=p.getViewport({scale:1}),sc=Math.min(2,(maxW||700)/v0.width)*Math.min(2,window.devicePixelRatio||1),v=p.getViewport({scale:sc});cv.width=v.width;cv.height=v.height;cv.style.width=Math.round(v.width/Math.min(2,window.devicePixelRatio||1))+"px";await p.render({canvasContext:cv.getContext("2d"),viewport:v}).promise;return v;}
+/* displayed fractions (u from left, v from top) to un-rotated page fractions (a from left, b from bottom) */
+function mapPt(rot,u,v){rot=((rot%360)+360)%360;return rot===90?[v,u]:rot===180?[1-u,v]:rot===270?[1-v,1-u]:[u,1-v];}
+$("reset")&&($("reset").onclick=()=>location.reload());
+let doc=null,flds=[];
+function nice(n){return n.split(".").pop().replace(/\[\d+\]/g,"").replace(/[_\-]+/g," ").replace(/([a-z])([A-Z])/g,"$1 $2").trim()||n;}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+async function load(files){if(!await pick(files))return;doc=await openLib();const L=PDFLib,form=doc.getForm();flds=[];let html="";
+ form.getFields().forEach((f,i)=>{let ro=false;try{ro=f.isReadOnly();}catch(e){}if(ro)return;const id="f"+i,lab=esc(nice(f.getName()));
+  if(f instanceof L.PDFTextField){const v=esc(f.getText()||"");html+='<div class="fld"><label for="'+id+'">'+lab+'</label>'+(f.isMultiline()?'<textarea id="'+id+'" rows="3">'+v+'</textarea>':'<input type="text" id="'+id+'" value="'+v+'">')+'</div>';flds.push([f,id,"t"]);}
+  else if(f instanceof L.PDFCheckBox){html+='<div class="fld"><label><input type="checkbox" id="'+id+'"'+(f.isChecked()?" checked":"")+'>'+lab+'</label></div>';flds.push([f,id,"c"]);}
+  else if(f instanceof L.PDFDropdown||f instanceof L.PDFOptionList||f instanceof L.PDFRadioGroup){const sel=f instanceof L.PDFRadioGroup?[f.getSelected()]:f.getSelected();html+='<div class="fld"><label for="'+id+'">'+lab+'</label><select id="'+id+'"><option value="">(nothing chosen)</option>'+f.getOptions().map(o=>'<option'+(sel.includes(o)?" selected":"")+'>'+esc(o)+'</option>').join("")+'</select></div>';flds.push([f,id,"s"]);}});
+ if(!flds.length){st("This PDF has no form boxes to fill in. Use the <a href=\"../pdf-editor/\">PDF editor</a> to type on top of the page instead.",1);return;}
+ $("flds").innerHTML=html;$("info").textContent=flds.length+(flds.length===1?" box":" boxes")+" to fill in.";shown();st("");}
+$("save").onclick=async()=>{st("Working…");try{for(const [f,id,k] of flds){const e=$(id);if(k==="t")f.setText(e.value||"");else if(k==="c"){e.checked?f.check():f.uncheck();}else if(e.value)f.select(e.value);else if(f.clear)f.clear();}
+  if($("flat").checked)doc.getForm().flatten();await savePdf(doc,"-filled");if($("flat").checked){doc=await openLib();st("Saved. To change an answer, choose the PDF again.");$("save").disabled=true;}}
+ catch(e){console.error(e);st(/WinAnsi|cannot encode/i.test(String(e))?"This form can only take English and Western European letters. Remove other letters or symbols and try again.":"This form could not be saved.",1);}};
+window.setupDrop($("drop"),f=>load(f).catch(e=>{console.error(e);st("This PDF could not be opened. It may be damaged or locked with a password.",1);}));
+</script>
+</body>
+</html>

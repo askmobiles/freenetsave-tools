@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF to JPG: turn PDF pages into pictures (free, no upload)</title>
+<meta name="description" content="Free PDF to JPG converter. Turn every page of a PDF into a JPG or PNG picture and save one page or all pages in a ZIP file. Your PDF never leaves your device.">
+<link rel="canonical" href="https://tools.freenetsave.com/pdf-to-jpg/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:14px 0 8px}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:10px}
+  .row label{display:block;font-weight:650;font-size:14px}
+  .row select,.row input[type=text],.row input[type=range]{width:100%;margin-top:4px}
+  .view{position:relative;display:inline-block;max-width:100%;margin-top:12px;line-height:0;border:1px solid var(--line);box-shadow:0 2px 10px rgba(23,32,51,.12);touch-action:none}
+  .view canvas{max-width:100%;height:auto;display:block}
+  .cen{text-align:center}
+  .how{margin-top:18px}.how h2{font-size:19px;margin:0 0 8px}.how li{margin:0 0 6px}.how p{margin:0 0 8px}
+  .pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+  .p{border:1.5px solid var(--line);border-radius:14px;background:#fff;padding:8px;text-align:center}
+  .p img{max-width:100%;max-height:190px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+  .p a{display:block;margin-top:6px;font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>PDF to JPG</h1>
+    <p class="sub">Turn each page of a PDF into a picture.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a PDF"><div style="font-size:34px">🖼️</div><b>Choose a PDF or drop it here</b><span>Your file stays on your device</span><span class="pick">Choose PDF</span><input type="file" accept="application/pdf,.pdf"></div>
+    <div id="tools" hidden>
+      <p class="lead" id="info"></p>
+      <div class="row"><label>Picture type<select id="type"><option value="image/jpeg">JPG (smaller file)</option><option value="image/png">PNG (sharpest)</option></select></label>
+      <label>Quality<select id="dpi"><option value="100">Screen (small file)</option><option value="150" selected>Good (150 dpi)</option><option value="300">Print (300 dpi)</option></select></label></div>
+      <div class="btnrow"><button type="button" class="btn" id="go">Make pictures</button><button type="button" class="btn alt" id="zip" hidden>&#11015; Save all in one ZIP file</button><button type="button" class="btn line" id="reset">Start over</button></div>
+      <div class="pg" id="pg"></div>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+  <div class="card how hide-embed"><h2>How to turn a PDF into JPG pictures</h2><ol><li>Choose your PDF.</li><li>Pick JPG or PNG and the quality.</li><li>Tap <b>Make pictures</b>, then save one page or all pages in a ZIP file.</li></ol><p>Use Print quality for photos and posters. Use Screen quality to keep the files small for email or chat.</p></div>
+  <p class="note">&#128274; Your PDF is handled inside your browser. Nothing is uploaded or saved.<br>
+  <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> &middot; free online tools</p>
+</div>
+<script src="../assets/embed.js?v=12"></script>
+<script type="module">
+import * as pdfjsLib from "../assets/lib/pdf.min.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("../assets/lib/pdf.worker.min.mjs", import.meta.url).href;
+const $=id=>document.getElementById(id);let bytes=null,name="document";
+function st(t,bad){$("status").innerHTML=bad?'<span class="bad">'+t+'</span>':(t||"");}
+async function pick(files){const f=files[0];if(!f)return false;if(!/pdf$/i.test(f.type)&&!/\.pdf$/i.test(f.name)){st("Please choose a PDF file.",1);return false;}st("Opening\u2026");bytes=new Uint8Array(await f.arrayBuffer());name=window.baseName(f.name);return true;}
+function shown(){$("drop").hidden=true;$("tools").hidden=false;}
+const openJs=()=>pdfjsLib.getDocument({data:bytes.slice()}).promise;
+const openLib=()=>PDFLib.PDFDocument.load(bytes,{ignoreEncryption:true});
+const savePdf=async(doc,suffix)=>{const out=await doc.save();window.saveFile(new Blob([out],{type:"application/pdf"}),name+suffix+".pdf");st("Saved. Look in your Downloads.");};
+async function drawPage(js,n,cv,maxW){const p=await js.getPage(n),v0=p.getViewport({scale:1}),sc=Math.min(2,(maxW||700)/v0.width)*Math.min(2,window.devicePixelRatio||1),v=p.getViewport({scale:sc});cv.width=v.width;cv.height=v.height;cv.style.width=Math.round(v.width/Math.min(2,window.devicePixelRatio||1))+"px";await p.render({canvasContext:cv.getContext("2d"),viewport:v}).promise;return v;}
+/* displayed fractions (u from left, v from top) to un-rotated page fractions (a from left, b from bottom) */
+function mapPt(rot,u,v){rot=((rot%360)+360)%360;return rot===90?[v,u]:rot===180?[1-u,v]:rot===270?[1-v,1-u]:[u,1-v];}
+$("reset")&&($("reset").onclick=()=>location.reload());
+let js=null,outs=[];
+async function load(files){if(!await pick(files))return;js=await openJs();shown();$("info").textContent=js.numPages+(js.numPages===1?" page":" pages")+" in this PDF.";st("");}
+function crcTable(){const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0;}return t;}const CT=crcTable();
+function crc(u){let c=-1;for(let i=0;i<u.length;i++)c=CT[(c^u[i])&255]^(c>>>8);return(c^-1)>>>0;}
+function makeZip(fs){const enc=new TextEncoder(),parts=[],cen=[];let off=0;for(const f of fs){const nm=enc.encode(f.name),c=crc(f.data),h=new DataView(new ArrayBuffer(30));h.setUint32(0,0x04034b50,true);h.setUint16(4,20,true);h.setUint16(8,0,true);h.setUint32(14,c,true);h.setUint32(18,f.data.length,true);h.setUint32(22,f.data.length,true);h.setUint16(26,nm.length,true);parts.push(new Uint8Array(h.buffer),nm,f.data);const d=new DataView(new ArrayBuffer(46));d.setUint32(0,0x02014b50,true);d.setUint16(4,20,true);d.setUint16(6,20,true);d.setUint32(16,c,true);d.setUint32(20,f.data.length,true);d.setUint32(24,f.data.length,true);d.setUint16(28,nm.length,true);d.setUint32(42,off,true);cen.push(new Uint8Array(d.buffer),nm);off+=30+nm.length+f.data.length;}
+ const cs=cen.reduce((a,b)=>a+b.length,0),e=new DataView(new ArrayBuffer(22));e.setUint32(0,0x06054b50,true);e.setUint16(8,fs.length,true);e.setUint16(10,fs.length,true);e.setUint32(12,cs,true);e.setUint32(16,off,true);return new Blob([...parts,...cen,new Uint8Array(e.buffer)],{type:"application/zip"});}
+$("go").onclick=async()=>{const type=$("type").value,ext=type==="image/png"?"png":"jpg",dpi=+$("dpi").value;$("pg").innerHTML="";outs=[];$("zip").hidden=true;$("go").disabled=true;
+ try{for(let i=1;i<=js.numPages;i++){st("Making page "+i+" of "+js.numPages+"…");const p=await js.getPage(i);let sc=dpi/72;const v0=p.getViewport({scale:1});if(v0.width*sc*v0.height*sc>2.4e7)sc=Math.sqrt(2.4e7/(v0.width*v0.height));const v=p.getViewport({scale:sc}),c=document.createElement("canvas");c.width=Math.round(v.width);c.height=Math.round(v.height);const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);await p.render({canvasContext:x,viewport:v}).promise;
+  const b=await new Promise(r=>c.toBlob(r,type,0.9)),fn=name+"-page-"+i+"."+ext,u=URL.createObjectURL(b);outs.push({name:fn,blob:b});
+  const d=document.createElement("div");d.className="p";d.innerHTML='<img alt="Page '+i+'" src="'+u+'"><a href="'+u+'" download="'+fn.replace(/"/g,"")+'">&#11015; Page '+i+' <small>('+window.fmtSize(b.size)+')</small></a>';$("pg").appendChild(d);c.width=c.height=0;}
+ st("Done. Tap a page to save it"+(outs.length>1?", or save them all in one ZIP file.":"."));$("zip").hidden=outs.length<2;}catch(e){console.error(e);st("Something went wrong while making the pictures. Try a lower quality.",1);}$("go").disabled=false;};
+$("zip").onclick=async()=>{st("Packing…");const fs=[];for(const o of outs)fs.push({name:o.name,data:new Uint8Array(await o.blob.arrayBuffer())});window.saveFile(makeZip(fs),name+"-pictures.zip");st("Saved. Look in your Downloads.");};
+window.setupDrop($("drop"),f=>load(f).catch(e=>{console.error(e);st("This PDF could not be opened. It may be damaged or locked with a password.",1);}));
+</script>
+</body>
+</html>

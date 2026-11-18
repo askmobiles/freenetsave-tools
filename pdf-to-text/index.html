@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF to Text: copy the words out of a PDF (free, no upload)</title>
+<meta name="description" content="Free PDF to text converter. Pull the words out of a PDF so you can copy them or save them as a text file. Works in your browser; your PDF never leaves your device.">
+<link rel="canonical" href="https://tools.freenetsave.com/pdf-to-text/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:14px 0 8px}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:10px}
+  .row label{display:block;font-weight:650;font-size:14px}
+  .row select,.row input[type=text],.row input[type=range]{width:100%;margin-top:4px}
+  .view{position:relative;display:inline-block;max-width:100%;margin-top:12px;line-height:0;border:1px solid var(--line);box-shadow:0 2px 10px rgba(23,32,51,.12);touch-action:none}
+  .view canvas{max-width:100%;height:auto;display:block}
+  .cen{text-align:center}
+  .how{margin-top:18px}.how h2{font-size:19px;margin:0 0 8px}.how li{margin:0 0 6px}.how p{margin:0 0 8px}
+  textarea#out{width:100%;min-height:340px;margin-top:10px;font:15px/1.5 ui-monospace,Consolas,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>PDF to Text</h1>
+    <p class="sub">Get the words out of a PDF to copy or save.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a PDF"><div style="font-size:34px">📝</div><b>Choose a PDF or drop it here</b><span>Your file stays on your device</span><span class="pick">Choose PDF</span><input type="file" accept="application/pdf,.pdf"></div>
+    <div id="tools" hidden>
+      <p class="lead" id="info"></p>
+      <label style="font-weight:650"><input type="checkbox" id="marks" style="width:auto" checked> Show where each page starts</label>
+      <textarea id="out" aria-label="Text from the PDF" spellcheck="false"></textarea>
+      <div class="btnrow"><button type="button" class="btn" id="copy">Copy all the text</button><button type="button" class="btn alt" id="txt">&#11015; Save as a text file</button><button type="button" class="btn line" id="reset">Start over</button></div>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+  <div class="card how hide-embed"><h2>How to get the text out of a PDF</h2><ol><li>Choose your PDF.</li><li>The words appear in the box. You can fix them there.</li><li>Tap <b>Copy all the text</b> or save a text file.</li></ol><p>A scanned PDF is a picture of a page, so it has no words to pull out. This tool tells you when that happens.</p></div>
+  <p class="note">&#128274; Your PDF is handled inside your browser. Nothing is uploaded or saved.<br>
+  <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> &middot; free online tools</p>
+</div>
+<script src="../assets/embed.js?v=12"></script>
+<script type="module">
+import * as pdfjsLib from "../assets/lib/pdf.min.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("../assets/lib/pdf.worker.min.mjs", import.meta.url).href;
+const $=id=>document.getElementById(id);let bytes=null,name="document";
+function st(t,bad){$("status").innerHTML=bad?'<span class="bad">'+t+'</span>':(t||"");}
+async function pick(files){const f=files[0];if(!f)return false;if(!/pdf$/i.test(f.type)&&!/\.pdf$/i.test(f.name)){st("Please choose a PDF file.",1);return false;}st("Opening\u2026");bytes=new Uint8Array(await f.arrayBuffer());name=window.baseName(f.name);return true;}
+function shown(){$("drop").hidden=true;$("tools").hidden=false;}
+const openJs=()=>pdfjsLib.getDocument({data:bytes.slice()}).promise;
+const openLib=()=>PDFLib.PDFDocument.load(bytes,{ignoreEncryption:true});
+const savePdf=async(doc,suffix)=>{const out=await doc.save();window.saveFile(new Blob([out],{type:"application/pdf"}),name+suffix+".pdf");st("Saved. Look in your Downloads.");};
+async function drawPage(js,n,cv,maxW){const p=await js.getPage(n),v0=p.getViewport({scale:1}),sc=Math.min(2,(maxW||700)/v0.width)*Math.min(2,window.devicePixelRatio||1),v=p.getViewport({scale:sc});cv.width=v.width;cv.height=v.height;cv.style.width=Math.round(v.width/Math.min(2,window.devicePixelRatio||1))+"px";await p.render({canvasContext:cv.getContext("2d"),viewport:v}).promise;return v;}
+/* displayed fractions (u from left, v from top) to un-rotated page fractions (a from left, b from bottom) */
+function mapPt(rot,u,v){rot=((rot%360)+360)%360;return rot===90?[v,u]:rot===180?[1-u,v]:rot===270?[1-v,1-u]:[u,1-v];}
+$("reset")&&($("reset").onclick=()=>location.reload());
+let pagesTxt=[];
+function show(){$("out").value=pagesTxt.map((t,i)=>($("marks").checked&&pagesTxt.length>1?"--- Page "+(i+1)+" ---\n":"")+t).join("\n\n").trim();}
+async function load(files){if(!await pick(files))return;const js=await openJs();pagesTxt=[];let chars=0;
+ for(let i=1;i<=js.numPages;i++){st("Reading page "+i+" of "+js.numPages+"…");const tc=await (await js.getPage(i)).getTextContent();let t="",ly=null;for(const it of tc.items){if(!("str" in it))continue;const y=it.transform[5];if(ly!==null&&Math.abs(y-ly)>2&&!t.endsWith("\n"))t+="\n";else if(t&&!t.endsWith("\n")&&!t.endsWith(" ")&&it.str&&!it.str.startsWith(" ")&&ly!==null&&it.transform[4]-lx>1.5)t+=" ";t+=it.str;if(it.hasEOL)t+="\n";ly=y;lx=it.transform[4]+it.width;}
+  t=t.replace(/[ \t]+\n/g,"\n").replace(/\n{3,}/g,"\n\n").trim();chars+=t.length;pagesTxt.push(t);}
+ shown();show();const words=($("out").value.match(/\S+/g)||[]).length;$("info").textContent=js.numPages+(js.numPages===1?" page, ":" pages, ")+(chars?words.toLocaleString()+" words found.":"no words found.");
+ st(chars?"":"No words were found. This PDF is probably a scan (a picture of the pages), so there is no text to copy.",!chars);}
+let lx=0;$("marks").onchange=show;
+$("copy").onclick=()=>{window.copyText($("out").value);};
+$("txt").onclick=()=>{window.saveFile(new Blob([$("out").value.replace(/\n/g,"\r\n")],{type:"text/plain;charset=utf-8"}),name+".txt");st("Saved. Look in your Downloads.");};
+window.setupDrop($("drop"),f=>load(f).catch(e=>{console.error(e);st("This PDF could not be opened. It may be damaged or locked with a password.",1);}));
+</script>
+</body>
+</html>

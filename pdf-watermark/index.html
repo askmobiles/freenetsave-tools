@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add a Watermark to a PDF: DRAFT, CONFIDENTIAL or your name (free)</title>
+<meta name="description" content="Free PDF watermark tool. Put words like DRAFT, CONFIDENTIAL, COPY or your name across every page of a PDF. Pick the size, colour and how see-through it is. Nothing is uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/pdf-watermark/">
+<link rel="stylesheet" href="../assets/style.css?v=8">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.alt{background:var(--accent)}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:14px 0 8px}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:10px}
+  .row label{display:block;font-weight:650;font-size:14px}
+  .row select,.row input[type=text],.row input[type=range]{width:100%;margin-top:4px}
+  .view{position:relative;display:inline-block;max-width:100%;margin-top:12px;line-height:0;border:1px solid var(--line);box-shadow:0 2px 10px rgba(23,32,51,.12);touch-action:none}
+  .view canvas{max-width:100%;height:auto;display:block}
+  .cen{text-align:center}
+  .how{margin-top:18px}.how h2{font-size:19px;margin:0 0 8px}.how li{margin:0 0 6px}.how p{margin:0 0 8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Add a Watermark to a PDF</h1>
+    <p class="sub">Put DRAFT, COPY or your name across every page.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a PDF"><div style="font-size:34px">💧</div><b>Choose a PDF or drop it here</b><span>Your file stays on your device</span><span class="pick">Choose PDF</span><input type="file" accept="application/pdf,.pdf"></div>
+    <div id="tools" hidden>
+      <div class="row"><label>Words to show<input type="text" id="txt" value="CONFIDENTIAL" maxlength="60"></label>
+      <label>Layout<select id="lay"><option value="one">One in the middle</option><option value="tile">Repeat across the page</option></select></label>
+      <label>Direction<select id="ang"><option value="45">Diagonal</option><option value="0">Straight</option></select></label>
+      <label>Colour<select id="col"><option value="#6b7280">Grey</option><option value="#dc2626">Red</option><option value="#2563eb">Blue</option><option value="#111111">Black</option></select></label>
+      <label>Size<input type="range" id="size" min="20" max="95" value="70"></label>
+      <label>How strong<input type="range" id="op" min="5" max="60" value="22"></label></div>
+      <p class="lead">Page 1 with your watermark:</p>
+      <div class="cen"><div class="view"><canvas id="cv"></canvas></div></div>
+      <div class="btnrow"><button type="button" class="btn" id="save">&#11015; Save PDF with watermark</button><button type="button" class="btn line" id="reset">Start over</button></div>
+    </div>
+    <div class="status" id="status" aria-live="polite"></div>
+  </div>
+  <div class="card how hide-embed"><h2>How to add a watermark to a PDF</h2><ol><li>Choose your PDF.</li><li>Type the words, then pick the layout, colour, size and strength. The picture shows page 1.</li><li>Tap <b>Save PDF with watermark</b>. The words go on every page.</li></ol><p>You can type in any language, including Tamil and Hindi. A watermark shows that a page is a copy or a draft; it does not lock the PDF.</p></div>
+  <p class="note">&#128274; Your PDF is handled inside your browser. Nothing is uploaded or saved.<br>
+  <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> &middot; free online tools</p>
+</div>
+<script src="../assets/embed.js?v=12"></script>
+<script src="../assets/lib/pdf-lib.min.js"></script>
+<script type="module">
+import * as pdfjsLib from "../assets/lib/pdf.min.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("../assets/lib/pdf.worker.min.mjs", import.meta.url).href;
+const $=id=>document.getElementById(id);let bytes=null,name="document";
+function st(t,bad){$("status").innerHTML=bad?'<span class="bad">'+t+'</span>':(t||"");}
+async function pick(files){const f=files[0];if(!f)return false;if(!/pdf$/i.test(f.type)&&!/\.pdf$/i.test(f.name)){st("Please choose a PDF file.",1);return false;}st("Opening\u2026");bytes=new Uint8Array(await f.arrayBuffer());name=window.baseName(f.name);return true;}
+function shown(){$("drop").hidden=true;$("tools").hidden=false;}
+const openJs=()=>pdfjsLib.getDocument({data:bytes.slice()}).promise;
+const openLib=()=>PDFLib.PDFDocument.load(bytes,{ignoreEncryption:true});
+const savePdf=async(doc,suffix)=>{const out=await doc.save();window.saveFile(new Blob([out],{type:"application/pdf"}),name+suffix+".pdf");st("Saved. Look in your Downloads.");};
+async function drawPage(js,n,cv,maxW){const p=await js.getPage(n),v0=p.getViewport({scale:1}),sc=Math.min(2,(maxW||700)/v0.width)*Math.min(2,window.devicePixelRatio||1),v=p.getViewport({scale:sc});cv.width=v.width;cv.height=v.height;cv.style.width=Math.round(v.width/Math.min(2,window.devicePixelRatio||1))+"px";await p.render({canvasContext:cv.getContext("2d"),viewport:v}).promise;return v;}
+/* displayed fractions (u from left, v from top) to un-rotated page fractions (a from left, b from bottom) */
+function mapPt(rot,u,v){rot=((rot%360)+360)%360;return rot===90?[v,u]:rot===180?[1-u,v]:rot===270?[1-v,1-u]:[u,1-v];}
+$("reset")&&($("reset").onclick=()=>location.reload());
+let tmr=0;
+async function build(){const doc=await openLib(),t=($("txt").value||"").trim();if(!t)return doc;
+ const c=document.createElement("canvas"),x=c.getContext("2d"),F="bold 120px system-ui,'Segoe UI','Nirmala UI','Noto Sans Tamil',Arial,sans-serif";x.font=F;const tw=Math.ceil(x.measureText(t).width)+24;c.width=tw;c.height=190;x.font=F;x.fillStyle=$("col").value;x.textBaseline="middle";x.fillText(t,12,98);
+ const img=await doc.embedPng(c.toDataURL("image/png")),op=+$("op").value/100,size=+$("size").value/100,tile=$("lay").value==="tile";
+ for(const pg of doc.getPages()){const b=pg.getCropBox(),rot=pg.getRotation().angle,ang=(+$("ang").value+rot)*Math.PI/180,dispW=rot%180?b.height:b.width,dispH=rot%180?b.width:b.height,w=dispW*size*(tile?0.45:1),h=w*img.height/img.width;
+  const put=(u,v)=>{const m=mapPt(rot,u,v),cx=b.x+m[0]*b.width,cy=b.y+m[1]*b.height;pg.drawImage(img,{x:cx-(w/2*Math.cos(ang)-h/2*Math.sin(ang)),y:cy-(w/2*Math.sin(ang)+h/2*Math.cos(ang)),width:w,height:h,rotate:PDFLib.radians(ang),opacity:op});};
+  if(!tile)put(.5,.5);else{const sx=(w*1.25)/dispW,sy=Math.max(h*3.2,dispH/6)/dispH;let r=0;for(let v=sy/2;v<1+sy/2;v+=sy,r++)for(let u=(r%2?0:sx/2)-sx/2;u<1+sx/2;u+=sx)put(u,v);}}
+ return doc;}
+async function preview(){try{const out=await (await build()).save(),js=await pdfjsLib.getDocument({data:out}).promise;await drawPage(js,1,$("cv"),620);st("");}catch(e){console.error(e);st("The preview could not be made for this PDF.",1);}}
+async function load(files){if(!await pick(files))return;await openLib();shown();await preview();}
+["txt","lay","ang","col","size","op"].forEach(i=>$(i).addEventListener("input",()=>{clearTimeout(tmr);tmr=setTimeout(preview,250);}));
+$("save").onclick=async()=>{if(!($("txt").value||"").trim()){st("Type the words for the watermark first.",1);return;}st("Working…");try{await savePdf(await build(),"-watermark");}catch(e){console.error(e);st("This PDF could not be saved.",1);}};
+window.setupDrop($("drop"),f=>load(f).catch(e=>{console.error(e);st("This PDF could not be opened. It may be damaged or locked with a password.",1);}));
+</script>
+</body>
+</html>
