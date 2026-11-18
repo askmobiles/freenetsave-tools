@@ -18,13 +18,18 @@
     <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose PDF files">
       <div style="font-size:34px">📚</div>
       <b>Choose PDF files or drop them here</b>
-      <span>Pick two or more · use ↑ ↓ to change the order</span>
+      <span>Pick two or more, or add a whole folder · use ↑ ↓ to change the order</span>
       <div class="pick">Choose PDFs</div>
       <input type="file" accept="application/pdf,.pdf" multiple>
+    </div>
+    <div class="actions" id="folderrow" style="margin-top:10px" hidden>
+      <button class="btn ghost" id="pickdir" type="button" style="flex:1">📁 Add a whole folder of PDFs</button>
+      <input type="file" id="dir" webkitdirectory multiple hidden>
     </div>
     <ul class="flist" id="list"></ul>
     <div class="actions">
       <button class="btn" id="go" disabled style="flex:1">Merge PDFs</button>
+      <button class="btn ghost" id="sort" type="button" hidden>Sort A to Z</button>
       <button class="btn ghost" id="clear" type="button">Clear</button>
     </div>
     <div class="bar" id="bar"><i></i></div>
@@ -33,7 +38,7 @@
   <p class="note">🔒 Your PDFs are joined inside your browser. Nothing is uploaded or saved.<br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
 </div>
-<script src="../assets/embed.js?v=11"></script>
+<script src="../assets/embed.js?v=12"></script>
 <script src="../assets/lib/pdf-lib.min.js"></script>
 <script>
 let items = []; // {file, pages|null, err}
@@ -46,6 +51,7 @@ function render(){
     <button type="button" data-dn="${i}" aria-label="Move down" ${i===items.length-1?"disabled":""}>↓</button>
     <button type="button" data-rm="${i}" aria-label="Remove">✕</button></li>`).join("");
   $("go").disabled = items.filter(i=>!i.err).length < 2;
+  $("sort").hidden = items.length < 2;
 }
 async function inspect(it){
   try{
@@ -56,10 +62,39 @@ async function inspect(it){
   }catch(e){ it.err = "Not a readable PDF"; }
   render();
 }
-setupDrop($("drop"), files=>{
-  files.filter(f=>/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name)).forEach(f=>{ const it={file:f,pages:null}; items.push(it); inspect(it); });
-  render(); $("status").textContent="";
-});
+const nat = new Intl.Collator(undefined,{numeric:true,sensitivity:"base"});
+const keyOf = f => f.webkitRelativePath || f._path || f.name;
+function addFiles(files, fromFolder){
+  let list = [...files].filter(f=>/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name));
+  if(fromFolder) list.sort((a,b)=>nat.compare(keyOf(a),keyOf(b)));   // file 2 comes before file 10
+  list.forEach(f=>{ const it={file:f,pages:null}; items.push(it); inspect(it); });
+  render();
+  $("status").textContent = fromFolder ? (list.length ? `Added ${list.length} PDF${list.length>1?"s":""} from the folder, in name order.` : "No PDF files were found in that folder.") : "";
+}
+setupDrop($("drop"), files=>addFiles(files,false));
+// whole folder: button (computers) and dropping a folder onto the box
+if("webkitdirectory" in $("dir")){
+  $("folderrow").hidden = false;
+  $("pickdir").addEventListener("click", ()=>$("dir").click());
+  $("dir").addEventListener("change", ()=>{ addFiles($("dir").files,true); $("dir").value=""; });
+}
+function readEntry(en, path, out){
+  return new Promise(res=>{
+    if(en.isFile) en.file(f=>{ f._path=path+f.name; out.push(f); res(); }, ()=>res());
+    else if(en.isDirectory){ const rd=en.createReader(); const all=[];
+      (function more(){ rd.readEntries(async es=>{ if(!es.length){ for(const x of all) await readEntry(x, path+en.name+"/", out); res(); } else { all.push(...es); more(); } }, ()=>res()); })(); }
+    else res();
+  });
+}
+document.addEventListener("drop", async e=>{
+  if(!e.target.closest || !e.target.closest("#drop") || !e.dataTransfer || !e.dataTransfer.items) return;
+  const ents=[...e.dataTransfer.items].map(i=>i.webkitGetAsEntry&&i.webkitGetAsEntry()).filter(Boolean);
+  if(!ents.some(x=>x.isDirectory)) return;            // plain files: the normal drop handles them
+  e.preventDefault(); e.stopPropagation(); $("drop").classList.remove("over","drag");
+  const out=[]; for(const en of ents) await readEntry(en,"",out);
+  addFiles(out,true);
+}, true);
+$("sort").addEventListener("click", ()=>{ items.sort((a,b)=>nat.compare(a.file.name,b.file.name)); render(); });
 $("list").addEventListener("click", e=>{
   const b = e.target.closest("button"); if(!b) return;
   if(b.dataset.rm){ items.splice(+b.dataset.rm,1); }
