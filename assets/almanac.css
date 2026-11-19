@@ -66,3 +66,7 @@
   .top .field input,.mhead .field select,.top .field select{width:100%;max-width:100%;min-width:0;box-sizing:border-box}
   .top input[type=date],.top input[type=time]{-webkit-appearance:none;appearance:none;min-height:48px;text-align:left}
   .top input[type=date]::-webkit-date-and-time-value{text-align:left}
+.dc small.x b.spf,.dc small.x b.spm{display:block;margin-top:3px;font-size:12px!important;line-height:1.3!important;white-space:normal!important;overflow:visible!important;font-weight:800}.dc small.x b.spf{color:#b45309!important}.dc small.x b.spm{color:#1d4ed8!important;font-weight:700}.dc.hasp{box-shadow:inset 0 -4px 0 #f59e0b}
+#msp{margin:14px 0 6px}#msp h3{font-size:19px;margin:0 0 8px}#msp ul{margin:0;padding:0;list-style:none;columns:2;column-gap:28px}#msp li{break-inside:avoid;padding:5px 0;border-bottom:1px solid #eef2f8;font-size:15.5px}#msp .spf{color:#b45309}
+@media (max-width:700px){#msp ul{columns:1}}
+tr.spd td{background:#fff7ed}tr.spd td:last-child{color:#b45309;font-weight:800}
