@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Baby Name Finder: Names with Meanings from Many Cultures — freenetsave</title>
-<meta name="description" content="Free baby name finder with 318 names for girls and boys: Tamil, Sanskrit, English, Arabic, Spanish, French and Japanese. Meanings, Tamil spelling, birth-star sounds and a saved list that stays on your device.">
+<meta name="description" content="Free baby name finder with 318 names for girls and boys: Tamil, Sanskrit, English, Arabic, Spanish, French and Japanese. Meanings, Tamil spelling and a saved list that stays on your device.">
 <link rel="canonical" href="https://tools.freenetsave.com/baby-names/">
 <link rel="stylesheet" href="../assets/style.css?v=9">
 <style>
@@ -44,9 +44,7 @@
   <div class="card">
     <div class="bn-top">
       <div class="f" style="flex:2;min-width:240px"><label for="q">Search a name or a meaning</label><input id="q" class="bn-q" type="search" placeholder="Try “moon”, “light” or “Nila”" autocomplete="off"></div>
-      <div class="f"><label for="star">Birth star (starting sounds)</label><select id="star"><option value="">Any star</option></select></div>
     </div>
-    <p class="star-note" id="starnote" hidden></p>
     <div style="display:flex;flex-wrap:wrap;gap:18px;margin-top:14px">
       <div><label style="display:block;font-weight:700;font-size:15px;margin:0 0 6px">For</label><div class="seg" id="gender"><button type="button" class="on" data-v="">All</button><button type="button" data-v="g">Girl</button><button type="button" data-v="b">Boy</button><button type="button" data-v="u">Girl or boy</button></div></div>
       <div><label style="display:block;font-weight:700;font-size:15px;margin:0 0 6px">Type of name</label><div class="seg" id="origin"><button type="button" class="on" data-v="">All</button><button type="button" data-v="t">Pure Tamil</button><button type="button" data-v="s">Sanskrit / Hindu</button><button type="button" data-v="e">English</button><button type="button" data-v="a">Arabic / Muslim</button><button type="button" data-v="es">Spanish</button><button type="button" data-v="fr">French</button><button type="button" data-v="ja">Japanese</button></div></div>
@@ -60,7 +58,6 @@
   <div class="card" style="margin-top:22px">
     <h2 style="margin-top:0">About these names</h2>
     <p>Names come from many languages: Tamil, Sanskrit, English, Arabic, Spanish, French and Japanese, with more on the way. <b>Pure Tamil names</b> come from Tamil words, old Tamil kings, poets and nature. <b>Sanskrit / Hindu names</b> are used by Tamil families and across India; Tamil spelling is shown for both. Japanese meanings follow the most common way the name is written.</p>
-    <p><b>Birth star sounds (for Hindu families):</b> many families choose a first sound linked to the baby’s birth star (nakshatra). The filter matches the English spelling, so it is only a guide. Please check with your family priest. Find your baby’s birth star with our <a href="../tamil-panchangam/">Tamil Panchangam</a>.</p>
     <p>Meanings can differ between families and regions. We wrote this list and every meaning ourselves.</p>
   </div>
   <p class="note">🔒 Your saved names stay on this device only. Nothing is sent to us.<br>© 2026 freenetsave.com · name list and meanings written by freenetsave · <a href="https://freenetsave.com/" target="_top">free online tools</a></p>
@@ -71,17 +68,14 @@ var N=[["Kayal","கயல்","g","t","Fish; the carp on the old Pandya flag"],
 try{SV=JSON.parse(localStorage.getItem(K)||"[]");}catch(e){SV=[];}
 function $(i){return document.getElementById(i);}
 var OR={t:"Pure Tamil",s:"Sanskrit / Hindu",e:"English",a:"Arabic / Muslim",es:"Spanish",fr:"French",ja:"Japanese"},GN={g:"Girl",b:"Boy",u:"Girl or boy"};
-ST.forEach(function(s,i){var o=document.createElement("option");o.value=i;o.textContent=s[0]+" · "+s[1];$("star").appendChild(o);});
 var az="ABCDEFGHIJKLMNOPRSTUVWYZ".split("");$("az").innerHTML='<button type="button" class="all on" data-v="">All letters</button>'+az.map(function(c){return '<button type="button" data-v="'+c+'">'+c+'</button>';}).join("");
 function seg(id,key){$(id).addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;this.querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b);});F[key]=b.dataset.v;draw();});}
 seg("gender","g");seg("origin","o");seg("az","l");
 $("q").addEventListener("input",function(){F.q=this.value.trim().toLowerCase();draw();});
-$("star").addEventListener("change",function(){F.s=this.value;var n=$("starnote");if(F.s===""){n.hidden=true;}else{var s=ST[+F.s];n.hidden=false;n.textContent="Names starting with: "+s[2].map(function(x){return x.charAt(0).toUpperCase()+x.slice(1);}).join(", ")+". This follows the English spelling, so it is only a guide.";}draw();});
 $("showsaved").addEventListener("click",function(){F.saved=!F.saved;this.classList.toggle("on",F.saved);draw();});
-$("clear").addEventListener("click",function(){F={g:"",o:"",l:"",s:"",q:"",saved:false};$("q").value="";$("star").value="";$("starnote").hidden=true;["gender","origin","az"].forEach(function(id){$(id).querySelectorAll("button").forEach(function(x,i){x.classList.toggle("on",i===0);});});$("showsaved").classList.remove("on");draw();});
+$("clear").addEventListener("click",function(){F={g:"",o:"",l:"",s:"",q:"",saved:false};$("q").value="";["gender","origin","az"].forEach(function(id){$(id).querySelectorAll("button").forEach(function(x,i){x.classList.toggle("on",i===0);});});$("showsaved").classList.remove("on");draw();});
 function save(){try{localStorage.setItem(K,JSON.stringify(SV));}catch(e){}$("nsaved").textContent=SV.length;$("share").hidden=!SV.length;}
 function match(n){if(F.saved&&SV.indexOf(n[0])<0)return false;if(F.g&&n[2]!==F.g&&!(n[2]==="u"&&F.g!=="u"))return false;if(F.o&&n[3]!==F.o)return false;var lo=n[0].toLowerCase();if(F.l&&n[0].charAt(0)!==F.l)return false;
-  if(F.s!==""&&!ST[+F.s][2].some(function(p){return lo.indexOf(p)===0;}))return false;
   if(F.q&&lo.indexOf(F.q)<0&&n[4].toLowerCase().indexOf(F.q)<0&&(n[1]||"").indexOf(F.q)<0)return false;return true;}
 function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");}
 function draw(){var L=N.filter(match).sort(function(a,b){return a[0].localeCompare(b[0]);});
@@ -92,7 +86,6 @@ $("grid").addEventListener("click",function(e){var b=e.target.closest(".sv");if(
 $("share").addEventListener("click",function(){var t="Baby names we like:\n"+SV.map(function(s){var n=N.filter(function(x){return x[0]===s;})[0];return n?n[0]+(n[1]?" ("+n[1]+")":"")+" – "+n[4]:s;}).join("\n")+"\n\nFrom freenetsave.com baby name finder";if(navigator.share)navigator.share({title:"Baby names",text:t}).catch(function(){});else if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){$("share").textContent="✓ Copied";});});
 (function(){var u=new URLSearchParams(location.search);function pick(id,key,v){if(!v)return;$(id).querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x.dataset.v===v);});F[key]=v;}
 pick("gender","g",u.get("g"));pick("origin","o",u.get("o"));pick("az","l",(u.get("l")||"").toUpperCase());
-if(u.get("s")!==null&&ST[+u.get("s")]){$("star").value=u.get("s");$("star").dispatchEvent(new Event("change"));}
 if(u.get("q")){$("q").value=u.get("q");F.q=u.get("q").toLowerCase();}})();
 save();draw();
 </script>
