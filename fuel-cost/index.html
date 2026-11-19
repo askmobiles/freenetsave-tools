@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fuel Cost Calculator — gas cost for a trip (free)</title>
-<meta name="description" content="Free fuel cost calculator. Work out how much gas a trip will use and what it will cost, in kilometres or miles, and split it between people.">
+<title>Gas Trip Calculator (Canada): fuel cost for any trip, in litres or gallons — free</title>
+<meta name="description" content="Free gas trip calculator for Canada and the US. Enter the distance, your car's fuel use (L/100 km or mpg) and the gas price to see the fuel used, the cost and each person's share.">
 <link rel="canonical" href="https://tools.freenetsave.com/fuel-cost/">
 <link rel="stylesheet" href="../assets/style.css?v=9">
 <style>
@@ -22,8 +22,8 @@
 <body>
 <div class="wrap">
   <div class="hide-embed">
-    <h1>Fuel Cost Calculator</h1>
-    <p class="sub">What a trip costs in gas, and each person's share.</p>
+    <h1>Gas Trip Calculator</h1>
+    <p class="sub">How much gas a trip uses, what it costs, and each person's share. Works in kilometres and litres or miles and gallons.</p>
   </div>
   <div class="card">
     <div class="field"><label>Units</label><div class="seg" id="unit"><button type="button" data-u="m" class="on">Kilometres and litres</button><button type="button" data-u="us">Miles and US gallons</button></div></div>
@@ -34,6 +34,17 @@
     <div class="field"><label><input type="checkbox" id="rt" style="width:auto;margin-right:8px">Round trip (there and back)</label></div>
     <div class="result"><div class="box main"><span>Fuel cost</span><b id="cost">–</b></div><div class="box"><span>Fuel used</span><b id="used">–</b></div><div class="box"><span>Each person pays</span><b id="each">–</b></div></div>
     <div class="actions"><button class="btn ghost" type="button" id="copy">Copy result</button></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h2 style="margin-top:0">How the gas trip calculator works</h2>
+    <p>Fuel used = distance × fuel use ÷ 100. Fuel cost = fuel used × the price per litre. Tick <b>Round trip</b> to double the distance, and enter how many people are sharing to see each person's share.</p>
+    <p><b>Example:</b> Toronto to Montreal is about 540 km. A car that uses 8 L per 100 km needs about 43 litres. At $1.50 a litre, the trip costs about $65 in gas (43.2 × $1.50 = $64.80), or $32.40 each for two people.</p>
+    <h3>What fuel use should I enter?</h3>
+    <p>Your car's fuel use (also called fuel consumption) is in the owner's manual or on your dashboard trip screen. As a rough guide: a small car uses about 6 to 7 L per 100 km on the highway, a mid-size car or SUV about 8 to 10, and a pickup truck or large SUV about 11 to 14. City driving uses more than highway driving.</p>
+    <h3>Common questions</h3>
+    <details><summary>Can I use miles per gallon (mpg)?</summary><p>Yes. Choose <b>Miles and US gallons</b> at the top, then enter the distance in miles and your car's mpg.</p></details>
+    <details><summary>Where do I find today's gas price?</summary><p>Use the price on the pump or a gas price app for your area, and type it in. Prices change every day, so the calculator does not guess them for you.</p></details>
+    <details><summary>Is this a fuel estimator for long road trips?</summary><p>Yes. Enter the whole distance of the trip. For a trip with stops, add up each part first, or use the round trip box for a there-and-back drive.</p></details>
   </div>
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
