@@ -33,7 +33,7 @@
   <p class="note">🔒 The reading is done by the voices on your own device. Your text is not sent or saved.<br>
     <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
 </div>
-<script src="../assets/embed.js?v=13"></script>
+<script src="../assets/embed.js?v=14"></script>
 <script>
 const S=window.speechSynthesis;let V=[],q=[],on=false;
 function voices(){V=S?S.getVoices():[];const keep=$("vo").value;$("vo").innerHTML=V.map((v,i)=>'<option value="'+i+'">'+v.name+' ('+v.lang+')</option>').join("")||'<option>Default voice</option>';if(keep)$("vo").value=keep;else{const d=V.findIndex(v=>/^en/i.test(v.lang)&&v.default);if(d>=0)$("vo").value=d;}}
