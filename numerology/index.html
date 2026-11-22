@@ -506,13 +506,22 @@ function twinPct(n, birth, dest, opt){
   W={b:30,d:50}; const b=matchPct(n,birth,dest,opt);
   W=keep; return {a,b,lo:Math.min(a,b),sum:a+b};
 }
+function yoursChip(t, current, txt){ return t===current ? ` style="outline:2px solid #f97316;outline-offset:1px">${txt} · yours` : `>${txt}`; }
+function fromThirtyHTML(birth, dest, opt, current){
+  const list=[];
+  for(let t=10;t<=70;t++){ const s=reduceSteps(t).at(-1); if(!COMPOUND_GOOD.includes(t) || notSuit(t,s)) continue; list.push({t,s,b:twinPct(s,birth,dest,{...opt,total:t}).b}); }
+  const top=list.sort((x,y)=>y.b-x.b || x.t-y.t).slice(0,6);
+  if(COMPOUND_GOOD.includes(current) && !top.some(x=>x.t===current)){ const s=reduceSteps(current).at(-1); top.push({t:current,s,b:twinPct(s,birth,dest,{...opt,total:current}).b}); }
+  return `<div style="margin-top:14px;font-weight:600;color:var(--ink)">🔆 Best from age 30 (destiny number)</div>`
+    + `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good"${yoursChip(x.t,current,`${x.t} → ${x.s} · ${x.b}%`)}</span>`).join("")}</div>`;
+}
 function wholeLifeHTML(birth, dest, opt, current){
   const list=[];
   for(let t=10;t<=70;t++){ if(!COMPOUND_GOOD.includes(t)) continue; const s=reduceSteps(t).at(-1); list.push({t,s,...twinPct(s,birth,dest,{...opt,total:t})}); }
   const top=list.filter(x=>x.lo>=60).sort((x,y)=>y.lo-x.lo || y.sum-x.sum || x.t-y.t).slice(0,5);
   const cur=twinPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   return `<div style="margin-top:14px;font-weight:600;color:var(--ink)">🌿 Best for your whole life (before and after 30)</div>`
-    + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.a}% / ${x.b}%</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">First % is before 30, second % is from 30.</div>` : "")
+    + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good"${yoursChip(x.t,current,`${x.t} → ${x.s} · ${x.a}% / ${x.b}%`)}</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">First % is before 30, second % is from 30.</div>` : "")
     + `<div class="plain" style="font-size:13px;margin-top:6px">Your total ${current}: before 30 ${cur.a}%, from 30 ${cur.b}% → whole life ${cur.lo}%</div>`;
 }
 function spellingIdeasHTML(name, birth, dest){
@@ -677,7 +686,7 @@ $("form").addEventListener("submit", e=>{
       const iv=valueOf(initials), mv=valueOf(mainName);
       v.innerHTML += `<div class="splitname"><b>Initials ${esc(initials.split("").join(".")+".")}</b> = ${iv.total}${iv.total>9?" → "+iv.single:""} ${compoundTag(iv.total)}<br><b>Name ${esc(mainName)}</b> = ${mv.total}${mv.total>9?" → "+mv.single:""} ${compoundTag(mv.total)}<br><span style="color:var(--muted)">Together they make the full total ${nameTotal}.</span></div>`;
     }
-    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "Best name totals for you") + wholeLifeHTML(birth, dest, {}, nameTotal) + spellingIdeasHTML(rawName, birth, dest);
+    v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "Best name totals for you") + fromThirtyHTML(birth, dest, {}, nameTotal) + wholeLifeHTML(birth, dest, {}, nameTotal) + spellingIdeasHTML(rawName, birth, dest);
   }
 
   const rawBiz = $("biz").value.trim();
