@@ -295,7 +295,6 @@
 
 <script src="../assets/embed.js?v=14"></script>
 <script>
-/* ---------- All words on this screen. To add a language later, copy "en" and translate. ---------- */
 const LANG = {
  en:{
   title:"Numerology Calculator", subtitle:"Find your birth number, destiny number, name number and lucky numbers.",
@@ -318,7 +317,7 @@ const LANG = {
   freeTools:"free online tools", copied:"Copied!"
  }
 };
-let L = LANG.en;   // current language
+let L = LANG.en;
 function applyText(){
   document.querySelectorAll("[data-t]").forEach(el=>{ if(L[el.dataset.t]!=null) el.textContent = L[el.dataset.t]; });
   $("y").placeholder = L.yearPh;
@@ -327,7 +326,6 @@ function applyText(){
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
-// Chaldean (Cheiro) letter values
 const CHALDEAN = {A:1,I:1,J:1,Q:1,Y:1, B:2,K:2,R:2, C:3,G:3,L:3,S:3, D:4,M:4,T:4,
   E:5,H:5,N:5,X:5, U:6,V:6,W:6, O:7,Z:7, F:8,P:8};
 
@@ -385,17 +383,14 @@ const COMBO = {
   enemy:"Opposing numbers — inner wishes and life events can clash at times; many people balance this with their name number."
 };
 
-// Lucky and harmful full totals (traditional Tamil numerology)
 const COMPOUND_GOOD = [10,14,15,19,21,23,24,27,32,33,37,41,42,45,46,50,51];
-// Our combined method: totals only one tradition rates count as mildly good or mildly weak; 17, 47 and 68 are neutral (the traditions disagree)
 const COMPOUND_MILD_GOOD = [59,60,65,66,69,72,75,77,78,81,83,86,90,92,93,95,96,97,100,104,108];
 const COMPOUND_MILD_BAD  = [39,48,56,57,63,74,84,98,99,102,106];
 const COMPOUND_SPLIT = [17,47,68];
 const COMPOUND_BAD  = [11,12,13,16,18,22,26,28,29,31,35,38,43,44,87];
-const HARM_TOTALS = [16,26,28,29,31,35,38,44,87];   // always shown as weak (capped at 35%)
-const GOOD_FLOOR = 55;            // a lucky total never shows red, unless a birth-date rule says it does not suit
-let CUR_DAY = 0, CUR_DEST = 0;    // set on each calculation, used by the birth-date rules
-// Rules that depend on the birth date. adj below 0 means "tradition advises against this total".
+const HARM_TOTALS = [16,26,28,29,31,35,38,44,87];
+const GOOD_FLOOR = 55;
+let CUR_DAY = 0, CUR_DEST = 0;
 function dateRule(total, n){
   const d=CUR_DAY, nine=[9,18,27].includes(d), six=[6,15,24].includes(d)||CUR_DEST===6;
   const bn = d ? reduceSteps(d).at(-1) : 0;
@@ -409,11 +404,11 @@ function dateRule(total, n){
   if(n===1 && d) return {adj:5, en:"For your numbers, a name that comes down to 1 gives full results."};
   return null;
 }
-const notSuit = (total, n) => (dateRule(total, n)?.adj <= -25);   // "does not suit this person"
+const notSuit = (total, n) => (dateRule(total, n)?.adj <= -25);
 const HARM = "Traditionally a harmful name total. Changing the name to reach a lucky total is advised.";
 const TOTAL_NOTES = {"10": "Fame and respect with self-confidence; luck goes up and down. Honesty is a must; money never runs short.", "19": "Like the rising sun, life keeps improving as status and wealth grow.", "28": "Early progress, then loss; competition and struggle, and money lent is not returned. An unlucky total.", "14": "Very good for business: always surrounded by people and goods. Be careful trusting others and in fast vehicles.", "15": "Tasks succeed and gains keep coming; excellent for speech and arts work. Keep selfishness in check.", "24": "Government support and positions above one's level; fast rise in uniformed jobs such as police or army.", "33": "Kubera's number: grace and wealth grow together, and prosperity does not fade.", "50": "Very intelligent and research-minded; excels in education, some become well-known teachers.", "51": "The most powerful of the 6 totals: sudden rise and unexpected high positions. Avoid hurting others.", "60": "Peace, wealth, love of the arts, deep knowledge and fine speech; a very happy family life.", "69": "Rules like a king in any line of work: great wealth, a commanding presence and a comfortable life.", "78": "The finest of the 6 totals: poetic, persuasive, drawn to service; large sums come easily, but care is needed.", "87": "Tradition links this total to gaining money in wrong ways. Avoid it.", "96": "Wealth and education together; what you set out to do succeeds.", "23": "The luckiest of all: plans succeed, with support from people in high office. Without big goals, simply a comfortable life.", "32": "Seat of knowledge: new ideas and public support. Success when following your own mind, failure when following others' advice; ups and downs.", "41": "Wins people over, words carry weight, a winner with wide fame. Don't let success push you into tasks beyond your strength.", "46": "'The forehead under the crown': used wisely, it takes you to the top of any field, and wealth and status grow with age. Honesty is essential.", "68": "Very lucky for wealth, but brings restlessness and little contentment.", "37": "Very lucky: lifts you from ordinary to great, with charm and help from friends and partners. Once you rise, be content; greed weakens it.", "45": "Generally good; depends on the birth date.", "42": "Even from poverty, rises to high authority; good at saving, thrifty and mentally strong. Especially good for number 6 people.", "12": "Points to sacrifice and struggle.", "29": "Progress comes only through hardship."};
 [16,26,31,35,38,44].forEach(t=>{ TOTAL_NOTES[t]=HARM; }); TOTAL_NOTES[29] += " " + HARM;
-TOTAL_NOTES[17] = "Opinions differ: some traditions see great wealth and lasting fame after early struggle, others advise caution. Counted as neutral."; TOTAL_NOTES[47] = "Opinions differ: one tradition sees fast progress and luck with money, another advises caution. Counted as neutral."; TOTAL_NOTES[68] = "Opinions differ: a lucky start that can stop suddenly; avoiding greed helps. Counted as neutral.";   // opinions differ: counted as neutral
+TOTAL_NOTES[17] = "Opinions differ: some traditions see great wealth and lasting fame after early struggle, others advise caution. Counted as neutral."; TOTAL_NOTES[47] = "Opinions differ: one tradition sees fast progress and luck with money, another advises caution. Counted as neutral."; TOTAL_NOTES[68] = "Opinions differ: a lucky start that can stop suddenly; avoiding greed helps. Counted as neutral.";
 const DAY_TRAITS = {"1": "Little patience for others' opinions; says exactly what they think; very self-confident and keen to get ahead.", "2": "Deep faith, peace-loving, never wishes harm on others, guided by affection; high ideals.", "3": "Good thinking power; enjoying art and poetry sharpens the mind further; a dignified life, with fame after middle age.", "4": "Brave and strong, lives like a warrior. Staying steady when the unexpected happens, and speaking sweetly, brings great success.", "5": "Drawn to big goals from a young age; charming and respectful; often guides others; a spiritual side.", "6": "Charming and calm-natured with deep thoughts; good at the arts and keen to build wealth.", "9": "Keen to do remarkable things; subtle mind; high goals bring prosperity; overcomes opposition through cleverness.", "10": "Calm and gentle; keeps their thoughts to themselves; gains popularity and much affection; pleasant company.", "11": "Strong faith that gets things done; can rise from a humble start to a high position.", "12": "Gains fame through selfless work; suited to public service; responsible from a young age; an impressive speaker.", "13": "Surprising turns in life; very strong. Living honestly and openly brings a very high position.", "14": "Business brings wealth; always surrounded by people; others help them all their life; loves travel. Trust carefully.", "15": "Attractive looks, impressive speech and a good sense of humour; wins people over easily; income keeps flowing; usually cheerful.", "18": "Good comes by letting go of selfishness; avoiding disputes and keeping anger in check brings success; deep emotions.", "19": "Strong-willed: gentle as a cow, fierce as a tiger when roused; rarely changes their mind; learned.", "20": "Great imagination; people look to them as a guide. A selfless life brings great respect.", "21": "Practical, expects a fair return for effort; life rises as experience grows; good at shaping public opinion.", "22": "Strong management skill; earns money easily. Printing, publishing, vehicles, hotels, shops and buildings suit them. Friendship with good people helps.", "23": "Nothing they can't achieve; great influence with people and those in power. With the right name and good conduct, long remembered.", "24": "Modest and gets things done; speaks well at the right moment; high positions tend to come; bolder than those born on the 6th or 15th; well liked by superiors.", "27": "Does good work and gets good results; plans succeed; intellect brings success; deep thinker and tireless worker.", "28": "Good-looking, smiling and soft-natured; trusts people easily, so it pays to be a little careful.", "29": "Strong-willed and full of energy, quick to argue a point. A calm home and good friends bring out their best.", "30": "Far-sighted with a subtle mind; likes to live with dignity and their own way; doesn't lose heart after a setback; picks up the arts easily.", "31": "Brave, strong-minded, subtle intellect; does things their own way; quickly overcomes opposition; likes solitude and philosophy; helps the public."};
 const NAME_DIGIT_NOTES = {
   2:"A name that comes down to 2 can bring complications.",
@@ -435,7 +430,6 @@ function goodCompoundNote(total, n, birth, dest){
   if(rel(n,birth)>=0.8 || rel(n,dest)>=0.8) return "";
   return `<div class="gcn">🌟 The full total ${total} is a lucky one. The single digit ${n} is not a direct friend of your numbers, but because the full total is lucky this name is not marked as weak.</div>`;
 }
-// Titles are not counted
 const TITLES = /^(MR|MRS|MS|MISS|DR|PROF|SRI|SHRI|SMT|THIRU|THIRUMATHI|SELVI|SELVAN)\.?\s+/i;
 function compoundTag(t){
   if(COMPOUND_GOOD.includes(t)) return `<span class="chip good">${t} · ${L.compGood}</span>`;
@@ -461,12 +455,11 @@ function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;"
 function rel(n, base){
   if(n===base) return 1;
   if(DATA[base].avoid.includes(n)) return 0;
-  if(DATA[base].lucky.includes(n)) return 0.8;   // both traditions say lucky
-  if(DATA[base].also.includes(n)) return 0.6;    // one tradition says lucky
-  if(DATA[base].careful.includes(n)) return 0.2; // one tradition says avoid
+  if(DATA[base].lucky.includes(n)) return 0.8;
+  if(DATA[base].also.includes(n)) return 0.6;
+  if(DATA[base].careful.includes(n)) return 0.2;
   return 0.35;
 }
-// Under 30 the birth number leads; from 30 the destiny number leads
 let W = {b:50, d:30};
 const SWITCH_AGE = 30;
 function matchPct(n, birth, dest, opt={}){
@@ -474,15 +467,15 @@ function matchPct(n, birth, dest, opt={}){
   if(opt.nameN!=null){ pts += 20*rel(n,opt.nameN); max += 20; }
   let pct = pts/max*100;
   if(opt.business && [1,5,6].includes(n)) pct += 8;
-  if(opt.total!=null){                       // names and business names only
+  if(opt.total!=null){
     if([2,4,7,8].includes(n)) pct -= 8;
     if(n===5) pct += 8;
     const r = dateRule(opt.total, n), out = r && r.adj <= -25;
-    if(r) pct = out ? Math.min(pct + r.adj, 40) : pct + r.adj;   // "does not suit" always shows as weak
+    if(r) pct = out ? Math.min(pct + r.adj, 40) : pct + r.adj;
     if(COMPOUND_GOOD.includes(opt.total) && !out){
       pct = Math.max(pct + 7, GOOD_FLOOR);
-      const strong = W.d > W.b ? dest : birth;                  // destiny from 30, birth number before 30
-      if(rel(n,strong)>=0.8) pct = Math.max(pct, 75);            // lucky total that suits the stronger number is green
+      const strong = W.d > W.b ? dest : birth;
+      if(rel(n,strong)>=0.8) pct = Math.max(pct, 75);
     }
     if(COMPOUND_MILD_GOOD.includes(opt.total)) pct += 4;
     if(COMPOUND_MILD_BAD.includes(opt.total)) pct -= 6;
@@ -506,7 +499,6 @@ function bestTotalsHTML(birth, dest, opt, current, title){
   return `<div style="margin-top:12px;font-weight:600;color:var(--ink)">⭐ ${title}</div>
     <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.p}%</span>`).join("")}</div>${cur}`;
 }
-// Totals that stay strong both before 30 (birth number leads) and from 30 (destiny number leads)
 function twinPct(n, birth, dest, opt){
   const keep=W;
   W={b:50,d:30}; const a=matchPct(n,birth,dest,opt);
@@ -522,7 +514,6 @@ function wholeLifeHTML(birth, dest, opt, current){
     + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.a}% / ${x.b}%</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">First % is before 30, second % is from 30.</div>` : "")
     + `<div class="plain" style="font-size:13px;margin-top:6px">Your total ${current}: before 30 ${cur.a}%, from 30 ${cur.b}% → whole life ${cur.lo}%</div>`;
 }
-// Spelling ideas: small, common spelling changes that reach a better lucky total
 function spellingIdeasHTML(name, birth, dest){
   const up=name.toUpperCase().replace(/\./g,". ").replace(/\s+/g," ").trim();
   if(!up) return "";
@@ -555,7 +546,6 @@ function spellingIdeasHTML(name, birth, dest){
   if(!pick.length) return "";
   return `<div class="splitname">✍️ <b>Spelling ideas</b><div class="chips" style="margin-top:6px">${pick.map(o=>`<span class="chip good">${esc(o.pretty)} · ${o.total}${o.total>9?" → "+o.single:""} · ${o.a}% / ${o.b}%</span>`).join("")}</div><div style="color:var(--muted);margin-top:4px">Small, common spelling changes (aa, ee, th, nn…). First % is before 30, second % is from 30. Only shown when the whole-life score improves.</div></div>`;
 }
-// Today for you
 function todayCheck(birth, dest){
   const now=new Date(), td=now.getDate(), tm=now.getMonth()+1, ty=now.getFullYear();
   const dayN=reduceSteps(td).at(-1);
@@ -575,7 +565,6 @@ function todayCheck(birth, dest){
 const stars = p => { const s=Math.max(1,Math.round(p/20)); return "★".repeat(s)+"☆".repeat(5-s); };
 const level = p => p>=75 ? "ok" : p>=50 ? "mid" : "no";
 
-// Fill the form
 applyText();
 $("d").innerHTML = `<option value="">${L.day}</option>` + Array.from({length:31},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
 $("m").innerHTML = `<option value="">${L.monthPh}</option>` + MONTHS.map((m,i)=>`<option value="${i+1}">${i+1} · ${m}</option>`).join("");
@@ -613,7 +602,6 @@ $("form").addEventListener("submit", e=>{
   CUR_DAY = d; CUR_DEST = dest;
   $("destCalc").textContent = stepText(allDigits, destS);
 
-  // Which number is stronger now (age rule)
   const now = new Date();
   let age = now.getFullYear() - y;
   if(now.getMonth() < m-1 || (now.getMonth()===m-1 && now.getDate() < d)) age--;
@@ -626,7 +614,6 @@ $("form").addEventListener("submit", e=>{
   $("destNum").parentElement.classList.toggle("strong", destLeads);
   $("weekday").innerHTML = `${L.bornOn} <b>${DAYS[dt.getDay()]}</b>`;
 
-  // Name number
   const typedName = (TAB==="my" || TAB==="name") ? $("name").value.trim() : "";
   let rawName = typedName, droppedTitle = "";
   while(TITLES.test(rawName)){ droppedTitle += rawName.match(TITLES)[0]; rawName = rawName.replace(TITLES,""); }
@@ -644,7 +631,6 @@ $("form").addEventListener("submit", e=>{
     $("nameNum").textContent="–"; $("nameCalc").textContent=L.enterName; $("nameBox").style.opacity=.6;
   }
 
-  // Lucky details
   const D = DATA[birth];
   $("lkBase").textContent = `${L.basedOn}: ${birth}`;
   $("lkPlanet").textContent = D.planet;
@@ -654,7 +640,7 @@ $("form").addEventListener("submit", e=>{
   $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ") + (D.bad.length ? `<div class="calc" style="margin-top:4px">Colours that don't suit: ${D.bad.join(", ")}</div>` : "");
   $("lkGem").textContent = D.gem;
   const luckyDates=[], alsoDates=[]; for(let i=1;i<=31;i++){ const r=reduceSteps(i).at(-1); if(D.lucky.includes(r)) luckyDates.push(i); else if(D.also.includes(r)) alsoDates.push(i); }
-  const eightBad = true, own8 = birth===8 || dest===8;   // dates adding up to 8 are "be careful" dates for everyone
+  const eightBad = true, own8 = birth===8 || dest===8;
   const not8 = a => eightBad ? a.filter(x=>reduceSteps(x).at(-1)!==8) : a;
   $("lkDates").innerHTML = `<b>${not8(luckyDates).join(", ")}</b>` + (not8(alsoDates).length ? `<div class="calc" style="margin-top:4px">Also good: ${not8(alsoDates).join(", ")}</div>` : "");
   $("avoidDatesRow").style.display = eightBad ? "" : "none";
@@ -666,7 +652,6 @@ $("form").addEventListener("submit", e=>{
   const nextAges = []; for(let a=Math.max(age,1); a<=110 && nextAges.length<8; a++) if(ageNums.includes(reduceSteps(a).at(-1))) nextAges.push(a);
   $("lkAges").innerHTML = `<div class="chips">` + nextAges.map(a=>`<span class="chip${a===age?" good":""}">${a}${a===age?" · now":""}</span>`).join("") + `</div><div class="calc" style="margin-top:4px">With a suitable name, tradition says progress comes at these ages.</div>`;
 
-  // Name match
   const v = $("verdict");
   if(nameN===null){ $("nameCard").style.display="none"; }
   else {
@@ -693,7 +678,6 @@ $("form").addEventListener("submit", e=>{
     v.innerHTML += bestTotalsHTML(birth, dest, {}, nameTotal, "Best name totals for you") + wholeLifeHTML(birth, dest, {}, nameTotal) + spellingIdeasHTML(rawName, birth, dest);
   }
 
-  // Business name match
   const rawBiz = $("biz").value.trim();
   const bz = rawBiz ? valueOf(rawBiz) : {single:null};
   let bzScore = 0;
@@ -718,7 +702,6 @@ $("form").addEventListener("submit", e=>{
   }
   $("bizCard").style.display = bz.single===null ? "none" : "";
 
-  // Phone / vehicle number
   const rawPhone = (TAB==="vehicle" ? $("plate").value : TAB==="phone" ? $("phone").value : "").trim();
   const ph = rawPhone ? valueOf(rawPhone) : {single:null};
   let phScore = 0;
@@ -736,7 +719,6 @@ $("form").addEventListener("submit", e=>{
   }
   $("phoneCard").style.display = ph.single===null ? "none" : "";
 
-  // Nature
   const tr = [["birth",birth,L.birthNumber,L.innerNature],["dest",dest,L.destinyNumber,L.lifePath]];
   if(nameN!==null) tr.push(["name",nameN,L.nameNumber,L.howOthers]);
   let html = tr.map(([role,n,label,what],idx)=>{
@@ -772,7 +754,6 @@ Free at freenetsave.com`;
 });
 $("copyBtn").addEventListener("click", ()=> copyText(lastText));
 
-/* ---------- Tabs ---------- */
 let TAB = "my";
 const TAB_INFO = {
   my:"Enter your date of birth to see your birth and destiny numbers, lucky details and nature.",
@@ -809,7 +790,6 @@ $("addFam").addEventListener("click",()=>{
   $("famList").appendChild(r);
 });
 
-/* ---------- House & shop ---------- */
 function personFrom(d,m,y,label){
   const birth = reduceSteps(d).at(-1);
   const all = (String(d).padStart(2,"0")+String(m).padStart(2,"0")+String(y)).split("").filter(c=>c!=="0");
