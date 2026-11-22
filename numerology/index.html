@@ -285,7 +285,7 @@
 
   <div class="card disclaimer">
     <h2>⚠️ Disclaimer</h2>
-    <p>This tool is for entertainment and cultural interest only. It is based on traditional numerology beliefs, summarised in our own words. Numerology is not scientifically proven, and the results do not predict or guarantee anything about the future.</p>
+    <p>This tool is for entertainment and cultural interest only. It uses our own method, combining the Cheiro system with traditional Tamil numerology, in our own words. Where the two traditions agree we count it strongly; where only one says it, mildly; where they disagree, we treat it as neutral. Numerology is not scientifically proven, and the results do not predict or guarantee anything about the future.</p>
     <p>Please don't make important decisions, such as changing a name, marriage, business, money or health matters, based only on these results. Where needed, consult a qualified professional (doctor, lawyer or financial adviser). Different numerologists use different rules, so results may differ from other sources. Nothing you enter is saved or sent anywhere; all calculations happen in your own browser.</p>
   </div>
 
@@ -312,7 +312,7 @@ const LANG = {
   natureTitle:"Your nature", copy:"📋 Copy result", whatsapp:"💬 Share on WhatsApp", chartTitle:"Letter chart used",
   innerNature:"Your inner nature", lifePath:"Life path & suitable work", howOthers:"How others see you",
   together:"How your birth and destiny numbers work together",
-  compGood:"Lucky total", compBad:"Harmful total", compNeutral:"Neutral total",
+  compGood:"Lucky total", compBad:"Weak total", compMildGood:"Good total", compMildBad:"Mixed total", compNeutral:"Neutral total",
   disclaimer:"Based on traditional Chaldean and Tamil numerology. For fun and cultural interest only, not advice.",
   privacy:"🔒 Nothing you type leaves your device. We don't save or keep any information.",
   freeTools:"free online tools", copied:"Copied!"
@@ -332,28 +332,28 @@ const CHALDEAN = {A:1,I:1,J:1,Q:1,Y:1, B:2,K:2,R:2, C:3,G:3,L:3,S:3, D:4,M:4,T:4
   E:5,H:5,N:5,X:5, U:6,V:6,W:6, O:7,Z:7, F:8,P:8};
 
 const DATA = {
- 1:{planet:"Sun", lucky:[1,2,3,4,9], avoid:[8], days:[0,1], colors:[["Gold","#d4a017"],["Yellow","#f2c40f"],["Orange","#ef7d1a"]], gem:"Ruby"},
- 2:{planet:"Moon", lucky:[1,2,7], avoid:[8,9], days:[1,0,5], colors:[["White","#ffffff"],["Cream","#f3e7c9"],["Light green","#9fd89f"]], gem:"Pearl"},
- 3:{planet:"Jupiter", lucky:[3,6,9], avoid:[5], days:[4,2,5], colors:[["Yellow","#f2c40f"],["Purple","#7b3fa0"],["Pink","#f29bb5"]], gem:"Yellow Sapphire"},
- 4:{planet:"Rahu (North Node)", lucky:[1,5,6], avoid:[4,8], days:[0,6,1], colors:[["Blue","#2f6fb3"],["Grey","#9a9a9a"],["Khaki","#bfae7a"]], gem:"Hessonite (Gomedh)"},
- 5:{planet:"Mercury", lucky:[1,5,6], avoid:[3], days:[3,5], colors:[["Green","#2e9d4f"],["Light grey","#cfcfcf"],["White","#ffffff"]], gem:"Emerald"},
- 6:{planet:"Venus", lucky:[3,5,6,9], avoid:[4], days:[5,2,4], colors:[["Light blue","#8cc4ec"],["Pink","#f29bb5"],["White","#ffffff"]], gem:"Diamond"},
- 7:{planet:"Ketu (South Node)", lucky:[1,2,7], avoid:[8,9], days:[1,0], colors:[["Green","#2e9d4f"],["White","#ffffff"],["Light yellow","#f7e78a"]], gem:"Cat's Eye"},
- 8:{planet:"Saturn", lucky:[1,4,5,6], avoid:[8], days:[6,5,3], colors:[["Dark blue","#1d2f6f"],["Black","#222222"],["Purple","#5a2e7a"]], gem:"Blue Sapphire"},
- 9:{planet:"Mars", lucky:[1,3,6,9], avoid:[5], days:[2,4,5], colors:[["Red","#c62828"],["Pink","#f29bb5"],["Maroon","#7a1f1f"]], gem:"Red Coral"}
+ 1:{planet:"Sun", lucky:[1], also:[2, 3, 4, 9], careful:[], avoid:[8], days:[0,1], colors:[["Gold", "#d4a017"], ["Yellow", "#f2c40f"], ["Orange", "#ef7d1a"]], bad:["Black", "Dark brown"], gem:"Ruby"},
+ 2:{planet:"Moon", lucky:[1, 7], also:[2], careful:[], avoid:[8, 9], days:[1,0,5], colors:[["Light green", "#9fd89f"], ["White", "#ffffff"], ["Green", "#3fae5a"], ["Cream", "#f3e7c9"]], bad:["Black", "Red", "Deep blue"], gem:"Pearl"},
+ 3:{planet:"Jupiter", lucky:[3, 9], also:[], careful:[5], avoid:[], days:[4,2,5], colors:[["Purple", "#7b3fa0"], ["Pink", "#f29bb5"], ["Yellow", "#f2c40f"], ["Orange", "#ef7d1a"]], bad:["Dark blue", "Black"], gem:"Yellow Sapphire (amethyst also good)"},
+ 4:{planet:"Rahu (North Node)", lucky:[1], also:[5, 6], careful:[7], avoid:[8], days:[0,6,1], colors:[["Blue", "#2f6fb3"], ["Light blue", "#8cc4ec"], ["Yellow", "#f2c40f"], ["Grey", "#9a9a9a"]], bad:["Black"], gem:"Hessonite (Gomedh)"},
+ 5:{planet:"Mercury", lucky:[5], also:[1, 6, 9], careful:[3], avoid:[], days:[3,5], colors:[["Grey", "#9a9a9a"], ["Light grey", "#cfcfcf"], ["White", "#ffffff"]], bad:["Black", "Very dark colours"], gem:"Emerald or Diamond"},
+ 6:{planet:"Venus", lucky:[6, 9], also:[5], careful:[4], avoid:[], days:[5,2,4], colors:[["Blue", "#3a78d8"], ["Light blue", "#8cc4ec"], ["Green", "#3fae5a"]], bad:["Yellow"], gem:"Diamond or Emerald"},
+ 7:{planet:"Ketu (South Node)", lucky:[1, 2], also:[7], careful:[], avoid:[8], days:[1,0], colors:[["Light yellow", "#f7e78a"], ["White", "#ffffff"], ["Light green", "#9fd89f"], ["Light blue", "#8cc4ec"]], bad:["Dark colours", "Red", "Black"], gem:"Cat's Eye (pearl or moonstone also good)"},
+ 8:{planet:"Saturn", lucky:[1, 4], also:[5, 6, 9], careful:[], avoid:[8], days:[6,5,3], colors:[["Dark blue", "#1d2f6f"], ["Blue", "#3a78d8"], ["Purple", "#5a2e7a"], ["Deep green", "#1e6b3a"]], bad:["Red"], gem:"Blue Sapphire"},
+ 9:{planet:"Mars", lucky:[6, 9], also:[1, 3], careful:[2], avoid:[], days:[2,4,5], colors:[["Red", "#c62828"], ["Maroon", "#7a1f1f"], ["Pink", "#f29bb5"]], bad:["Light green"], gem:"Red Coral"}
 };
 
 const ROLE_TEXT = {
  birth:{
-  1:"You like to act independently and would rather lead than follow. Strong self-respect and willpower.",
-  2:"Soft-hearted and emotional, deeply attached to family and friends; your mood can change quickly.",
-  3:"Disciplined and principled, always learning, and good at advising others.",
-  4:"You think differently from others and work very hard, though people don't always understand you at first.",
-  5:"Quick mind and fast decisions; you enjoy new things, travel and meeting people.",
-  6:"You love beauty, comfort and a well-kept home; warm and naturally attractive to others.",
-  7:"Calm and thoughtful with strong intuition; you need quiet time alone to think things through.",
-  8:"Patient and responsible; you may look serious from outside but are soft inside.",
-  9:"Brave and energetic; you can't stand injustice. Quick to anger, quick to forgive."
+  1:"Honest and dignified; you like to live and dress well. Sharp-minded; whatever you take up, you give it everything and don't back down. You say what you think. Strongly independent, and you love nature and travel.",
+  2:"Imaginative and curious, always full of new ideas. Your mind moves fast but you act carefully. When your self-belief grows strong, you can achieve big things with ease. You shine in the arts, music and writing.",
+  3:"A hard worker with discipline and patience. You deal honestly and value your good name above all. You can look strict, but you have a heart of gold. Keen to help others, with a voice that holds people's attention.",
+  4:"Strong in speech and writing; you say what you believe is true. You trust what you've researched yourself and have your own view on everything. Soft-hearted and friendly with everyone. A happy life matters more to you than fame.",
+  5:"Quick in everything: you pick things up fast, and ideas come like lightning. You make friends easily and dive into big tasks without fear. You love new things and travel. After a setback you change the plan and start again.",
+  6:"You love beauty, music, the arts and a comfortable life; living happily is your aim. Peace-loving and quick to help others in trouble. You think before you decide and don't give up after a setback. People are drawn to you easily.",
+  7:"A deep thinker with a spiritual side. Neat and well-dressed; you choose your words carefully. You enjoy time alone and keep worries to yourself. An independent mind: you don't follow others, people tend to follow you. Natural talent for music, writing or research, and a hard worker.",
+  8:"Sharp intellect and strong willpower; often deep in thought. Quiet on the outside, with humour and imagination. Few friends, but true ones. You rise by your own effort, and wealth and recognition tend to come later.",
+  9:"Born with a fighting spirit and determination that doesn't give up. Brave, clever and sharp-minded. When patient, you study the situation and choose the right moment. Interest in research, medicine and science, and a wish to serve your community."
  },
  dest:{
   1:"Life pushes you toward leadership. Good results in your own business, government or management roles.",
@@ -386,9 +386,13 @@ const COMBO = {
 };
 
 // Lucky and harmful full totals (traditional Tamil numerology)
-const COMPOUND_GOOD = [10,14,15,19,21,23,24,27,32,33,37,41,42,45,46,50,51,60,68,69,78,96];
-const COMPOUND_BAD  = [11,12,16,17,18,22,26,28,29,31,35,38,43,44,47,87];
-const HARM_TOTALS = [16,17,26,28,29,31,35,38,44,47,87];   // always shown as weak
+const COMPOUND_GOOD = [10,14,15,19,21,23,24,27,32,33,37,41,42,45,46,50,51];
+// Our combined method: totals only one tradition rates count as mildly good or mildly weak; 17, 47 and 68 are neutral (the traditions disagree)
+const COMPOUND_MILD_GOOD = [59,60,65,66,69,72,75,77,78,81,83,86,90,92,93,95,96,97,100,104,108];
+const COMPOUND_MILD_BAD  = [39,48,56,57,63,74,84,98,99,102,106];
+const COMPOUND_SPLIT = [17,47,68];
+const COMPOUND_BAD  = [11,12,13,16,18,22,26,28,29,31,35,38,43,44,87];
+const HARM_TOTALS = [16,26,28,29,31,35,38,44,87];   // always shown as weak (capped at 35%)
 const GOOD_FLOOR = 55;            // a lucky total never shows red, unless a birth-date rule says it does not suit
 let CUR_DAY = 0, CUR_DEST = 0;    // set on each calculation, used by the birth-date rules
 // Rules that depend on the birth date. adj below 0 means "tradition advises against this total".
@@ -407,9 +411,11 @@ function dateRule(total, n){
 }
 const notSuit = (total, n) => (dateRule(total, n)?.adj <= -25);   // "does not suit this person"
 const HARM = "Traditionally a harmful name total. Changing the name to reach a lucky total is advised.";
-const TOTAL_NOTES = {"10": "Fame and respect with self-confidence; luck goes up and down. Honesty is a must; money never runs short.", "19": "Like the rising sun, life keeps improving: status, wealth and a good life partner.", "28": "Early progress, then loss; competition and struggle, and money lent is not returned. An unlucky total.", "14": "Very good for business: always surrounded by people and goods. Be careful trusting others and in fast vehicles.", "15": "Tasks succeed and gains keep coming; excellent for speech and arts work. Keep selfishness in check.", "24": "Government support and positions above one's level; fast rise in uniformed jobs such as police or army.", "33": "Kubera's number: grace and wealth grow together, and prosperity does not fade.", "50": "Very intelligent and research-minded; excels in education, some become well-known teachers.", "51": "The most powerful of the 6 totals: sudden rise and unexpected high positions. Avoid hurting others.", "60": "Peace, wealth, love of the arts, deep knowledge and fine speech; a very happy family life.", "69": "Rules like a king in any line of work: great wealth, a commanding presence and a comfortable life.", "78": "The finest of the 6 totals: poetic, persuasive, drawn to service; large sums come easily, but care is needed.", "87": "Tradition links this total to gaining money in wrong ways. Avoid it.", "96": "Wealth and education together; what you set out to do succeeds.", "23": "The luckiest of all: plans succeed, with support from people in high office. Without big goals, simply a comfortable life.", "32": "Seat of knowledge: new ideas and public support. Success when following your own mind, failure when following others' advice; ups and downs.", "41": "Wins people over, words carry weight, a winner with wide fame. Don't let success push you into tasks beyond your strength.", "46": "'The forehead under the crown': used wisely, it takes you to the top of any field, and wealth and status grow with age. Honesty is essential.", "68": "Very lucky for wealth, but brings restlessness and little contentment.", "37": "Very lucky: lifts you from ordinary to great, with charm and help from friends and partners. Once you rise, be content; greed weakens it.", "45": "Generally good; depends on the birth date.", "42": "Even from poverty, rises to high authority; good at saving, thrifty and mentally strong. Especially good for number 6 people.", "12": "Points to sacrifice and struggle.", "29": "Progress comes only through hardship."};
-[16,17,26,31,35,38,44,47].forEach(t=>{ TOTAL_NOTES[t]=HARM; }); TOTAL_NOTES[29] += " " + HARM;
-const DAY_TRAITS = {"1": "Little patience for others' opinions; says exactly what they think; very self-confident and keen to get ahead.", "10": "Calm and gentle; keeps their thoughts to themselves; gains popularity and much affection; pleasant company.", "19": "Strong-willed: gentle as a cow, fierce as a tiger when roused; rarely changes their mind; learned.", "28": "Good-looking, smiling and soft-natured; trusts people easily, so can be taken advantage of."};
+const TOTAL_NOTES = {"10": "Fame and respect with self-confidence; luck goes up and down. Honesty is a must; money never runs short.", "19": "Like the rising sun, life keeps improving: status and wealth grow.", "28": "Early progress, then loss; competition and struggle, and money lent is not returned. An unlucky total.", "14": "Very good for business: always surrounded by people and goods. Be careful trusting others and in fast vehicles.", "15": "Tasks succeed and gains keep coming; excellent for speech and arts work. Keep selfishness in check.", "24": "Government support and positions above one's level; fast rise in uniformed jobs such as police or army.", "33": "Kubera's number: grace and wealth grow together, and prosperity does not fade.", "50": "Very intelligent and research-minded; excels in education, some become well-known teachers.", "51": "The most powerful of the 6 totals: sudden rise and unexpected high positions. Avoid hurting others.", "60": "Peace, wealth, love of the arts, deep knowledge and fine speech; a very happy family life.", "69": "Rules like a king in any line of work: great wealth, a commanding presence and a comfortable life.", "78": "The finest of the 6 totals: poetic, persuasive, drawn to service; large sums come easily, but care is needed.", "87": "Tradition links this total to gaining money in wrong ways. Avoid it.", "96": "Wealth and education together; what you set out to do succeeds.", "23": "The luckiest of all: plans succeed, with support from people in high office. Without big goals, simply a comfortable life.", "32": "Seat of knowledge: new ideas and public support. Success when following your own mind, failure when following others' advice; ups and downs.", "41": "Wins people over, words carry weight, a winner with wide fame. Don't let success push you into tasks beyond your strength.", "46": "'The forehead under the crown': used wisely, it takes you to the top of any field, and wealth and status grow with age. Honesty is essential.", "68": "Very lucky for wealth, but brings restlessness and little contentment.", "37": "Very lucky: lifts you from ordinary to great, with charm and help from friends and partners. Once you rise, be content; greed weakens it.", "45": "Generally good; depends on the birth date.", "42": "Even from poverty, rises to high authority; good at saving, thrifty and mentally strong. Especially good for number 6 people.", "12": "Points to sacrifice and struggle.", "29": "Progress comes only through hardship."};
+[16,26,31,35,38,44].forEach(t=>{ TOTAL_NOTES[t]=HARM; }); TOTAL_NOTES[29] += " " + HARM;
+const SPLIT_NOTE = "The traditions disagree about this total, so it is counted as neutral.";
+[17,47].forEach(t=>{ TOTAL_NOTES[t]=SPLIT_NOTE; }); TOTAL_NOTES[68] = (TOTAL_NOTES[68] ? TOTAL_NOTES[68]+" " : "") + SPLIT_NOTE;
+const DAY_TRAITS = {"1": "Little patience for others' opinions; says exactly what they think; very self-confident and keen to get ahead.", "2": "Deep faith, peace-loving, never wishes harm on others, guided by affection; high ideals.", "3": "Good thinking power; enjoying art and poetry sharpens the mind further; a dignified life, with fame after middle age.", "4": "Brave and strong, lives like a warrior. Staying steady when the unexpected happens, and speaking sweetly, brings great success.", "5": "Drawn to big goals from a young age; charming and respectful; often guides others; a spiritual side.", "6": "Charming and calm-natured with deep thoughts; good at the arts and keen to build wealth.", "9": "Keen to do remarkable things; subtle mind; high goals bring prosperity; overcomes opposition through cleverness.", "10": "Calm and gentle; keeps their thoughts to themselves; gains popularity and much affection; pleasant company.", "11": "Strong faith that gets things done; can rise from a humble start to a high position.", "12": "Gains fame through selfless work; suited to public service; responsible from a young age; an impressive speaker.", "13": "Surprising turns in life; very strong. Living honestly and openly brings a very high position.", "14": "Business brings wealth; always surrounded by people; others help them all their life; loves travel. Trust carefully.", "15": "Attractive looks, impressive speech and a good sense of humour; wins people over easily; income keeps flowing; usually cheerful.", "18": "Good comes by letting go of selfishness; avoiding disputes and keeping anger in check brings success; deep emotions.", "19": "Strong-willed: gentle as a cow, fierce as a tiger when roused; rarely changes their mind; learned.", "20": "Great imagination; people look to them as a guide. A selfless life brings great respect.", "21": "Practical, expects a fair return for effort; life rises as experience grows; good at shaping public opinion.", "22": "Strong management skill; earns money easily. Printing, publishing, vehicles, hotels, shops and buildings suit them. Friendship with good people helps.", "23": "Nothing they can't achieve; great influence with people and those in power. With the right name and good conduct, long remembered.", "24": "Modest and gets things done; speaks well at the right moment; high positions tend to come; bolder than those born on the 6th or 15th; well liked by superiors.", "27": "Does good work and gets good results; plans succeed; intellect brings success; deep thinker and tireless worker.", "28": "Good-looking, smiling and soft-natured; trusts people easily, so it pays to be a little careful.", "29": "Strong-willed and full of energy, quick to argue a point. A calm home and good friends bring out their best.", "30": "Far-sighted with a subtle mind; likes to live with dignity and their own way; doesn't lose heart after a setback; picks up the arts easily.", "31": "Brave, strong-minded, subtle intellect; does things their own way; quickly overcomes opposition; likes solitude and philosophy; helps the public."};
 const NAME_DIGIT_NOTES = {
   2:"A name that comes down to 2 can bring complications.",
   4:"A name that comes down to 4 can bring unexpected opposition.",
@@ -423,7 +429,7 @@ function totalNotesHTML(total, n){
   const dr = dateRule(total, n);
   if(dr) out.push(`${dr.adj<0?"⚠️":"✅"} ${dr.en}`);
   if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"📘":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
-  return out.length ? `<div class="totalnote">${out.join("<hr>")}</div>` : "";
+  return out.length ? `<div class="totalnote">${out.join("<hr>")}<small style="display:block;margin-top:4px;color:var(--muted)">Traditional Tamil numerology</small></div>` : "";
 }
 function goodCompoundNote(total, n, birth, dest){
   if(!COMPOUND_GOOD.includes(total) || notSuit(total,n)) return "";
@@ -434,6 +440,8 @@ function goodCompoundNote(total, n, birth, dest){
 const TITLES = /^(MR|MRS|MS|MISS|DR|PROF|SRI|SHRI|SMT|THIRU|THIRUMATHI|SELVI|SELVAN)\.?\s+/i;
 function compoundTag(t){
   if(COMPOUND_GOOD.includes(t)) return `<span class="chip good">${t} · ${L.compGood}</span>`;
+  if(COMPOUND_MILD_GOOD.includes(t)) return `<span class="chip good">${t} · ${L.compMildGood}</span>`;
+  if(COMPOUND_MILD_BAD.includes(t)) return `<span class="chip">${t} · ${L.compMildBad}</span>`;
   if(COMPOUND_BAD.includes(t))  return `<span class="chip bad">${t} · ${L.compBad}</span>`;
   return `<span class="chip">${t} · ${L.compNeutral}</span>`;
 }
@@ -454,7 +462,9 @@ function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;"
 function rel(n, base){
   if(n===base) return 1;
   if(DATA[base].avoid.includes(n)) return 0;
-  if(DATA[base].lucky.includes(n)) return 0.8;
+  if(DATA[base].lucky.includes(n)) return 0.8;   // both traditions say lucky
+  if(DATA[base].also.includes(n)) return 0.6;    // one tradition says lucky
+  if(DATA[base].careful.includes(n)) return 0.2; // one tradition says avoid
   return 0.35;
 }
 // Under 30 the birth number leads; from 30 the destiny number leads
@@ -475,6 +485,8 @@ function matchPct(n, birth, dest, opt={}){
       const strong = W.d > W.b ? dest : birth;                  // destiny from 30, birth number before 30
       if(rel(n,strong)>=0.8) pct = Math.max(pct, 75);            // lucky total that suits the stronger number is green
     }
+    if(COMPOUND_MILD_GOOD.includes(opt.total)) pct += 4;
+    if(COMPOUND_MILD_BAD.includes(opt.total)) pct -= 6;
     if(COMPOUND_BAD.includes(opt.total)) pct -= 12;
     if(HARM_TOTALS.includes(opt.total)) pct = Math.min(pct, 35);
   }
@@ -550,7 +562,7 @@ function todayCheck(birth, dest){
   const dayN=reduceSteps(td).at(-1);
   const full=reduceSteps((String(td).padStart(2,"0")+String(tm).padStart(2,"0")+ty).split("").reduce((a,c)=>a+ +c,0)).at(-1);
   const D=DATA[birth], eightBad=true;
-  const good=n=>n===birth||n===dest||D.lucky.includes(n), bad=n=>D.avoid.includes(n)||(eightBad&&n===8);
+  const good=n=>n===birth||n===dest||D.lucky.includes(n)||D.also.includes(n), bad=n=>D.avoid.includes(n)||(eightBad&&n===8);
   const score=(good(dayN)?1:0)+(good(full)?1:0)-(bad(dayN)?2:0)-(bad(full)?1:0);
   const dateStr=`${td} ${MONTHS[tm-1]} ${ty}`, v=$("todayVerdict");
   if(score>=1 && !bad(dayN)){ v.className="verdict ok"; v.innerHTML=`✅ Today (${dateStr}) is a good day for you: date number ${dayN}, full-date number ${full}. A good day to start something new.`; }
@@ -637,17 +649,21 @@ $("form").addEventListener("submit", e=>{
   const D = DATA[birth];
   $("lkBase").textContent = `${L.basedOn}: ${birth}`;
   $("lkPlanet").textContent = D.planet;
-  $("lkNums").innerHTML = D.lucky.map(n=>`<span class="chip good">${n}</span>`).join("");
-  $("lkAvoid").innerHTML = D.avoid.map(n=>`<span class="chip bad">${n}</span>`).join("");
+  $("lkNums").innerHTML = D.lucky.map(n=>`<span class="chip good">${n}</span>`).join("") + (D.also.length ? `<span class="calc" style="align-self:center">+ also good:</span>` + D.also.map(n=>`<span class="chip">${n}</span>`).join("") : "");
+  $("lkAvoid").innerHTML = (D.avoid.length||D.careful.length) ? D.avoid.map(n=>`<span class="chip bad">${n}</span>`).join("") + D.careful.map(n=>`<span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">${n}</span>`).join("") + (D.careful.length ? `<div class="calc" style="width:100%;margin-top:2px">Yellow = be careful only (the traditions differ).</div>` : "") : `<span class="calc">None. Gets on with every number.</span>`;
   $("lkDays").textContent = D.days.map(i=>DAYS[i]).join(", ");
-  $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ");
+  $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ") + (D.bad.length ? `<div class="calc" style="margin-top:4px">Colours that don't suit: ${D.bad.join(", ")}</div>` : "");
   $("lkGem").textContent = D.gem;
-  const luckyDates=[]; for(let i=1;i<=31;i++) if(D.lucky.includes(reduceSteps(i).at(-1))) luckyDates.push(i);
+  const luckyDates=[], alsoDates=[]; for(let i=1;i<=31;i++){ const r=reduceSteps(i).at(-1); if(D.lucky.includes(r)) luckyDates.push(i); else if(D.also.includes(r)) alsoDates.push(i); }
   const eightBad = true, own8 = birth===8 || dest===8;   // dates adding up to 8 are "be careful" dates for everyone
-  $("lkDates").textContent = (eightBad ? luckyDates.filter(x=>reduceSteps(x).at(-1)!==8) : luckyDates).join(", ");
+  const not8 = a => eightBad ? a.filter(x=>reduceSteps(x).at(-1)!==8) : a;
+  $("lkDates").innerHTML = `<b>${not8(luckyDates).join(", ")}</b>` + (not8(alsoDates).length ? `<div class="calc" style="margin-top:4px">Also good: ${not8(alsoDates).join(", ")}</div>` : "");
   $("avoidDatesRow").style.display = eightBad ? "" : "none";
   $("lkAvoidDates").innerHTML = `<div class="chips"><span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">8</span><span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">17</span><span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">26</span></div><div class="calc" style="margin-top:4px">${own8 ? "These dates carry your own number (8), and many people born under 8 feel lucky on them. Tradition still advises care, so go by your own experience." : "Dates adding up to 8 (the 8th, 17th and 26th) are traditionally days to be careful on, though some people do feel lucky on them."}</div>`;
-  const ageNums = [...new Set([birth, dest, ...D.lucky])].filter(n=>!D.avoid.includes(n));
+  { const dOf = nums => { const a=[]; for(let i=1;i<=31;i++){ const r=reduceSteps(i).at(-1); if(nums.includes(r) && r!==8) a.push(i); } return a; };
+    const redD=dOf(D.avoid), yelD=dOf(D.careful);
+    if(redD.length||yelD.length) $("lkAvoidDates").innerHTML += `<div class="chips" style="margin-top:8px">${redD.map(x=>`<span class="chip bad">${x}</span>`).join("")}${yelD.map(x=>`<span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">${x}</span>`).join("")}</div><div class="calc" style="margin-top:4px">For people with birth number ${birth}, it's better not to start new things on these dates (or on days whose full date adds up to ${[...D.avoid,...D.careful].filter(x=>x!==8).join(" or ")}).</div>`; }
+  const ageNums = [...new Set([birth, dest, ...D.lucky, ...D.also])].filter(n=>!D.avoid.includes(n));
   const nextAges = []; for(let a=Math.max(age,1); a<=110 && nextAges.length<8; a++) if(ageNums.includes(reduceSteps(a).at(-1))) nextAges.push(a);
   $("lkAges").innerHTML = `<div class="chips">` + nextAges.map(a=>`<span class="chip${a===age?" good":""}">${a}${a===age?" · now":""}</span>`).join("") + `</div><div class="calc" style="margin-top:4px">With a suitable name, tradition says progress comes at these ages.</div>`;
 
@@ -666,6 +682,7 @@ $("form").addEventListener("submit", e=>{
     if(ruleOut){ v.className="verdict no"; v.innerHTML=`⚠️ Tradition advises against the total ${nameTotal} for this date of birth.<br><span class="plain">A small spelling change to reach one of the best totals below is suggested.</span>`; }
     else if(level(p)==="mid" && !withBirth && rel(nameN,dest)<0.8 && COMPOUND_GOOD.includes(nameTotal)) v.innerHTML=`🙂 Good name — the full total ${nameTotal} is a lucky one.`;
     v.innerHTML += `<div style="margin-top:8px">${compoundTag(nameTotal)}</div>` + goodCompoundNote(nameTotal, nameN, birth, dest) + totalNotesHTML(nameTotal, nameN);
+    if(birth===7 && nameN===7) v.innerHTML += `<div class="calc" style="margin-top:6px">ℹ️ One tradition says a person born under 7 with a name of 7 may rise and then fall back; the other treats 7 as good. Because they disagree, the score is not changed.</div>`;
     if(droppedTitle){
       const wt = valueOf(typedName.replace(/[^A-Za-z]/g,""));
       v.innerHTML += `<div class="splitname">The title "${esc(droppedTitle.trim())}" is not counted. Without it: <b>${nameTotal}</b>${nameTotal>9?" → "+nameN:""}. With it: <b>${wt.total}</b>${wt.total>9?" → "+wt.single:""} ${compoundTag(wt.total)}<br><span style="color:var(--muted)">If you always sign with the title, the total with the title also matters.</span></div>`;
@@ -688,7 +705,7 @@ $("form").addEventListener("submit", e=>{
     $("bzCompound").innerHTML = compoundTag(bz.total) + goodCompoundNote(bz.total, b, birth, dest) + totalNotesHTML(bz.total, b);
     bzScore = matchPct(b, birth, dest, {business:true, total:bz.total});
     $("bzStars").textContent = stars(bzScore); $("bzPct").textContent = bzScore+"%"; $("bzBox").className = "big pct "+level(bzScore);
-    const bestBiz = [1,5,6,3,9].filter(n=>(D.lucky.includes(n)||n===birth||n===dest) && !D.avoid.includes(n) && !DATA[dest].avoid.includes(n));
+    const bestBiz = [1,5,6,3,9].filter(n=>(D.lucky.includes(n)||D.also.includes(n)||n===birth||n===dest) && !D.avoid.includes(n) && !DATA[dest].avoid.includes(n));
     const bv = $("bzVerdict");
     if(level(bzScore)==="ok"){ bv.className="verdict ok"; bv.innerHTML=`✅ Strong business name — number ${b} works well with the owner's birth (${birth}) and destiny (${dest}) numbers.`; }
     else if(level(bzScore)==="mid"){ bv.className="verdict mid"; bv.innerHTML=`🙂 Good name.<br><span class="plain">Business number ${b} is fine. It could be stronger with a total of <b>${bestBiz.join(", ")||birth}</b>.</span>`; }
@@ -732,6 +749,9 @@ $("form").addEventListener("submit", e=>{
   const r = rel(dest, birth);
   const combo = r===1 ? COMBO.same : r>=0.8 ? COMBO.friend : r===0 ? COMBO.enemy : COMBO.neutral;
   html += `<div class="trait" style="background:#fff;border:1px dashed var(--line)"><b>${L.together}: ${birth} + ${dest}</b><br>${combo}</div>`;
+  const SEVEN={2:"Birth 7 with destiny 2: a combination for great progress.",5:"Birth 7 with destiny 5: brings big, unexpected successes.",7:"Birth 7 with destiny 7: brings the big successes you work for.",9:"Birth 7 with destiny 9: a fine life and spiritual success."};
+  if(birth===7 && SEVEN[dest]) html += `<div class="trait"><b>🌟 ${SEVEN[dest]}</b></div>`;
+  if(birth===7) html += `<div class="trait"><b>The way to success for 7s</b><br>Fair, selfless work that helps others brings great success and lasting fame.</div>`;
   $("traits").innerHTML = html;
 
   lastText =
