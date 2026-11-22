@@ -499,7 +499,7 @@ function bestTotalsHTML(birth, dest, opt, current, title){
     : luckyOk ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ आपका जोड़ <b>${current}</b> शुभ है, इसलिए इसे बदलने की ज़रूरत नहीं। ऊपर दिए जोड़ केवल तब के लिए हैं जब आप और मज़बूत मेल चाहें।</div>`
     : `<div class="plain" style="font-size:13px;margin-top:6px">अभी: <b>${current}</b>। वर्तनी थोड़ी बदलें (एक अक्षर जोड़ें या बदलें) ताकि जोड़ इनमें से एक बन जाए।</div>`;
   return `<div style="margin-top:12px;font-weight:600;color:var(--ink)">⭐ ${title}</div>
-    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.p}%</span>`).join("")}</div>${cur}`;
+    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good"${yoursChip(x.t,current,`${x.t} → ${x.s} · ${x.p}%`)}</span>`).join("")}</div>${cur}`;
 }
 function twinPct(n, birth, dest, opt){
   const keep=W;
@@ -523,7 +523,7 @@ function wholeLifeHTML(birth, dest, opt, current){
   const cur=twinPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   return `<div style="margin-top:14px;font-weight:600;color:var(--ink)">🌿 पूरे जीवन के लिए सबसे अच्छे (30 से पहले और बाद)</div>`
     + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good"${yoursChip(x.t,current,`${x.t} → ${x.s} · ${x.a}% / ${x.b}%`)}</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">पहला % 30 से पहले का है, दूसरा % 30 से।</div>` : "")
-    + `<div class="plain" style="font-size:13px;margin-top:6px">आपका जोड़ ${current}: 30 से पहले ${cur.a}%, 30 से ${cur.b}% → पूरा जीवन ${cur.lo}%</div>`;
+    + `<div class="plain" style="font-size:15px;font-weight:700;margin-top:8px;padding:8px 12px;border:2px solid #f97316;border-radius:10px;background:#fff7ed;color:#9a3412;display:inline-block">👤 आपका जोड़ ${current}: 30 से पहले ${cur.a}%, 30 से ${cur.b}% → पूरा जीवन ${cur.lo}%</div>`;
 }
 function spellingIdeasHTML(name, birth, dest){
   const up=name.toUpperCase().replace(/\./g,". ").replace(/\s+/g," ").trim();

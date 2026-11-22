@@ -498,7 +498,7 @@ function bestTotalsHTML(birth, dest, opt, current, title){
     : luckyOk ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ Your total <b>${current}</b> is a lucky total, so there is no need to change it. The totals above are only if you want an even stronger match.</div>`
     : `<div class="plain" style="font-size:13px;margin-top:6px">Now: <b>${current}</b>. Change the spelling slightly (add or change a letter) so the total becomes one of these.</div>`;
   return `<div style="margin-top:12px;font-weight:600;color:var(--ink)">⭐ ${title}</div>
-    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.p}%</span>`).join("")}</div>${cur}`;
+    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good"${yoursChip(x.t,current,`${x.t} → ${x.s} · ${x.p}%`)}</span>`).join("")}</div>${cur}`;
 }
 function twinPct(n, birth, dest, opt){
   const keep=W;
@@ -522,7 +522,7 @@ function wholeLifeHTML(birth, dest, opt, current){
   const cur=twinPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   return `<div style="margin-top:14px;font-weight:600;color:var(--ink)">🌿 Best for your whole life (before and after 30)</div>`
     + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good"${yoursChip(x.t,current,`${x.t} → ${x.s} · ${x.a}% / ${x.b}%`)}</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">First % is before 30, second % is from 30.</div>` : "")
-    + `<div class="plain" style="font-size:13px;margin-top:6px">Your total ${current}: before 30 ${cur.a}%, from 30 ${cur.b}% → whole life ${cur.lo}%</div>`;
+    + `<div class="plain" style="font-size:15px;font-weight:700;margin-top:8px;padding:8px 12px;border:2px solid #f97316;border-radius:10px;background:#fff7ed;color:#9a3412;display:inline-block">👤 Your total ${current}: before 30 ${cur.a}%, from 30 ${cur.b}% → whole life ${cur.lo}%</div>`;
 }
 function spellingIdeasHTML(name, birth, dest){
   const up=name.toUpperCase().replace(/\./g,". ").replace(/\s+/g," ").trim();

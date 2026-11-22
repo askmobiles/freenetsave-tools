@@ -499,7 +499,7 @@ function bestTotalsHTML(birth, dest, opt, current, title){
     : luckyOk ? `<div class="plain" style="font-size:13px;margin-top:6px">✅ உங்கள் கூட்டு எண் <b>${current}</b> அதிர்ஷ்டமானது; எனவே அதை மாற்றத் தேவையில்லை. மேலே உள்ள எண்கள் இன்னும் வலுவான பொருத்தம் வேண்டுமானால் மட்டுமே.</div>`
     : `<div class="plain" style="font-size:13px;margin-top:6px">இப்போது: <b>${current}</b>. எழுத்துகளைச் சிறிது மாற்றி (ஒரு எழுத்தைச் சேர்த்தோ மாற்றியோ) இவற்றில் ஒன்று வரும்படி செய்யலாம்.</div>`;
   return `<div style="margin-top:12px;font-weight:600;color:var(--ink)">⭐ ${title}</div>
-    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good">${x.t} → ${x.s} · ${x.p}%</span>`).join("")}</div>${cur}`;
+    <div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good"${yoursChip(x.t,current,`${x.t} → ${x.s} · ${x.p}%`)}</span>`).join("")}</div>${cur}`;
 }
 function twinPct(n, birth, dest, opt){
   const keep=W;
@@ -523,7 +523,7 @@ function wholeLifeHTML(birth, dest, opt, current){
   const cur=twinPct(reduceSteps(current).at(-1),birth,dest,{...opt,total:current});
   return `<div style="margin-top:14px;font-weight:600;color:var(--ink)">🌿 வாழ்நாள் முழுவதும் சிறந்தவை (30 வயதுக்கு முன்னும் பின்னும்)</div>`
     + (top.length ? `<div class="chips" style="margin-top:6px">${top.map(x=>`<span class="chip good"${yoursChip(x.t,current,`${x.t} → ${x.s} · ${x.a}% / ${x.b}%`)}</span>`).join("")}</div><div class="plain" style="font-size:13px;margin-top:6px;color:var(--muted)">முதல் % 30 வயதுக்கு முன்; இரண்டாவது % 30 வயது முதல்.</div>` : "")
-    + `<div class="plain" style="font-size:13px;margin-top:6px">உங்கள் கூட்டு எண் ${current}: 30 வயதுக்கு முன் ${cur.a}%, 30 வயது முதல் ${cur.b}% → வாழ்நாள் முழுவதும் ${cur.lo}%</div>`;
+    + `<div class="plain" style="font-size:15px;font-weight:700;margin-top:8px;padding:8px 12px;border:2px solid #f97316;border-radius:10px;background:#fff7ed;color:#9a3412;display:inline-block">👤 உங்கள் கூட்டு எண் ${current}: 30 வயதுக்கு முன் ${cur.a}%, 30 வயது முதல் ${cur.b}% → வாழ்நாள் முழுவதும் ${cur.lo}%</div>`;
 }
 function spellingIdeasHTML(name, birth, dest){
   const up=name.toUpperCase().replace(/\./g,". ").replace(/\s+/g," ").trim();
