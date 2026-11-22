@@ -419,10 +419,10 @@ const NAME_DIGIT_NOTES = {
 };
 function totalNotesHTML(total, n){
   const out=[];
-  if(TOTAL_NOTES[total]) out.push(`📘 ${total}: ${TOTAL_NOTES[total]}`);
+  if(TOTAL_NOTES[total]) out.push(`✨ ${total}: ${TOTAL_NOTES[total]}`);
   const dr = dateRule(total, n);
   if(dr) out.push(`${dr.adj<0?"⚠️":"✅"} ${dr.en}`);
-  if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"📘":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
+  if(NAME_DIGIT_NOTES[n] && !(COMPOUND_GOOD.includes(total) && n!==5)) out.push(`${n===5?"✨":"⚠️"} ${NAME_DIGIT_NOTES[n]}`);
   return out.length ? `<div class="totalnote">${out.join("<hr>")}<small style="display:block;margin-top:4px;color:var(--muted)">Traditional Tamil numerology</small></div>` : "";
 }
 function goodCompoundNote(total, n, birth, dest){
