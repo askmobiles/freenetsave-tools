@@ -272,7 +272,7 @@ function SPEC(y,m,d,lat,lon,k){
   if(sr(14)&&!/Pournami/.test(names))A("Pournami","பௌர்ணமி","🌕");
   if(sr(10)&&!/Ekadasi/.test(names))A("Ekadasi","ஏகாதசி","");
   if(sr(25))A("Ekadasi","ஏகாதசி","");
-  if((ts===12&&tsp!==12)||(ts===27&&tsp!==27))A("Pradosham","பிரதோஷம்","");
+  if((ts===12&&tsp!==12)||(ts===27&&tsp!==27)||(ts===13&&tsp===11)||(ts===28&&tsp===26))A("Pradosham","பிரதோஷம்","");
   if(sr(5)&&!/Sashti/.test(names))A("Sashti","சஷ்டி","");
   if(te===18&&tep!==18)A("Sankatahara Chaturthi","சங்கடஹர சதுர்த்தி","");
   if(nk===2&&np!==2&&tm!==7)A("Kiruthigai","கிருத்திகை","");
