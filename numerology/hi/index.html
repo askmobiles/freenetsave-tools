@@ -333,7 +333,7 @@ const CHALDEAN = {A:1,I:1,J:1,Q:1,Y:1, B:2,K:2,R:2, C:3,G:3,L:3,S:3, D:4,M:4,T:4
 const DATA = {
  1:{planet:"सूर्य", lucky:[1], also:[2, 3, 4, 9], careful:[], avoid:[8], days:[0,1], colors:[["सुनहरा", "#d4a017"], ["पीला", "#f2c40f"], ["नारंगी", "#ef7d1a"]], bad:["काला", "गहरा भूरा"], gem:"माणिक"},
  2:{planet:"चंद्र", lucky:[1, 7], also:[2], careful:[], avoid:[8, 9], days:[1,0,5], colors:[["हल्का हरा", "#9fd89f"], ["सफ़ेद", "#ffffff"], ["हरा", "#3fae5a"], ["क्रीम", "#f3e7c9"]], bad:["काला", "लाल", "गहरा नीला"], gem:"मोती"},
- 3:{planet:"गुरु (बृहस्पति)", lucky:[3, 9], also:[], careful:[5], avoid:[], days:[4,2,5], colors:[["बैंगनी", "#7b3fa0"], ["गुलाबी", "#f29bb5"], ["पीला", "#f2c40f"], ["नारंगी", "#ef7d1a"]], bad:["गहरा नीला", "काला"], gem:"पुखराज (जामुनिया भी अच्छा)"},
+ 3:{planet:"गुरु (बृहस्पति)", lucky:[3, 9], also:[], careful:[], avoid:[], days:[4,2,5], colors:[["बैंगनी", "#7b3fa0"], ["गुलाबी", "#f29bb5"], ["पीला", "#f2c40f"], ["नारंगी", "#ef7d1a"]], bad:["गहरा नीला", "काला"], gem:"पुखराज (जामुनिया भी अच्छा)"},
  4:{planet:"राहु", lucky:[1], also:[5, 6], careful:[7], avoid:[8], days:[0,6,1], colors:[["नीला", "#2f6fb3"], ["हल्का नीला", "#8cc4ec"], ["पीला", "#f2c40f"], ["स्लेटी", "#9a9a9a"]], bad:["काला"], gem:"गोमेद"},
  5:{planet:"बुध", lucky:[5], also:[1, 6, 9], careful:[3], avoid:[], days:[3,5], colors:[["स्लेटी", "#9a9a9a"], ["हल्का स्लेटी", "#cfcfcf"], ["सफ़ेद", "#ffffff"]], bad:["काला", "बहुत गहरे रंग"], gem:"पन्ना या हीरा"},
  6:{planet:"शुक्र", lucky:[6, 9], also:[5], careful:[4], avoid:[], days:[5,2,4], colors:[["नीला", "#3a78d8"], ["हल्का नीला", "#8cc4ec"], ["हरा", "#3fae5a"]], bad:["पीला"], gem:"हीरा या पन्ना"},
@@ -455,6 +455,7 @@ function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;"
 
 function rel(n, base){
   if(n===base) return 1;
+  if(n===5) return (base===3||base===9) ? 0.35 : 0.8;
   if(DATA[base].avoid.includes(n)) return 0;
   if(DATA[base].lucky.includes(n)) return 0.8;
   if(DATA[base].also.includes(n)) return 0.6;
@@ -636,6 +637,7 @@ $("form").addEventListener("submit", e=>{
   $("lkBase").textContent = `${L.basedOn}: ${birth}`;
   $("lkPlanet").textContent = D.planet;
   $("lkNums").innerHTML = D.lucky.map(n=>`<span class="chip good">${n}</span>`).join("") + (D.also.length ? `<span class="calc" style="align-self:center">+ ये भी अच्छे:</span>` + D.also.map(n=>`<span class="chip">${n}</span>`).join("") : "");
+  $("lkNums").innerHTML += `<div class="calc" style="flex-basis:100%;margin-top:6px">${(birth===3||birth===9) ? "5 आपके लिए तटस्थ (न अच्छा, न बुरा) है" : "5 ज़्यादातर अंकों का मित्र है, आपके अंक का भी"}</div>`;
   $("lkAvoid").innerHTML = (D.avoid.length||D.careful.length) ? D.avoid.map(n=>`<span class="chip bad">${n}</span>`).join("") + D.careful.map(n=>`<span class="chip" style="background:#fff4dc;border-color:#f1d99a;color:#9a6a00">${n}</span>`).join("") + (D.careful.length ? `<div class="calc" style="width:100%;margin-top:2px">पीला = केवल सावधानी (परंपराओं में मतभेद)।</div>` : "") : `<span class="calc">कोई नहीं — हर अंक से मेल।</span>`;
   $("lkDays").textContent = D.days.map(i=>DAYS[i]).join(", ");
   $("lkColors").innerHTML = D.colors.map(c=>`<span style="white-space:nowrap;margin-right:10px"><span class="sw" style="background:${c[1]}"></span>${c[0]}</span>`).join(" ") + (D.bad.length ? `<div class="calc" style="margin-top:4px">जो रंग मेल नहीं खाते: ${D.bad.join(", ")}</div>` : "");

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TTC Trip Finder: subway, streetcar and bus trips in Toronto (free, unofficial)</title>
+<meta name="description" content="Plan a TTC trip in Toronto: pick where you start and where you are going and see the next scheduled subway, streetcar and bus trips, with changes and short walks, and how long the trip takes. Free, no sign-up. Scheduled times only, not live.">
+<link rel="canonical" href="https://tools.freenetsave.com/ttc-trip-finder/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+  [hidden]{display:none !important}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .btnrow .btn{width:auto;flex:1;min-width:130px}
+  .btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+  .lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+  .pick{position:relative}
+  .sug{position:absolute;left:0;right:0;top:100%;z-index:20;background:#fff;border:1.5px solid var(--brand);border-radius:10px;margin-top:4px;max-height:260px;overflow-y:auto;box-shadow:0 8px 24px rgba(23,32,51,.14)}
+  .sug button{display:block;width:100%;text-align:left;font:inherit;font-size:15.5px;padding:10px 12px;border:0;border-bottom:1px solid #eef2f8;background:#fff;color:inherit;cursor:pointer}
+  .sug button:hover,.sug button:focus{background:#eef4ff;outline:0}
+  .sug small{color:var(--muted)}
+  .swap{align-self:flex-end;justify-self:start;flex:0 0 auto;width:auto;font:inherit;font-weight:700;border:1.5px solid #cfd8e6;background:#fff;border-radius:10px;padding:11px 12px;cursor:pointer;white-space:nowrap}
+  .trip{border:1.5px solid #dde5f2;border-radius:12px;padding:12px 14px;margin:10px 0;background:#fff}
+  .trip .hd{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+  .trip .tm{font-size:21px;font-weight:800}
+  .trip .du{color:var(--muted);font-weight:600}
+  .trip .tag{font-size:13px;font-weight:700;border-radius:999px;padding:2px 9px;background:#e8f6ec;color:#17603a}
+  .trip .tag.ch{background:#fff1d6;color:#7a4b00}
+  .leg{margin:8px 0 0;padding-left:12px;border-left:4px solid #9bb7e8;font-size:15px}
+  .leg.train{border-left-color:#3b7a57}
+  .leg b{font-weight:700}
+  .wait{margin:8px 0 0;font-size:14.5px;color:#7a4b00;font-weight:600}
+  .msg{padding:12px 14px;border-radius:10px;background:#fff7e0;border:1px solid #f0d58a;margin-top:12px;font-size:15px}
+  .legal{font-size:13.5px;color:var(--muted);margin-top:14px;line-height:1.5}
+  .saved{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+  .saved b{font-size:14px;color:var(--muted);width:100%}
+  .chip{display:inline-flex;align-items:center;border:1.5px solid #cfd8e6;border-radius:999px;background:#f4f8ff;overflow:hidden}
+  .chip button{font:inherit;font-size:14.5px;font-weight:600;border:0;background:none;color:inherit;padding:8px 12px;cursor:pointer}
+  .chip button.x{padding:8px 11px 8px 4px;color:var(--muted)}
+  .chip button:hover{background:#e3edff}
+  .linkbtn{font:inherit;font-size:14px;border:0;background:none;color:var(--brand);text-decoration:underline;cursor:pointer;padding:6px 4px}
+  h2.sm{font-size:19px;margin:20px 0 4px}
+  .leg.sub{border-left-color:#c9b400}.leg.car{border-left-color:#d6262b}.leg.walk{border-left-color:#b9c3d3;border-left-style:dashed;color:#3d4a60}
+  .rt{display:inline-block;min-width:30px;text-align:center;font-weight:800;font-size:13px;border-radius:6px;padding:1px 6px;margin-right:6px;color:#fff;background:#d6262b}
+  .sum{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin-top:6px;font-size:13px;color:var(--muted)}
+  @media (max-width:560px){.trip .tm{font-size:19px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>TTC Trip Finder</h1>
+    <p class="sub">Scheduled subway, streetcar and bus trips in Toronto, with changes and short walks. Unofficial.</p>
+  </div>
+  <div class="card">
+    <div class="saved" id="saved" hidden></div>
+    <p class="lead">Type a station, stop or street corner and choose it from the list. Leave "To" empty to see the next departures from one stop.</p>
+    <div class="row">
+      <div class="field pick"><label for="from">From</label><input id="from" type="text" autocomplete="off" placeholder="e.g. Union Station or Finch Ave at Yonge"><div class="sug" id="sfrom" hidden></div></div>
+      <div class="field pick"><label for="to">To</label><input id="to" type="text" autocomplete="off" placeholder="e.g. Kennedy Station"><div class="sug" id="sto" hidden></div></div>
+      <button type="button" class="swap" id="swap" aria-label="Swap From and To">⇅ Swap</button>
+    </div>
+    <div class="row">
+      <div class="field"><label for="d">Date</label><input id="d" type="date"></div>
+      <div class="field"><label for="t">Leave at or after</label><input id="t" type="time"></div>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn" id="go">Find trips</button>
+      <button type="button" class="btn line" id="now">Use the time now</button>
+    </div>
+    <div id="out" aria-live="polite"></div>
+    <div class="btnrow" id="saverow" hidden><button type="button" class="btn line" id="save">☆ Save this route on this device</button></div>
+    <div class="btnrow" id="morerow" hidden><button type="button" class="btn line" id="more">Show later trips</button></div>
+    <p class="legal" id="cover"></p>
+    <p class="legal"><b>Scheduled times only.</b> This page does not know about delays, diversions, closures or shuttle buses. Walking times are estimates. Check TTC service updates before you travel. This page is not made, approved or endorsed by the TTC.<br>
+    Contains information licensed under the Open Government Licence – Toronto.</p>
+    <p class="legal">For GO trains and GO buses, use the <a href="../train-bus-trip-finder/">regional train and bus trip finder</a>.</p>
+  </div>
+  <p class="note">🔒 Works in your browser. Nothing you type is sent anywhere. Routes you save stay only on this device until you clear them.<br>
+    <a href="https://freenetsave.com/" target="_top">freenetsave.com</a> · free online tools</p>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+(function(){
+var E=function(i){return document.getElementById(i);},D=null,SV=[],PC=[],sel={from:-1,to:-1},shown=0,all=[],MAXT=6,WIN=240,KEY="fns_saved_ttc",last=null;
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function torontoNow(){var o={};new Intl.DateTimeFormat("en-CA",{timeZone:"America/Toronto",hourCycle:"h23",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).formatToParts(new Date()).forEach(function(p){o[p.type]=p.value;});return {d:o.year+"-"+o.month+"-"+o.day,t:o.hour+":"+o.minute};}
+function setNow(){var n=torontoNow();E("d").value=n.d;E("t").value=n.t;}
+function hm(m){var nx=m>=1440;m=((m%1440)+1440)%1440;var h=Math.floor(m/60),mi=m%60,ap=h<12?"am":"pm";h=h%12||12;return h+":"+(mi<10?"0":"")+mi+" "+ap+(nx?" (next day)":"");}
+function dur(m){var h=Math.floor(m/60),r=m%60;return (h?h+" h ":"")+r+" min";}
+function niceDate(s){var p=s.length===8?[s.slice(0,4),s.slice(4,6),s.slice(6,8)]:s.split("-");return new Date(Date.UTC(+p[0],p[1]-1,+p[2])).toLocaleDateString("en-CA",{timeZone:"UTC",year:"numeric",month:"long",day:"numeric"});}
+function norm(s){return s.toLowerCase().replace(/&/g," and ").replace(/[^a-z0-9]+/g," ").trim();}
+function shift(d,n){var p=d.split("-"),x=new Date(Date.UTC(+p[0],p[1]-1,+p[2]+n));return x.toISOString().slice(0,10);}
+
+function match(q){q=norm(q);if(!q)return [];var w=q.split(" "),r=[];D.places.forEach(function(p,i){var n=p.k;if(!w.every(function(x){return n.indexOf(x)>=0;}))return;var nm=" "+n+" ",s=(nm.indexOf(" "+q+" ")===0?0:nm.indexOf(" "+q)===0?.6:1.2)+(w.every(function(x){return nm.indexOf(" "+x+" ")>=0;})?0:.5)+(p.st?0:.7);r.push([s,p[0].length,i]);});r.sort(function(a,b){return a[0]-b[0]||a[1]-b[1];});return r.slice(0,12).map(function(x){return x[2];});}
+function wire(id){var inp=E(id),box=E("s"+id);
+  function close(){box.hidden=true;}
+  function open(){if(!D)return;var m=match(inp.value);if(!m.length){close();return;}box.innerHTML=m.map(function(i){return '<button type="button" data-i="'+i+'">'+esc(D.places[i][0])+'</button>';}).join("");box.hidden=false;}
+  inp.addEventListener("input",function(){sel[id]=-1;open();});
+  inp.addEventListener("focus",function(){if(sel[id]<0)open();});
+  inp.addEventListener("keydown",function(e){if(e.key==="Enter"){var b=box.querySelector("button");if(!box.hidden&&b){b.click();e.preventDefault();}else E("go").click();}if(e.key==="Escape")close();});
+  box.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;sel[id]=+b.dataset.i;inp.value=D.places[sel[id]][0];close();});
+  document.addEventListener("click",function(e){if(!e.target.closest("#"+id)&&!e.target.closest("#s"+id))close();});}
+function resolve(id){if(sel[id]>=0)return sel[id];var v=E(id).value;if(!norm(v))return -1;var m=match(v);if(m.length&&(m.length===1||norm(D.places[m[0]][0])===norm(v))){sel[id]=m[0];E(id).value=D.places[m[0]][0];return m[0];}return -2;}
+
+function active(ds){var y=+ds.slice(0,4),mo=+ds.slice(4,6),d=+ds.slice(6,8),wd=(new Date(Date.UTC(y,mo-1,d)).getUTCDay()+6)%7,out=[];
+  D.services.forEach(function(s,k){if(s.add.indexOf(ds)>=0||(s.days[wd]&&s.from<=ds&&ds<=s.to&&s.remove.indexOf(ds)<0))out.push(k);});return out;}
+function cum(f){if(PC[f])return PC[f];var p=D.profiles[f],c=[0];for(var k=0;k<p.length;k++)c.push(c[k]+p[k]);return PC[f]=c;}
+function dayTrips(date,t0,t1){var T=[];[[date,0],[shift(date,-1),-1440]].forEach(function(x){var ds=x[0].replace(/-/g,"");if(ds<D.first||ds>D.last)return;
+  active(ds).forEach(function(k){var S=SV[k];for(var i=0;i<S.n;i++){var st=S.start[i]+x[1];if(st>t1)break;var c=cum(S.prof[i]);if(st+c[c.length-1]<t0)continue;T.push({p:S.pat[i],st:st,c:c});}});});return T;}
+
+function search(A,B,date,t0){var T=dayTrips(date,t0,t0+WIN),dep=[],arr=[],fr=[],to=[],tr=[],ix=[];
+  T.forEach(function(t,ti){var pl=D.patterns[t.p][2];for(var j=0;j<pl.length-1;j++){var d=t.st+t.c[j];if(d>t0+WIN)break;if(d<t0)continue;dep.push(d);arr.push(t.st+t.c[j+1]);fr.push(pl[j]);to.push(pl[j+1]);tr.push(ti);ix.push(j);}});
+  var n=dep.length,ord=new Int32Array(n);for(var i=0;i<n;i++)ord[i]=i;
+  ord.sort(function(a,b){return dep[a]-dep[b]||arr[a]-arr[b];});
+  var opts=[],start=t0,seen={};
+  for(var round=0;round<MAXT*2&&opts.length<MAXT*2;round++){var r=csa(A,B,start,T,dep,arr,fr,to,tr,ix,ord);if(!r)break;
+    var key=r.legs.map(function(l){return l.walk?"w"+l.b:l.t+":"+l.a+":"+l.b;}).join("|");if(!seen[key]){seen[key]=1;opts.push(r);}
+    if(r.firstRide==null)break;start=r.firstRide+1;}
+  opts=opts.filter(function(o,k){return !opts.some(function(p,m){return m!==k&&p.dep>=o.dep&&p.arr<=o.arr&&(p.dep>o.dep||p.arr<o.arr||p.ch<o.ch);});});
+  opts.sort(function(a,b){return a.dep-b.dep||a.arr-b.arr;});return opts;}
+function csa(A,B,t0,T,dep,arr,fr,to,tr,ix,ord){var N=D.places.length,K=5,R=[],best=null;
+  var e0=new Float64Array(N).fill(Infinity),p0=new Int8Array(N),f0=new Int32Array(N),w0=new Int16Array(N);
+  e0[A]=t0;p0[A]=3;D.walk[A].forEach(function(w){if(t0+w[1]<e0[w[0]]){e0[w[0]]=t0+w[1];p0[w[0]]=2;f0[w[0]]=A;w0[w[0]]=w[1];}});
+  R.push({ea:e0,pt:p0,pf:f0,pw:w0,rid:new Int8Array(N)});
+  for(var k=1;k<=K;k++){var P=R[k-1],ea=Float64Array.from(P.ea),rid=Int8Array.from(P.rid),pt=new Int8Array(N),pa=new Int32Array(N),pb=new Int32Array(N),pf=new Int32Array(N),pw=new Int16Array(N),board=new Int32Array(T.length).fill(-1),stop=best?best.arr:Infinity,any=false;
+    for(var i=0;i<ord.length;i++){var c=ord[i],d=dep[c];if(d<t0)continue;if(d>=Math.min(ea[B],stop))break;var t=tr[c];
+      if(board[t]<0){var f=fr[c],rf=P.ea[f];if(!isFinite(rf))continue;if(rf+(P.rid[f]?2:0)>d)continue;board[t]=c;}
+      var x=to[c],a=arr[c];if(a<ea[x]){ea[x]=a;pt[x]=1;rid[x]=1;pa[x]=board[t];pb[x]=c;any=true;
+        var W=D.walk[x];for(var q=0;q<W.length;q++){var y=W[q][0],v=a+W[q][1];if(v<ea[y]){ea[y]=v;pt[y]=2;rid[y]=0;pf[y]=x;pw[y]=W[q][1];}}}}
+    R.push({ea:ea,pt:pt,pa:pa,pb:pb,pf:pf,pw:pw,rid:rid});
+    if(pt[B]!==0&&isFinite(ea[B])){var sc=ea[B]+6*(k-1);if(!best||sc<best.sc)best={k:k,arr:ea[B],sc:sc};}
+    if(!any)break;}
+  if(!best){if(isFinite(R[0].ea[B])&&R[0].pt[B]===2)return {legs:[{walk:true,a:A,b:B,w:R[0].pw[B],dep:t0,arr:t0+R[0].pw[B]}],dep:t0,arr:t0+R[0].pw[B],ch:0,walk:R[0].pw[B],firstRide:null};return null;}
+  var legs=[],x=B,k=best.k,guard=0;
+  while(guard++<80){var L=R[k];if(k===0){if(L.pt[x]===2){legs.push({walk:true,a:L.pf[x],b:x,w:L.pw[x]});x=L.pf[x];}if(x!==A)return null;break;}
+    if(L.pt[x]===1){var c0=L.pa[x],c1=L.pb[x];legs.push({t:tr[c0],p:T[tr[c0]].p,a:fr[c0],b:x,dep:dep[c0],arr:arr[c1],stops:ix[c1]-ix[c0]+1});x=fr[c0];k--;}
+    else if(L.pt[x]===2){legs.push({walk:true,a:L.pf[x],b:x,w:L.pw[x]});x=L.pf[x];}
+    else k--;}
+  legs.reverse();var rides=legs.filter(function(l){return !l.walk;});if(!rides.length)return null;
+  var fi=legs.indexOf(rides[0]),back=0;for(var i=0;i<fi;i++)back+=legs[i].w;var tt=rides[0].dep-back;
+  legs.forEach(function(l,n){if(l.walk){if(n<fi){l.dep=tt;l.arr=tt+l.w;}else{l.dep=legs[n-1].arr;l.arr=l.dep+l.w;}}tt=l.arr;});
+  return {legs:legs,dep:legs[0].dep,arr:legs[legs.length-1].arr,ch:rides.length-1,walk:legs.reduce(function(s,l){return s+(l.walk?l.w:0);},0),firstRide:rides[0].dep};}
+function rname(ri){var r=D.routes[ri];return (r[2]===1||/^Line /.test(r[1]))?r[1]:(r[2]===0?"Streetcar ":"Bus ")+r[0]+" "+r[1];}
+function head(p){var h=D.patterns[p][1],m=h.match(/towards\s+(.*)$/i);return m?m[1]:h;}
+function chip(ri){var r=D.routes[ri];return '<span class="rt" style="background:#'+(r[3]||"d6262b")+';color:#'+(/^(D5C82B|FFFFFF|FFD700)$/i.test(r[3])?"172033":"fff")+'">'+esc((r[2]===1||/^Line /.test(r[1]))?r[1].replace(/^Line (\d+).*/,"Line $1"):r[0])+'</span>';}
+function legHtml(l){if(l.walk)return '<div class="leg walk">🚶 Walk about '+l.w+' min to <b>'+esc(D.places[l.b][0])+'</b></div>';
+  var ri=D.patterns[l.p][0],ty=D.routes[ri][2];return '<div class="leg'+(ty===1?" sub":ty===0?" car":"")+'">'+chip(ri)+'<b>'+esc(rname(ri))+'</b> toward '+esc(head(l.p))+'<br>'+hm(l.dep)+' board at '+esc(D.places[l.a][0])+'<br>'+hm(l.arr)+' get off at '+esc(D.places[l.b][0])+' <small style="color:var(--muted)">· '+(l.stops-1>0?(l.stops-1)+' stop'+(l.stops>2?"s":"")+" in between":"next stop")+'</small></div>';}
+function card(o){if(o.list)return '<div class="trip"><div class="hd"><span class="tm">'+hm(o.dep)+'</span><span class="du">'+chip(o.ri)+esc(rname(o.ri))+'</span></div><div class="leg">toward <b>'+esc(head(o.p))+'</b> · last stop '+esc(D.places[o.end][0])+' at '+hm(o.arr)+'</div></div>';
+  var rides=o.legs.filter(function(l){return !l.walk;}),h='<div class="trip"><div class="hd"><span class="tm">'+hm(o.dep)+' → '+hm(o.arr)+'</span><span class="du">'+dur(o.arr-o.dep)+'</span><span class="tag'+(o.ch?" ch":"")+'">'+(rides.length?(o.ch?o.ch+" change"+(o.ch>1?"s":""):"Direct"):"Walk only")+'</span></div>';
+  h+='<div class="sum">'+rides.map(function(l){return chip(D.patterns[l.p][0]);}).join("→ ")+(o.walk?' · 🚶 '+o.walk+' min walking':'')+'</div>';
+  var prev=null;o.legs.forEach(function(l){if(!l.walk&&prev&&!prev.walk){var w=l.dep-prev.arr;h+='<div class="wait">Change at '+esc(D.places[l.a][0])+' · wait '+dur(w)+(w<3?" (short, be ready)":"")+'</div>';}
+    else if(!l.walk&&prev&&prev.walk&&o.legs.indexOf(prev)>0){var w2=l.dep-prev.arr;if(w2>0)h+='<div class="wait">Wait '+dur(w2)+' at '+esc(D.places[l.a][0])+'</div>';}
+    h+=legHtml(l);prev=l;});return h+'</div>';}
+function departures(A,date,t0){var T=dayTrips(date,t0,t0+90),out=[];T.forEach(function(t){var pl=D.patterns[t.p][2];for(var j=0;j<pl.length-1;j++)if(pl[j]===A){var d=t.st+t.c[j];if(d>=t0&&d<=t0+90)out.push({list:true,dep:d,arr:t.st+t.c[pl.length-1],p:t.p,ri:D.patterns[t.p][0],end:pl[pl.length-1]});}});out.sort(function(a,b){return a.dep-b.dep;});return out;}
+
+function getS(){try{var v=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(v)?v:[];}catch(e){return [];}}
+function putS(v){try{if(v.length)localStorage.setItem(KEY,JSON.stringify(v));else localStorage.removeItem(KEY);return true;}catch(e){return false;}}
+function idx(nm){if(!nm)return -1;for(var i=0;i<D.places.length;i++)if(D.places[i][0]===nm)return i;return -2;}
+function drawS(){var v=getS(),box=E("saved");if(!v.length){box.hidden=true;box.innerHTML="";return;}
+  box.innerHTML="<b>Your saved routes (up to 4, kept only on this device)</b>"+v.map(function(r,i){return '<span class="chip"><button type="button" data-go="'+i+'">'+esc(r[0])+(r[1]?" → "+esc(r[1]):" · departures")+'</button><button type="button" class="x" data-rm="'+i+'" aria-label="Remove this saved route">✕</button></span>';}).join("")+'<button type="button" class="linkbtn" id="clr">Clear all</button>';box.hidden=false;}
+function saveBtn(){var b=E("save");if(!last){E("saverow").hidden=true;return;}var has=getS().some(function(r){return r[0]===last[0]&&r[1]===last[1];});E("saverow").hidden=false;b.textContent=has?"★ Saved on this device":"☆ Save this route on this device";b.disabled=has;}
+function render(){E("out").innerHTML=E("out").dataset.head+all.slice(0,shown).map(card).join("");E("morerow").hidden=shown>=all.length;}
+function say(m){last=null;saveBtn();E("out").dataset.head="";E("out").innerHTML='<div class="msg">'+m+'</div>';E("morerow").hidden=true;}
+function find(){if(!D){say("The schedule is still loading. Try again in a moment.");return;}
+  var A=resolve("from"),B=resolve("to"),date=E("d").value,t=E("t").value;
+  if(A===-1){say("Choose where you start: type a name in <b>From</b> and pick it from the list.");return;}
+  if(A===-2){say("Pick the <b>From</b> place from the list that opens when you type.");E("from").focus();return;}
+  if(B===-2){say("Pick the <b>To</b> place from the list that opens when you type.");E("to").focus();return;}
+  if(A===B){say("From and To are the same place.");return;}
+  if(!date||!t){say("Choose a date and a time.");return;}
+  var key=date.replace(/-/g,"");if(key<D.first||key>D.last){say("This schedule only covers <b>"+niceDate(D.first)+"</b> to <b>"+niceDate(D.last)+"</b>. Choose a date in that range.");return;}
+  var q=t.split(":"),t0=q[0]*60+ +q[1];E("out").innerHTML='<div class="msg">Finding trips…</div>';
+  setTimeout(function(){all=B<0?departures(A,date,t0):search(A,B,date,t0);
+    if(!all.length){say(B<0?"No departures from <b>"+esc(D.places[A][0])+"</b> in the 90 minutes after "+hm(t0)+".":"No trip found in the 4 hours after "+hm(t0)+". Try a different time, or a nearby station or main street stop.");return;}
+    E("out").dataset.head='<h2 class="sm">'+(B<0?"Next departures from "+esc(D.places[A][0]):esc(D.places[A][0])+" to "+esc(D.places[B][0]))+'</h2><p class="lead">'+niceDate(date)+", from "+hm(t0)+" · "+all.length+(B<0?" departure":" choice")+(all.length>1?"s":"")+" found</p>";
+    shown=B<0?12:MAXT;render();last=[D.places[A][0],B<0?"":D.places[B][0]];saveBtn();},20);}
+E("go").addEventListener("click",find);
+E("more").addEventListener("click",function(){shown+=MAXT;render();});
+E("now").addEventListener("click",function(){setNow();if(resolve("from")>=0)find();});
+E("swap").addEventListener("click",function(){var a=E("from").value,s=sel.from;E("from").value=E("to").value;sel.from=sel.to;E("to").value=a;sel.to=s;});
+E("save").addEventListener("click",function(){if(!last)return;var v=getS();if(!v.some(function(r){return r[0]===last[0]&&r[1]===last[1];})){v.unshift(last);v=v.slice(0,4);}if(!putS(v)){E("save").textContent="This browser does not allow saving";return;}drawS();saveBtn();});
+E("saved").addEventListener("click",function(e){var b=e.target.closest("button");if(!b||!D)return;var v=getS();
+  if(b.id==="clr"){putS([]);drawS();saveBtn();return;}
+  if(b.dataset.rm!=null){v.splice(+b.dataset.rm,1);putS(v);drawS();saveBtn();return;}
+  var r=v[+b.dataset.go];if(!r)return;var a=idx(r[0]),c=idx(r[1]);
+  if(a<0||c===-2){say("This saved stop is not in the current schedule any more. Remove it and save the route again.");return;}
+  sel.from=a;E("from").value=r[0];sel.to=c;E("to").value=r[1]||"";setNow();find();});
+setNow();wire("from");wire("to");
+fetch("data.json",{cache:"no-cache"}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+  j.places.forEach(function(p){p.k=norm(p[0]);p.st=/Station$/.test(p[0]);});
+  SV=j.trips.map(function(f){var n=f.length/3,S={n:n,pat:new Int32Array(n),start:new Int32Array(n),prof:new Int32Array(n)},m=0;for(var i=0;i<n;i++){S.pat[i]=f[3*i];m+=f[3*i+1];S.start[i]=m;S.prof[i]=f[3*i+2];}return S;});
+  D=j;E("cover").innerHTML="Schedule in this tool: <b>"+niceDate(j.first)+"</b> to <b>"+niceDate(j.last)+"</b>.";drawS();
+}).catch(function(){say("The schedule file could not be loaded. Check your connection and reload the page.");});
+})();
+</script>
+</body>
+</html>
