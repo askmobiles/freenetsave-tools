@@ -1,3 +1,10 @@
+/* © freenetsave.com — these tools only run on freenetsave.com. See https://freenetsave.com/terms/ */
+(function(){function ok(h){return /(^|\.)freenetsave\.com$/.test(h)||/\.translate\.goog$/.test(h)||h==="localhost"||h==="127.0.0.1";}
+var bad=!ok(location.hostname);
+try{if(!bad&&window.self!==window.top){var ao=location.ancestorOrigins,o=ao&&ao.length?ao[ao.length-1]:document.referrer;if(o){var hh=new URL(o).hostname;if(!ok(hh))bad=true;}}}catch(e){}
+if(!bad)return;var real="https://tools.freenetsave.com"+location.pathname.replace(/^.*?(\/[a-z0-9-]+\/(?:[a-z]{2}\/)?)(index\.html)?$/,"$1");
+function stop(){document.documentElement.innerHTML='<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>freenetsave.com</title></head><body style="font-family:system-ui,sans-serif;max-width:560px;margin:60px auto;padding:0 20px;text-align:center;color:#172033"><h1 style="font-size:26px">This tool only works on freenetsave.com</h1><p style="font-size:18px">It was copied from freenetsave.com. Copying our tools to other websites is not allowed.</p><p><a href="'+real+'" style="display:inline-block;background:#2563eb;color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700">Open the real free tool</a></p><p style="font-size:14px;color:#5b6b85">© freenetsave.com · <a href="https://freenetsave.com/terms/">Terms of use</a></p></body>';}
+stop();document.addEventListener("DOMContentLoaded",stop);window.addEventListener("load",stop);})();
 // freenetsave.com tools — shared helpers. Runs only in the visitor's browser; sends nothing anywhere.
 (function(){
   var inFrame = false;
@@ -40,7 +47,7 @@
       if (s === 'native') { navigator.share({ title: d.title, text: d.text, url: d.url }).catch(function(){}); }
       else if (s === 'copy') { window.copyText(d.text + '\n' + d.url); }
     });
-    var n = w.querySelector('.note'); if (n) w.insertBefore(b, n); else w.appendChild(b);
+    var n = w.querySelector('.note'); if (n && n.parentNode) n.parentNode.insertBefore(b, n); else w.appendChild(b);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', addShare); else setTimeout(addShare, 0);
 
