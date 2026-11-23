@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPA Calculator: 4.0 scale from letter grades or percentages (Canada)</title>
+<meta name="description" content="Free GPA calculator. Add your courses with a letter grade or percentage and credits to get your GPA on the 4.0 scale used by many Canadian and US colleges and universities.">
+<link rel="canonical" href="https://tools.freenetsave.com/gpa-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.crow{display:grid;grid-template-columns:1fr 110px 90px 40px;gap:8px;margin:0 0 8px}.crow .cg,.crow .cp{grid-column:2}.crow .cc{grid-column:3}.crow .x{grid-column:4;background:#fff;border:1.5px solid #dde5f2;border-radius:10px;cursor:pointer;font-size:16px}.tbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}.tbl th,.tbl td{padding:6px 10px;border-bottom:1px solid #e5eaf3;text-align:left}.tbl th{background:#f3f6fb}.scale{margin-top:12px}.scale summary{cursor:pointer;font-weight:700}@media(max-width:520px){.crow{grid-template-columns:1fr 80px 70px 36px}}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "GPA Calculator", "url": "https://tools.freenetsave.com/gpa-calculator/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free GPA calculator. Add your courses with a letter grade or percentage and credits to get your GPA on the 4.0 scale used by many Canadian and US colleges and universities."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which scale does this use?", "acceptedAnswer": {"@type": "Answer", "text": "The common 4.0 scale used by many Canadian universities and the Ontario medical school application (OMSAS): A+ 90–100 = 4.0 down to F below 50 = 0. Open \"See the grade scale used\" for the full table."}}, {"@type": "Question", "name": "My school uses a 4.3 or 12-point scale", "acceptedAnswer": {"@type": "Answer", "text": "Some schools do. Use this for a general 4.0 GPA, and check your school's own scale for the official number."}}, {"@type": "Question", "name": "What are credits?", "acceptedAnswer": {"@type": "Answer", "text": "How much a course counts. A full-year university course is often 1.0 and a half course 0.5. If you are not sure, use 1 for every course."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>GPA Calculator</h1>
+    <p class="sub">Your grade point average on the 4.0 scale, from letters or percentages.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label>My grades are in</label><div class="seg" id="kind"><button type="button" data-k="L" class="on">Letters (A, B+…)</button><button type="button" data-k="P">Percent (%)</button></div></div>
+    <div id="rows"></div>
+    <div class="btnrow"><button class="btn line" type="button" id="addr">➕ Add a course</button></div>
+    <div class="result"><div class="box main"><span>Your GPA</span><b id="gpa">–</b></div><div class="box"><span>Total credits</span><b id="cr">–</b></div><div class="box"><span>Average %</span><b id="avg">–</b></div></div>
+    <details class="scale"><summary>See the grade scale used</summary><div id="scale"></div></details>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Choose whether your grades are <b>letters</b> or <b>percentages</b>.</li><li>For each course, pick or type the grade and its credits (use 1 if every course counts the same).</li><li>Tap <b>Add a course</b> for more. Your GPA on the 4.0 scale shows at the bottom.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Which scale does this use?</summary><p>The common 4.0 scale used by many Canadian universities and the Ontario medical school application (OMSAS): A+ 90–100 = 4.0 down to F below 50 = 0. Open "See the grade scale used" for the full table.</p></details><details><summary>My school uses a 4.3 or 12-point scale</summary><p>Some schools do. Use this for a general 4.0 GPA, and check your school's own scale for the official number.</p></details><details><summary>What are credits?</summary><p>How much a course counts. A full-year university course is often 1.0 and a half course 0.5. If you are not sure, use 1 for every course.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://math.freenetsave.com/">Math practice (Grades 1–12)</a></li><li><a href="https://tools.freenetsave.com/flashcards/">Flashcard maker</a></li><li><a href="https://tools.freenetsave.com/timer/">Timer & stopwatch</a></li><li><a href="https://freenetsave.com/word-counter/">Word counter</a></li><li><a href="https://tools.freenetsave.com/resume-builder/">Resume builder</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+const SC=[["A+",90,4.0],["A",85,3.9],["A-",80,3.7],["B+",77,3.3],["B",73,3.0],["B-",70,2.7],["C+",67,2.3],["C",63,2.0],["C-",60,1.7],["D+",57,1.3],["D",53,1.0],["D-",50,0.7],["F",0,0]];
+let kind="L";
+function row(){const d=document.createElement("div");d.className="crow";d.innerHTML='<input class="cn" placeholder="Course (optional)" aria-label="Course name"><select class="cg" aria-label="Letter grade">'+SC.map(s=>'<option>'+s[0]+'</option>').join("")+'</select><input class="cp" type="number" inputmode="decimal" min="0" max="100" placeholder="%" aria-label="Percent" style="display:none"><input class="cc" type="number" inputmode="decimal" min="0" step="0.25" value="1" aria-label="Credits" title="Credits"><button type="button" class="x" aria-label="Remove course">✕</button>';
+ d.querySelector(".x").onclick=()=>{d.remove();calc();};d.querySelectorAll("input,select").forEach(i=>i.addEventListener("input",calc));$("rows").appendChild(d);sync();}
+function sync(){document.querySelectorAll(".crow").forEach(r=>{r.querySelector(".cg").style.display=kind==="L"?"":"none";r.querySelector(".cp").style.display=kind==="P"?"":"none";});}
+function fromP(p){for(const s of SC)if(p>=s[1])return s;return SC[SC.length-1];}
+function calc(){let pts=0,cr=0,ps=0,pc=0;document.querySelectorAll(".crow").forEach(r=>{const c=+r.querySelector(".cc").value;if(!(c>0))return;let g;
+  if(kind==="L"){g=SC.find(s=>s[0]===r.querySelector(".cg").value);}else{const p=parseFloat(r.querySelector(".cp").value);if(!isFinite(p))return;g=fromP(p);ps+=p*c;pc+=c;}
+  pts+=g[2]*c;cr+=c;});
+ $("gpa").textContent=cr?(pts/cr).toFixed(2):"–";$("cr").textContent=cr?cr:"–";$("avg").textContent=pc?(ps/pc).toFixed(1)+"%":"–";}
+$("kind").addEventListener("click",e=>{const x=e.target.closest("button");if(!x)return;kind=x.dataset.k;[...$("kind").children].forEach(c=>c.classList.toggle("on",c===x));sync();calc();});
+$("addr").onclick=()=>row();for(let i=0;i<4;i++)row();
+$("scale").innerHTML='<table class="tbl"><tr><th>Letter</th><th>Percent</th><th>Points</th></tr>'+SC.map((s,i)=>'<tr><td>'+s[0]+'</td><td>'+(i?s[1]+"–"+(SC[i-1][1]-1):"90–100")+'</td><td>'+s[2].toFixed(1)+'</td></tr>').join("")+'</table><p class="lead">Many Ontario universities and medical school applications use this scale. Your school may use a slightly different one — check its website.</p>';
+calc();
+
+</script>
+</body>
+</html>

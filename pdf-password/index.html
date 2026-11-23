@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lock a PDF with a Password: protect a PDF free (on your device)</title>
+<meta name="description" content="Free tool to add a password to a PDF so only people with the password can open it. Strong AES-256 lock. The file is locked on your own device and never uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/pdf-password/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .field{flex:1;min-width:160px}.chk{display:flex;gap:8px;align-items:center;margin:8px 0;font-size:16px}.chk input{width:20px;height:20px}
+</style>
+<script src="../assets/lib/pdf-lib-encrypt.min.js"></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Lock a PDF with a Password", "url": "https://tools.freenetsave.com/pdf-password/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free tool to add a password to a PDF so only people with the password can open it. Strong AES-256 lock. The file is locked on your own device and never uploaded."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is my PDF uploaded?", "acceptedAnswer": {"@type": "Answer", "text": "No. The file is locked by your own browser on your device. We never see your file or your password."}}, {"@type": "Question", "name": "How strong is the lock?", "acceptedAnswer": {"@type": "Answer", "text": "It uses AES-256, the strongest standard PDF lock. A long password (12+ characters) makes it very hard to break."}}, {"@type": "Question", "name": "I forgot the password", "acceptedAnswer": {"@type": "Answer", "text": "We cannot help, because we never see it. Keep the original unlocked file somewhere safe."}}, {"@type": "Question", "name": "Will it open on any device?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Adobe Reader, phone and computer PDF viewers and web browsers ask for the password and open it."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Lock a PDF with a Password</h1>
+    <p class="sub">Add a password so only the right people can open your PDF.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a PDF">
+      <div style="font-size:34px">🔒</div>
+      <b>Choose a PDF or drop it here</b>
+      <span>PDF files</span>
+      <div class="pick">Choose a PDF</div>
+      <input type="file" accept="application/pdf,.pdf">
+    </div>
+    <p class="lead" id="fn"></p>
+    <div id="form" hidden>
+      <div class="row">
+        <div class="field"><label for="pw">Password</label><input id="pw" type="password" autocomplete="new-password" minlength="4"></div>
+        <div class="field"><label for="pw2">Type it again</label><input id="pw2" type="password" autocomplete="new-password"></div>
+      </div>
+      <label class="chk"><input type="checkbox" id="show"> Show password</label>
+      <label class="chk"><input type="checkbox" id="noprint"> Stop people from printing it</label>
+      <label class="chk"><input type="checkbox" id="nocopy" checked> Stop people from copying the text</label>
+      <div class="btnrow"><button class="btn" type="button" id="go">🔒 Lock and download</button></div>
+    </div>
+    <p class="lead" id="msg"></p>
+  </div>
+  <p class="note">🔒 Your PDF and password stay on your device. Nothing is uploaded.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Choose your PDF.</li><li>Type a password twice. Choose if people may print or copy text.</li><li>Tap <b>Lock and download</b>. Share the password separately, for example by phone or text.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Is my PDF uploaded?</summary><p>No. The file is locked by your own browser on your device. We never see your file or your password.</p></details><details><summary>How strong is the lock?</summary><p>It uses AES-256, the strongest standard PDF lock. A long password (12+ characters) makes it very hard to break.</p></details><details><summary>I forgot the password</summary><p>We cannot help, because we never see it. Keep the original unlocked file somewhere safe.</p></details><details><summary>Will it open on any device?</summary><p>Yes. Adobe Reader, phone and computer PDF viewers and web browsers ask for the password and open it.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/merge-pdf/">Merge PDF</a></li><li><a href="https://tools.freenetsave.com/word-to-pdf/">Word to PDF</a></li><li><a href="https://tools.freenetsave.com/pdf-sign/">Sign a PDF</a></li><li><a href="https://tools.freenetsave.com/pdf-watermark/">Add a watermark</a></li><li><a href="https://freenetsave.com/password-generator/">Password maker</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+let file=null;
+setupDrop($("drop"),fs=>{file=fs[0];$("fn").textContent="📄 "+file.name+" · "+fmtSize(file.size);$("form").hidden=false;$("msg").textContent="";$("pw").focus();});
+$("show").onchange=()=>{$("pw").type=$("pw2").type=$("show").checked?"text":"password";};
+$("go").onclick=async()=>{const p=$("pw").value;if(p.length<4){$("msg").textContent="Use a password with at least 4 characters (longer is safer).";return;}
+ if(p!==$("pw2").value){$("msg").textContent="The two passwords are not the same.";return;}
+ $("msg").textContent="Locking…";
+ try{const doc=await PDFLib.PDFDocument.load(await file.arrayBuffer());
+  const owner=Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>b.toString(16).padStart(2,"0")).join("");
+  doc.encrypt({userPassword:p,ownerPassword:owner,permissions:{printing:$("noprint").checked?undefined:"highResolution",copying:!$("nocopy").checked,modifying:false,annotating:false,fillingForms:true,contentAccessibility:true,documentAssembly:false}});
+  const out=await doc.save();saveFile(new Blob([out],{type:"application/pdf"}),baseName(file.name)+"-locked.pdf");
+  $("msg").textContent="Done! Keep your password safe — without it, the PDF cannot be opened.";}
+ catch(e){$("msg").textContent=/encrypt/i.test(String(e))?"This PDF already has a password. Remove it first, then lock it again.":"Sorry, this PDF could not be locked. Try another file.";}};
+
+</script>
+</body>
+</html>

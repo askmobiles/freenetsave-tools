@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add a Watermark to Photos: free text watermark (on your device)</title>
+<meta name="description" content="Free tool to add a text watermark to your photos, like your name, shop or &quot;Copy&quot;. Choose size, colour, see-through level, position or repeat across the picture. Photos are never uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/watermark-picture/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .field{flex:1;min-width:150px}.pv{width:100%;height:auto;border-radius:12px;border:1px solid #dde5f2;margin-top:10px;background:repeating-conic-gradient(#eef2f7 0 25%,#fff 0 50%) 0/20px 20px}input[type=range]{width:100%}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Add a Watermark to Photos", "url": "https://tools.freenetsave.com/watermark-picture/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free tool to add a text watermark to your photos, like your name, shop or \"Copy\". Choose size, colour, see-through level, position or repeat across the picture. Photos are never uploaded."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Are my photos uploaded?", "acceptedAnswer": {"@type": "Answer", "text": "No. The watermark is drawn by your own browser on your device. Your pictures never leave it."}}, {"@type": "Question", "name": "Which setting stops copying best?", "acceptedAnswer": {"@type": "Answer", "text": "Repeat across the picture is hardest to crop out. A single small mark in a corner looks neater but is easy to cut off."}}, {"@type": "Question", "name": "Does it lower the quality?", "acceptedAnswer": {"@type": "Answer", "text": "The picture keeps its full size. JPG pictures are saved at high quality (92%)."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Add a Watermark to Photos</h1>
+    <p class="sub">Put your name or shop on your pictures. Photos stay on your device.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose pictures">
+      <div style="font-size:34px">🖼️</div>
+      <b>Choose pictures or drop them here</b>
+      <span>JPG, PNG, WebP · one or many</span>
+      <div class="pick">Choose pictures</div>
+      <input type="file" accept="image/*" multiple>
+    </div>
+    <div id="opt" hidden>
+      <div class="row">
+        <div class="field"><label for="txt">Watermark text</label><input id="txt" value="© My Shop"></div>
+        <div class="field"><label for="pos">Where</label><select id="pos"><option value="tile">Repeat across the picture</option><option value="c">Middle</option><option value="br" selected>Bottom right</option><option value="bl">Bottom left</option><option value="tr">Top right</option><option value="tl">Top left</option></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="sz">Size <span id="szv"></span></label><input id="sz" type="range" min="2" max="20" value="6"></div>
+        <div class="field"><label for="op">See-through <span id="opv"></span></label><input id="op" type="range" min="10" max="100" value="55"></div>
+        <div class="field"><label for="col">Colour</label><select id="col"><option value="#ffffff">White</option><option value="#000000">Black</option><option value="#e11d48">Red</option><option value="#2563eb">Blue</option><option value="#facc15">Yellow</option></select></div>
+      </div>
+      <canvas id="cv" class="pv"></canvas>
+      <p class="lead" id="cnt"></p>
+      <div class="btnrow"><button class="btn" type="button" id="dl">⬇ Download</button><button class="btn line" type="button" id="more">Choose other pictures</button></div>
+    </div>
+  </div>
+  <p class="note">🔒 Your pictures stay on your device. Nothing is uploaded.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Choose one or more pictures.</li><li>Type your watermark text, for example your name, shop or "© 2026". Pick where it goes, its size, colour and how see-through it is.</li><li>Tap <b>Download</b> to save the pictures with the watermark.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Are my photos uploaded?</summary><p>No. The watermark is drawn by your own browser on your device. Your pictures never leave it.</p></details><details><summary>Which setting stops copying best?</summary><p><b>Repeat across the picture</b> is hardest to crop out. A single small mark in a corner looks neater but is easy to cut off.</p></details><details><summary>Does it lower the quality?</summary><p>The picture keeps its full size. JPG pictures are saved at high quality (92%).</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/make-picture-smaller/">Make a picture smaller</a></li><li><a href="https://tools.freenetsave.com/picture-converter/">Picture converter</a></li><li><a href="https://tools.freenetsave.com/passport-photo/">Passport photo maker</a></li><li><a href="https://tools.freenetsave.com/signature-maker/">Signature maker</a></li><li><a href="https://tools.freenetsave.com/pdf-watermark/">Add a watermark to a PDF</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+let imgs=[];
+function load(f){return new Promise(r=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>r({i,name:baseName(f.name),type:f.type==="image/png"?"image/png":"image/jpeg"});i.onerror=()=>r(null);i.src=u;});}
+function draw(cv,im){const w=im.i.naturalWidth,h=im.i.naturalHeight;cv.width=w;cv.height=h;const c=cv.getContext("2d");c.drawImage(im.i,0,0);
+ const t=$("txt").value.trim();if(!t)return;const fs=Math.max(10,Math.round(Math.min(w,h)*(+$("sz").value)/100));c.font="700 "+fs+"px system-ui,Arial,sans-serif";c.globalAlpha=(+$("op").value)/100;c.fillStyle=$("col").value;
+ c.shadowColor=$("col").value==="#ffffff"?"rgba(0,0,0,.45)":"rgba(255,255,255,.4)";c.shadowBlur=fs/8;const p=$("pos").value,m=fs*0.8,tw=c.measureText(t).width;c.textBaseline="middle";
+ if(p==="tile"){c.save();c.translate(w/2,h/2);c.rotate(-Math.PI/6);const sx=tw+fs*3,sy=fs*4;for(let y=-h;y<h;y+=sy)for(let x=-w;x<w;x+=sx)c.fillText(t,x+((y/sy)%2?sx/2:0),y);c.restore();}
+ else{const x=p==="c"?(w-tw)/2:p.endsWith("r")?w-tw-m:m,y=p==="c"?h/2:p.startsWith("b")?h-m:m;c.fillText(t,x,y);}c.globalAlpha=1;}
+function prev(){if(!imgs.length)return;draw($("cv"),imgs[0]);$("szv").textContent=$("sz").value+"%";$("opv").textContent=$("op").value+"%";$("cnt").textContent=imgs.length>1?"Preview of the first picture. The same watermark goes on all "+imgs.length+" pictures.":"";}
+setupDrop($("drop"),async fs=>{imgs=(await Promise.all(fs.filter(f=>f.type.startsWith("image/")).map(load))).filter(Boolean);if(!imgs.length)return;$("drop").hidden=true;$("opt").hidden=false;prev();});
+["txt","pos","sz","op","col"].forEach(i=>$(i).addEventListener("input",prev));
+$("dl").onclick=async()=>{for(const im of imgs){const cv=document.createElement("canvas");draw(cv,im);const b=await new Promise(r=>cv.toBlob(r,im.type,0.92));saveFile(b,im.name+"-watermark."+(im.type==="image/png"?"png":"jpg"));await new Promise(r=>setTimeout(r,300));}};
+$("more").onclick=()=>{imgs=[];$("opt").hidden=true;$("drop").hidden=false;};
+
+</script>
+</body>
+</html>

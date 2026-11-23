@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Currency Converter: today&#x27;s exchange rates (CAD, USD, INR, LKR, EUR and more)</title>
+<meta name="description" content="Free currency converter with today&#x27;s exchange rates for over 150 currencies, including Canadian dollar, US dollar, Indian rupee, Sri Lankan rupee, euro and pound. Quick list of common amounts.">
+<link rel="canonical" href="https://tools.freenetsave.com/currency-converter/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.tbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:15px}.tbl th,.tbl td{padding:7px 10px;border-bottom:1px solid #e5eaf3;text-align:right}.tbl th{background:#f3f6fb}.row{display:flex;gap:10px;flex-wrap:wrap}.row .field{flex:1;min-width:160px}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Currency Converter", "url": "https://tools.freenetsave.com/currency-converter/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free currency converter with today's exchange rates for over 150 currencies, including Canadian dollar, US dollar, Indian rupee, Sri Lankan rupee, euro and pound. Quick list of common amounts."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where do the rates come from?", "acceptedAnswer": {"@type": "Answer", "text": "From a free public exchange rate service, updated once a day. Only a request for today's rates is made — the amount you type is not sent anywhere."}}, {"@type": "Question", "name": "Why does my bank give me less?", "acceptedAnswer": {"@type": "Answer", "text": "Banks, cards and money transfer shops add a fee or use a lower rate. Use this to see the real market rate and compare their offers."}}, {"@type": "Question", "name": "Does it have the Sri Lankan rupee and Indian rupee?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, both, plus over 150 other currencies."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Currency Converter</h1>
+    <p class="sub">Today's exchange rates for over 150 currencies.</p>
+  </div>
+  <div class="card">
+    <div class="row">
+      <div class="field"><label for="amt">Amount</label><input id="amt" type="number" inputmode="decimal" min="0" step="any" value="100"></div>
+      <div class="field"><label for="from">From</label><select id="from"></select></div>
+    </div>
+    <div class="row">
+      <div class="field" style="flex:0 0 auto;align-self:end"><button class="btn line" type="button" id="swap" aria-label="Swap currencies" style="width:auto">⇅ Swap</button></div>
+      <div class="field"><label for="to">To</label><select id="to"></select></div>
+    </div>
+    <div class="result"><div class="box main"><span id="lbl">Converted</span><b id="out">–</b></div></div>
+    <p class="lead" id="rateTxt"></p>
+    <div id="tbl"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">📋 Copy</button></div>
+    <p class="lead" id="src" style="font-size:13px"></p>
+  </div>
+  <p class="note">🔒 Only a request for today's rates is made. The amount you type is not sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Type the amount.</li><li>Pick the currency you have (<b>From</b>) and the one you want (<b>To</b>). Tap <b>Swap</b> to turn it around.</li><li>The answer shows right away, with a table of common amounts.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Where do the rates come from?</summary><p>From a free public exchange rate service, updated once a day. Only a request for today's rates is made — the amount you type is not sent anywhere.</p></details><details><summary>Why does my bank give me less?</summary><p>Banks, cards and money transfer shops add a fee or use a lower rate. Use this to see the real market rate and compare their offers.</p></details><details><summary>Does it have the Sri Lankan rupee and Indian rupee?</summary><p>Yes, both, plus over 150 other currencies.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/loan-calculator/">Loan & car payment</a></li><li><a href="https://tools.freenetsave.com/payment/">Payment calculator</a></li><li><a href="https://tools.freenetsave.com/savings-calculator/">Savings & compound interest</a></li><li><a href="https://freenetsave.com/mortgage-calculator/">Mortgage calculator</a></li><li><a href="https://freenetsave.com/hst-calculator/">HST calculator</a></li><li><a href="https://tools.freenetsave.com/unit-price/">Unit price</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+const POP=["CAD","USD","INR","LKR","EUR","GBP","AUD","AED","SGD","MYR","CHF","JPY","CNY","PKR","BDT","PHP","MXN","NZD","SAR","QAR","KWD","ZAR","NGN","KES"];
+const NAMES={CAD:"Canadian dollar",USD:"US dollar",INR:"Indian rupee",LKR:"Sri Lankan rupee",EUR:"Euro",GBP:"British pound",AUD:"Australian dollar",AED:"UAE dirham",SGD:"Singapore dollar",MYR:"Malaysian ringgit",CHF:"Swiss franc",JPY:"Japanese yen",CNY:"Chinese yuan",PKR:"Pakistani rupee",BDT:"Bangladeshi taka",PHP:"Philippine peso",MXN:"Mexican peso",NZD:"New Zealand dollar",SAR:"Saudi riyal",QAR:"Qatari riyal",KWD:"Kuwaiti dinar",ZAR:"South African rand",NGN:"Nigerian naira",KES:"Kenyan shilling"};
+let R=null,when="";
+function nm(c){try{return NAMES[c]||new Intl.DisplayNames(["en"],{type:"currency"}).of(c)}catch(e){return c}}
+function opts(list){return list.map(c=>'<option value="'+c+'">'+c+' — '+nm(c)+'</option>').join("");}
+function fillSel(){const all=Object.keys(R).sort();const rest=all.filter(c=>!POP.includes(c));const pop=POP.filter(c=>R[c]);
+ const h='<optgroup label="Common">'+opts(pop)+'</optgroup><optgroup label="All currencies">'+opts(rest)+'</optgroup>';
+ const f=$("from").value||"CAD",t=$("to").value||"INR";$("from").innerHTML=h;$("to").innerHTML=h;$("from").value=R[f]?f:"CAD";$("to").value=R[t]?t:"USD";}
+function fmt(n,c){const d=n>=1000?2:n>=1?2:6;try{return n.toLocaleString("en-CA",{style:"currency",currency:c,maximumFractionDigits:d,minimumFractionDigits:Math.min(2,d)})}catch(e){return n.toFixed(d)+" "+c}}
+function calc(){if(!R)return;const a=parseFloat($("amt").value),f=$("from").value,t=$("to").value;const rate=R[t]/R[f];
+ $("rateTxt").textContent="1 "+f+" = "+(rate>=1?rate.toFixed(4):rate.toPrecision(4))+" "+t+"   ·   1 "+t+" = "+(1/rate>=1?(1/rate).toFixed(4):(1/rate).toPrecision(4))+" "+f;
+ $("lbl").textContent=isFinite(a)?fmt(a,f)+" is":"Converted";$("out").textContent=isFinite(a)?fmt(a*rate,t):"–";
+ const amts=[1,5,10,20,50,100,250,500,1000,5000];$("tbl").innerHTML='<table class="tbl"><tr><th>'+f+'</th><th>'+t+'</th></tr>'+amts.map(x=>'<tr><td>'+fmt(x,f)+'</td><td>'+fmt(x*rate,t)+'</td></tr>').join("")+'</table>';
+ try{localStorage.setItem("fns_cur",JSON.stringify({f,t}))}catch(e){}}
+async function load(){
+ try{const s=JSON.parse(localStorage.getItem("fns_cur")||"{}");if(s.f){$("from").innerHTML='<option>'+s.f+'</option>';$("to").innerHTML='<option>'+s.t+'</option>';}}catch(e){}
+ $("rateTxt").textContent="Getting today's rates…";
+ try{const r=await fetch("https://open.er-api.com/v6/latest/USD");const j=await r.json();if(j.result!=="success")throw 0;R=j.rates;when=new Date(j.time_last_update_unix*1000).toLocaleDateString("en-CA",{year:"numeric",month:"long",day:"numeric"});
+  $("src").innerHTML='Rates updated '+when+'. <a href="https://www.exchangerate-api.com" target="_blank" rel="noopener">Rates By Exchange Rate API</a>. Banks and money transfer shops add their own fee, so the rate you get will be a little lower.';}
+ catch(e){try{const r=await fetch("https://api.frankfurter.app/latest?from=USD");const j=await r.json();R=Object.assign({USD:1},j.rates);when=j.date;$("src").textContent="Rates from the European Central Bank, "+when+". Banks add their own fee.";}
+  catch(e2){$("rateTxt").textContent="Could not get today's rates. Check your internet connection and refresh the page.";return;}}
+ fillSel();calc();}
+["amt","from","to"].forEach(i=>$(i).addEventListener("input",calc));["from","to"].forEach(i=>$(i).addEventListener("change",calc));
+$("swap").addEventListener("click",()=>{const f=$("from").value;$("from").value=$("to").value;$("to").value=f;calc();});
+$("copy").addEventListener("click",()=>copyText($("lbl").textContent+" "+$("out").textContent+" ("+$("rateTxt").textContent.split("   ")[0]+")"));
+load();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BMI Calculator: body mass index in kg/cm or lb/feet (adults)</title>
+<meta name="description" content="Free BMI calculator for adults. Enter your weight and height in kilograms and centimetres or pounds, feet and inches to see your body mass index and the healthy weight range for your height.">
+<link rel="canonical" href="https://tools.freenetsave.com/bmi-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .field{flex:1;min-width:120px}.bar{position:relative;display:flex;height:14px;border-radius:7px;overflow:hidden;margin:16px 0 4px}.bar i{display:block}.bar b{position:absolute;top:-4px;width:4px;height:22px;background:#172033;border-radius:2px;transform:translateX(-2px)}.barl{display:flex;justify-content:space-between;font-size:12.5px;color:#5b6b85}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "BMI Calculator", "url": "https://tools.freenetsave.com/bmi-calculator/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free BMI calculator for adults. Enter your weight and height in kilograms and centimetres or pounds, feet and inches to see your body mass index and the healthy weight range for your height."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is BMI?", "acceptedAnswer": {"@type": "Answer", "text": "Body mass index is your weight divided by your height squared. It is a quick screening number used for adults."}}, {"@type": "Question", "name": "Is BMI accurate for everyone?", "acceptedAnswer": {"@type": "Answer", "text": "No. It does not tell muscle from fat, and it can read high for very muscular people and differ by age and background. Talk to your doctor about your own health."}}, {"@type": "Question", "name": "Can I use it for children?", "acceptedAnswer": {"@type": "Answer", "text": "No. Children and teens under 18 use growth charts for their age and sex. Ask your doctor or nurse."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>BMI Calculator</h1>
+    <p class="sub">Body mass index for adults, in metric or feet and pounds.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label>Units</label><div class="seg" id="unit"><button type="button" data-u="m" class="on">kg and cm</button><button type="button" data-u="i">lb and feet</button></div></div>
+    <div class="row" id="metric">
+      <div class="field"><label for="kg">Weight (kg)</label><input id="kg" type="number" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 70"></div>
+      <div class="field"><label for="cm">Height (cm)</label><input id="cm" type="number" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 170"></div>
+    </div>
+    <div class="row" id="imp" style="display:none">
+      <div class="field"><label for="lb">Weight (lb)</label><input id="lb" type="number" inputmode="decimal" min="0" step="0.1" placeholder="e.g. 155"></div>
+      <div class="field"><label for="ft">Height (feet)</label><input id="ft" type="number" inputmode="numeric" min="0" step="1" placeholder="5"></div>
+      <div class="field"><label for="inch">and inches</label><input id="inch" type="number" inputmode="decimal" min="0" step="0.5" placeholder="7"></div>
+    </div>
+    <div class="result"><div class="box main"><span>Your BMI</span><b id="bmi">–</b></div><div class="box"><span>Category</span><b id="cat">–</b></div></div>
+    <div class="bar" aria-hidden="true"><i style="flex:18.5;background:#60a5fa"></i><i style="flex:6.5;background:#22c55e"></i><i style="flex:5;background:#f59e0b"></i><i style="flex:10;background:#ef4444"></i><b id="pin"></b></div>
+    <div class="barl" aria-hidden="true"><span>Under 18.5</span><span>18.5–24.9</span><span>25–29.9</span><span>30+</span></div>
+    <p class="lead" id="range"></p>
+  </div>
+  <p class="note">🔒 Works on your device. Nothing you type is sent or saved. This is general information, not medical advice.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Pick <b>kg and cm</b> or <b>lb and feet</b>.</li><li>Type your weight and height.</li><li>Your BMI, its category and the healthy weight range for your height show right away.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>What is BMI?</summary><p>Body mass index is your weight divided by your height squared. It is a quick screening number used for adults.</p></details><details><summary>Is BMI accurate for everyone?</summary><p>No. It does not tell muscle from fat, and it can read high for very muscular people and differ by age and background. Talk to your doctor about your own health.</p></details><details><summary>Can I use it for children?</summary><p>No. Children and teens under 18 use growth charts for their age and sex. Ask your doctor or nurse.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/loan-calculator/">Loan & car payment</a></li><li><a href="https://tools.freenetsave.com/payment/">Payment calculator</a></li><li><a href="https://tools.freenetsave.com/date-calculator/">Age & date calculator</a></li><li><a href="https://tools.freenetsave.com/unit-converter/">Unit converter</a></li><li><a href="https://tools.freenetsave.com/due-date-calculator/">Due date calculator</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+let u="m";
+function calc(){let kg,m;if(u==="m"){kg=+$("kg").value;m=+$("cm").value/100;}else{kg=+$("lb").value*0.45359237;m=((+$("ft").value||0)*12+(+$("inch").value||0))*0.0254;}
+ if(!(kg>0)||!(m>0.5)){$("bmi").textContent="–";$("cat").textContent="–";$("range").textContent="";$("pin").style.display="none";return;}
+ const b=kg/(m*m);const c=b<18.5?"Underweight":b<25?"Healthy weight":b<30?"Overweight":"Obesity";
+ $("bmi").textContent=b.toFixed(1);$("cat").textContent=c;$("pin").style.display="";$("pin").style.left=Math.max(0,Math.min(100,(b-10)/30*100))+"%";
+ const lo=18.5*m*m,hi=24.9*m*m;$("range").textContent="For your height, the healthy weight range is "+(u==="m"?lo.toFixed(1)+"–"+hi.toFixed(1)+" kg":(lo/0.45359237).toFixed(0)+"–"+(hi/0.45359237).toFixed(0)+" lb")+".";}
+$("unit").addEventListener("click",e=>{const x=e.target.closest("button");if(!x)return;u=x.dataset.u;[...$("unit").children].forEach(c=>c.classList.toggle("on",c===x));$("metric").style.display=u==="m"?"":"none";$("imp").style.display=u==="i"?"":"none";calc();});
+document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calc));calc();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Credit Card Payoff Calculator: how long to pay it off and how much interest</title>
+<meta name="description" content="Free credit card payoff calculator. See how many months it takes to pay off your balance, the total interest, and the payment you need to be debt-free by a date you choose.">
+<link rel="canonical" href="https://tools.freenetsave.com/credit-card-payoff/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .field{flex:1;min-width:160px}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Credit Card Payoff Calculator", "url": "https://tools.freenetsave.com/credit-card-payoff/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free credit card payoff calculator. See how many months it takes to pay off your balance, the total interest, and the payment you need to be debt-free by a date you choose."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why does paying only the minimum take so long?", "acceptedAnswer": {"@type": "Answer", "text": "Most of a small payment goes to interest, so the balance hardly goes down. Paying even a little more each month cuts the time and the interest a lot."}}, {"@type": "Question", "name": "Is this exact?", "acceptedAnswer": {"@type": "Answer", "text": "It is a close estimate. Banks work out interest daily and may change your rate or minimum payment, so your statement can be slightly different."}}, {"@type": "Question", "name": "What if I have more than one card?", "acceptedAnswer": {"@type": "Answer", "text": "Pay the minimum on all cards and put any extra money on the card with the highest interest rate first."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Credit Card Payoff Calculator</h1>
+    <p class="sub">How long to pay it off, and how much interest you will pay.</p>
+  </div>
+  <div class="card">
+    <div class="field">
+      <label>What do you want to know?</label>
+      <div class="seg" id="mode"><button type="button" data-m="time" class="on">How long with my payment</button><button type="button" data-m="pay">Payment to be free by…</button></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="bal">Card balance ($)</label><input id="bal" type="number" inputmode="decimal" min="0" step="0.01" value="5000"></div>
+      <div class="field"><label for="apr">Interest rate (% a year)</label><input id="apr" type="number" inputmode="decimal" min="0" step="0.01" value="19.99"></div>
+    </div>
+    <div class="row">
+      <div class="field" id="payBox"><label for="pay">Monthly payment ($)</label><input id="pay" type="number" inputmode="decimal" min="0" step="0.01" value="200"></div>
+      <div class="field" id="monBox" style="display:none"><label for="mon">Pay it off in (months)</label><input id="mon" type="number" inputmode="numeric" min="1" max="600" step="1" value="24"></div>
+      <div class="field"><label for="add">New spending each month ($)</label><input id="add" type="number" inputmode="decimal" min="0" step="0.01" value="0"></div>
+    </div>
+    <div class="result">
+      <div class="box main"><span id="l1">Time to pay off</span><b id="r1">–</b></div>
+      <div class="box"><span>Total interest</span><b id="r2">–</b></div>
+      <div class="box"><span>Total you pay</span><b id="r3">–</b></div>
+    </div>
+    <p class="lead" id="tip"></p>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">📋 Copy</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Type your card balance and the yearly interest rate (on your statement, often 19.99% or 22.99% in Canada).</li><li>Type what you pay each month to see how long it takes, or switch to <b>Payment to be free by…</b> and choose the number of months.</li><li>If you keep using the card, add your new spending each month for a true answer.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Why does paying only the minimum take so long?</summary><p>Most of a small payment goes to interest, so the balance hardly goes down. Paying even a little more each month cuts the time and the interest a lot.</p></details><details><summary>Is this exact?</summary><p>It is a close estimate. Banks work out interest daily and may change your rate or minimum payment, so your statement can be slightly different.</p></details><details><summary>What if I have more than one card?</summary><p>Pay the minimum on all cards and put any extra money on the card with the highest interest rate first.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/loan-calculator/">Loan & car payment</a></li><li><a href="https://tools.freenetsave.com/payment/">Payment calculator</a></li><li><a href="https://tools.freenetsave.com/savings-calculator/">Savings & compound interest</a></li><li><a href="https://freenetsave.com/mortgage-calculator/">Mortgage calculator</a></li><li><a href="https://freenetsave.com/hst-calculator/">HST calculator</a></li><li><a href="https://tools.freenetsave.com/unit-price/">Unit price</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+let mode="time";
+function sim(b,r,p,add){let m=0,i=0,paid=0;while(b>0.005&&m<1200){const int=b*r;i+=int;b+=int+add;const pay=Math.min(p,b);b-=pay;paid+=pay;m++;if(m>2&&pay<=int+add)return null;}return m>=1200?null:{m,i,paid};}
+function ym(m){const y=Math.floor(m/12),mm=m%12;return (y?y+(y>1?" years":" year"):"")+(y&&mm?" ":"")+(mm||!y?mm+(mm===1?" month":" months"):"");}
+function calc(){const b=+$("bal").value,a=+$("apr").value,add=+$("add").value||0,r=a/1200;["r1","r2","r3"].forEach(x=>$(x).textContent="–");$("tip").textContent="";
+ if(!(b>0)||!(a>=0))return;
+ if(mode==="time"){const p=+$("pay").value;if(!(p>0))return;const s=sim(b,r,p,add);
+  if(!s){$("r1").textContent="Never";$("tip").textContent="This payment does not cover the interest"+(add?" and new spending":"")+". You need to pay more than "+money(b*r+add)+" a month to make the balance go down.";return;}
+  $("r1").textContent=ym(s.m);$("r2").textContent=money(s.i);$("r3").textContent=money(s.paid);
+  const s2=sim(b,r,p+50,add);if(s2)$("tip").textContent="Tip: paying "+money(p+50)+" a month instead would finish in "+ym(s2.m)+" and save "+money(s.i-s2.i)+" in interest.";}
+ else{const n=Math.round(+$("mon").value);if(!(n>=1))return;let p=r>0?(b*r)/(1-Math.pow(1+r,-n)):b/n;p+=add;
+  const s=sim(b,r,p,add);$("r1").textContent=money(p)+" a month";$("r2").textContent=s?money(s.i):"–";$("r3").textContent=s?money(s.paid):"–";
+  $("tip").textContent="Pay "+money(p)+" every month to be free of this card in "+ym(n)+".";}}
+$("mode").addEventListener("click",e=>{const x=e.target.closest("button");if(!x)return;mode=x.dataset.m;[...$("mode").children].forEach(c=>c.classList.toggle("on",c===x));
+ $("payBox").style.display=mode==="time"?"":"none";$("monBox").style.display=mode==="pay"?"":"none";$("l1").textContent=mode==="time"?"Time to pay off":"Payment needed";calc();});
+document.querySelectorAll("input").forEach(i=>i.addEventListener("input",calc));
+$("copy").addEventListener("click",()=>copyText($("l1").textContent+": "+$("r1").textContent+"\nTotal interest: "+$("r2").textContent+"\nTotal you pay: "+$("r3").textContent));
+calc();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Due Date Calculator: when is my baby due? (pregnancy week by week)</title>
+<meta name="description" content="Free pregnancy due date calculator. Use the first day of your last period, the conception date or an IVF transfer date to see your due date, how many weeks pregnant you are and your trimester dates.">
+<link rel="canonical" href="https://tools.freenetsave.com/due-date-calculator/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .field{flex:1;min-width:160px}.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}.tbl td{padding:7px 10px;border-bottom:1px solid #e5eaf3}.tbl td:last-child{text-align:right;font-weight:650}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Due Date Calculator", "url": "https://tools.freenetsave.com/due-date-calculator/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free pregnancy due date calculator. Use the first day of your last period, the conception date or an IVF transfer date to see your due date, how many weeks pregnant you are and your trimester dates."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How is the due date worked out?", "acceptedAnswer": {"@type": "Answer", "text": "Pregnancy is counted as 40 weeks (280 days) from the first day of your last period. Longer or shorter cycles move the date. From conception it is 266 days."}}, {"@type": "Question", "name": "Will my baby come on this day?", "acceptedAnswer": {"@type": "Answer", "text": "Only about 1 in 20 babies arrive on the due date. Most come within two weeks before or after it."}}, {"@type": "Question", "name": "My ultrasound gave a different date", "acceptedAnswer": {"@type": "Answer", "text": "Follow your doctor or midwife. An early ultrasound is usually more accurate than counting from a period."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Due Date Calculator</h1>
+    <p class="sub">Your baby's due date, how far along you are, and key dates.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label for="how">Count from</label><select id="how"><option value="lmp">First day of my last period</option><option value="con">Date of conception</option><option value="ivf3">IVF transfer (3-day embryo)</option><option value="ivf5">IVF transfer (5-day embryo)</option></select></div>
+    <div class="row">
+      <div class="field"><label for="d">Date</label><input id="d" type="date"></div>
+      <div class="field" id="cycBox"><label for="cyc">Usual cycle length (days)</label><input id="cyc" type="number" inputmode="numeric" min="20" max="45" value="28"></div>
+    </div>
+    <div class="result"><div class="box main"><span>Estimated due date</span><b id="due">–</b></div><div class="box"><span>How far along today</span><b id="along">–</b></div></div>
+    <div id="ms"></div>
+  </div>
+  <p class="note">🔒 Works on your device. Nothing you type is sent or saved. This is an estimate, not medical advice — follow your doctor or midwife.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Pick what you know: the first day of your last period, the conception date, or an IVF transfer date.</li><li>Pick the date (and your usual cycle length if you know it).</li><li>Your due date, how many weeks along you are and the trimester dates show right away.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>How is the due date worked out?</summary><p>Pregnancy is counted as 40 weeks (280 days) from the first day of your last period. Longer or shorter cycles move the date. From conception it is 266 days.</p></details><details><summary>Will my baby come on this day?</summary><p>Only about 1 in 20 babies arrive on the due date. Most come within two weeks before or after it.</p></details><details><summary>My ultrasound gave a different date</summary><p>Follow your doctor or midwife. An early ultrasound is usually more accurate than counting from a period.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/date-calculator/">Age & date calculator</a></li><li><a href="https://tools.freenetsave.com/baby-names/">Baby names</a></li><li><a href="https://tools.freenetsave.com/bmi-calculator/">BMI calculator</a></li><li><a href="https://tools.freenetsave.com/calendar/">Printable calendar</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+const D=864e5;function f(d){return d.toLocaleDateString("en-CA",{weekday:"short",year:"numeric",month:"long",day:"numeric"});}
+function calc(){const v=$("d").value,h=$("how").value;$("cycBox").style.display=h==="lmp"?"":"none";if(!v){$("due").textContent="–";$("along").textContent="–";$("ms").innerHTML="";return;}
+ const d=new Date(v+"T12:00:00");let lmp;if(h==="lmp")lmp=new Date(d.getTime()+((+$("cyc").value||28)-28)*D);else if(h==="con")lmp=new Date(d.getTime()-14*D);else lmp=new Date(d.getTime()-(h==="ivf3"?17:19)*D);
+ const due=new Date(lmp.getTime()+280*D);$("due").textContent=f(due);
+ const days=Math.floor((Date.now()-lmp.getTime())/D);
+ if(days<0)$("along").textContent="Not yet";else if(days>300)$("along").textContent="Past the due date";else $("along").textContent=Math.floor(days/7)+" weeks "+(days%7)+" days";
+ const L=[["End of first trimester (week 13)",13*7],["Second trimester ends (week 27)",27*7],["Full term (week 37)",37*7],["Due date (week 40)",280]];
+ $("ms").innerHTML='<table class="tbl">'+L.map(x=>'<tr><td>'+x[0]+'</td><td>'+f(new Date(lmp.getTime()+x[1]*D))+'</td></tr>').join("")+'</table>';}
+["how","d","cyc"].forEach(i=>$(i).addEventListener("input",calc));calc();
+
+</script>
+</body>
+</html>

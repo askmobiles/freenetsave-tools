@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Is My IP Address? (and my internet provider)</title>
+<meta name="description" content="Free tool to see your public IP address, IPv6, internet provider and approximate city. Useful for phone and internet support, setting up a router or checking a VPN.">
+<link rel="canonical" href="https://tools.freenetsave.com/my-ip/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:15.5px}.tbl th,.tbl td{padding:8px 10px;border-bottom:1px solid #e5eaf3;text-align:left;vertical-align:top}.tbl th{width:40%;color:#4b5a75;font-weight:650}.tbl td{word-break:break-all}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "What Is My IP Address?", "url": "https://tools.freenetsave.com/my-ip/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free tool to see your public IP address, IPv6, internet provider and approximate city. Useful for phone and internet support, setting up a router or checking a VPN."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is an IP address?", "acceptedAnswer": {"@type": "Answer", "text": "It is the number the internet uses to send data to your home or phone network, like a street address for your connection."}}, {"@type": "Question", "name": "Why is the location wrong?", "acceptedAnswer": {"@type": "Answer", "text": "The location belongs to your internet provider's equipment, which can be in another town. It never shows your home address."}}, {"@type": "Question", "name": "Does it change?", "acceptedAnswer": {"@type": "Answer", "text": "Most home and mobile IP addresses change from time to time, for example when the modem restarts. A VPN also changes it."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>What Is My IP Address?</h1>
+    <p class="sub">Your public IP address, internet provider and approximate location.</p>
+  </div>
+  <div class="card">
+    <div class="result"><div class="box main"><span>Your IP address</span><b id="ip">Checking…</b></div></div>
+    <table class="tbl" id="info"></table>
+    <div class="actions"><button class="btn ghost" type="button" id="copy">📋 Copy IP</button><button class="btn ghost" type="button" id="again">🔄 Check again</button></div>
+    <p class="lead" style="font-size:13px">To show this, your browser asks a public IP lookup service (ipify and ipapi). Your IP is visible to every website you visit; we do not save it.</p>
+  </div>
+  <p class="note">🔒 We do not save your IP address. The lookup is done by your browser.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Open the page — your IP address shows at the top.</li><li>Below it you see your IPv6 address (if you have one), your internet provider and the rough area.</li><li>Tap <b>Copy IP</b> to send it to support or paste it into a setting.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>What is an IP address?</summary><p>It is the number the internet uses to send data to your home or phone network, like a street address for your connection.</p></details><details><summary>Why is the location wrong?</summary><p>The location belongs to your internet provider's equipment, which can be in another town. It never shows your home address.</p></details><details><summary>Does it change?</summary><p>Most home and mobile IP addresses change from time to time, for example when the modem restarts. A VPN also changes it.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/download-time/">Download time calculator</a></li><li><a href="https://tools.freenetsave.com/data-usage/">How much data do I need?</a></li><li><a href="https://tools.freenetsave.com/phone-plan-compare/">Compare phone plans</a></li><li><a href="https://freenetsave.com/imei-checker/">IMEI checker</a></li><li><a href="https://tools.freenetsave.com/screen-test/">Screen test</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+async function j(u){const r=await fetch(u,{cache:"no-store"});if(!r.ok)throw 0;return r.json();}
+async function run(){$("ip").textContent="Checking…";$("info").innerHTML="";const rows=[];
+ let v4="",v6="";try{v4=(await j("https://api.ipify.org?format=json")).ip}catch(e){}
+ try{const x=(await j("https://api64.ipify.org?format=json")).ip;if(x.includes(":"))v6=x}catch(e){}
+ $("ip").textContent=v4||v6||"Could not check — are you online?";if(v6)rows.push(["IPv6 address",v6]);
+ try{const g=await j("https://ipapi.co/json/");if(g.org)rows.push(["Internet provider",g.org]);if(g.city)rows.push(["Approximate location",[g.city,g.region,g.country_name].filter(Boolean).join(", ")]);if(g.timezone)rows.push(["Time zone",g.timezone]);}catch(e){}
+ rows.push(["Browser",navigator.userAgentData?navigator.userAgentData.brands.map(b=>b.brand).filter(b=>!/Not/.test(b)).join(", "):navigator.userAgent.split(") ").pop()]);
+ if(navigator.connection&&navigator.connection.effectiveType)rows.push(["Connection type (estimate)",navigator.connection.effectiveType.toUpperCase()]);
+ $("info").innerHTML=rows.map(r=>'<tr><th>'+r[0]+'</th><td>'+String(r[1]).replace(/</g,"&lt;")+'</td></tr>').join("");}
+$("copy").onclick=()=>copyText($("ip").textContent);$("again").onclick=run;run();
+
+</script>
+</body>
+</html>

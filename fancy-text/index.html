@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fancy Text Generator: cool fonts to copy and paste (bold, italic, script and more)</title>
+<meta name="description" content="Free fancy text generator. Type once and copy your words in bold, italic, script, bubble, square, upside-down and more styles for Instagram, WhatsApp, TikTok and Facebook names and posts.">
+<link rel="canonical" href="https://tools.freenetsave.com/fancy-text/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.fl{display:flex;flex-direction:column;gap:6px;margin-top:8px}.fr{display:grid;grid-template-columns:120px 1fr auto;gap:10px;align-items:center;border:1px solid #e5eaf3;border-radius:12px;padding:8px 10px}.fr .nm{font-size:13px;color:#5b6b85;font-weight:650}.fr .tx{font-size:20px;word-break:break-all}.fr .btn{width:auto;padding:8px 14px}@media(max-width:520px){.fr{grid-template-columns:1fr auto}.fr .nm{grid-column:1/-1}}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Fancy Text Generator", "url": "https://tools.freenetsave.com/fancy-text/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free fancy text generator. Type once and copy your words in bold, italic, script, bubble, square, upside-down and more styles for Instagram, WhatsApp, TikTok and Facebook names and posts."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How does it work?", "acceptedAnswer": {"@type": "Answer", "text": "These are not real fonts. They are special Unicode letters (like maths letters) that look different, so they still show when you paste them."}}, {"@type": "Question", "name": "Why do some show as boxes?", "acceptedAnswer": {"@type": "Answer", "text": "A few older phones or apps do not have every special letter. Pick another style that shows well."}}, {"@type": "Question", "name": "Is it safe for screen readers?", "acceptedAnswer": {"@type": "Answer", "text": "Screen readers may read fancy letters strangely, so use plain text for important information."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Fancy Text Generator</h1>
+    <p class="sub">Type once, then copy your words in cool styles for Instagram, WhatsApp and more.</p>
+  </div>
+  <div class="card">
+    <div class="field"><label for="t">Your text</label><input id="t" value="freenetsave" maxlength="300" autocomplete="off"></div>
+    <div id="list" class="fl"></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Type your name or words in the box.</li><li>Every style updates as you type.</li><li>Tap <b>Copy</b> next to the style you like and paste it into Instagram, WhatsApp, TikTok, Facebook or anywhere.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>How does it work?</summary><p>These are not real fonts. They are special Unicode letters (like maths letters) that look different, so they still show when you paste them.</p></details><details><summary>Why do some show as boxes?</summary><p>A few older phones or apps do not have every special letter. Pick another style that shows well.</p></details><details><summary>Is it safe for screen readers?</summary><p>Screen readers may read fancy letters strangely, so use plain text for important information.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/case-converter/">Case converter</a></li><li><a href="https://freenetsave.com/word-counter/">Word counter</a></li><li><a href="https://tools.freenetsave.com/online-notepad/">Online notepad</a></li><li><a href="https://tools.freenetsave.com/qr-code/">QR code maker</a></li><li><a href="https://tools.freenetsave.com/signature-maker/">Signature maker</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+function rng(a,A){return c=>{const o=c.codePointAt(0);if(o>=65&&o<=90&&A)return String.fromCodePoint(A+o-65);if(o>=97&&o<=122&&a)return String.fromCodePoint(a+o-97);return c;};}
+function dig(d0){return c=>{const o=c.codePointAt(0);return o>=48&&o<=57&&d0?String.fromCodePoint(d0+o-48):c;};}
+function both(f,g){return c=>{const x=f(c);return x!==c?x:g(c);};}
+const EXC={"𝑕":"ℎ","𝒆":"𝒆"};
+const SCRIPT_FIX={B:"ℬ",E:"ℰ",F:"ℱ",H:"ℋ",I:"ℐ",L:"ℒ",M:"ℳ",R:"ℛ",e:"ℯ",g:"ℊ",o:"ℴ"};
+const FRAK_FIX={C:"ℭ",H:"ℌ",I:"ℑ",R:"ℜ",Z:"ℨ"};const DS_FIX={C:"ℂ",H:"ℍ",N:"ℕ",P:"ℙ",Q:"ℚ",R:"ℝ",Z:"ℤ"};
+const SC="ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ";
+const UD={a:"ɐ",b:"q",c:"ɔ",d:"p",e:"ǝ",f:"ɟ",g:"ƃ",h:"ɥ",i:"ᴉ",j:"ɾ",k:"ʞ",l:"l",m:"ɯ",n:"u",o:"o",p:"d",q:"b",r:"ɹ",s:"s",t:"ʇ",u:"n",v:"ʌ",w:"ʍ",x:"x",y:"ʎ",z:"z","?":"¿","!":"¡",".":"˙",",":"'","'":",","(":")",")":"(","1":"Ɩ","2":"ᄅ","3":"Ɛ","4":"ㄣ","6":"9","7":"ㄥ","9":"6"};
+const fix=(m,f)=>c=>m[c]||f(c);
+const S=[
+ ["Bold",both(rng(0x1D41A,0x1D400),dig(0x1D7CE))],["Italic",c=>c==="h"?"ℎ":rng(0x1D44E,0x1D434)(c)],["Bold italic",rng(0x1D482,0x1D468)],
+ ["Script",fix(SCRIPT_FIX,rng(0x1D4B6,0x1D49C))],["Bold script",rng(0x1D4EA,0x1D4D0)],["Old English",fix(FRAK_FIX,rng(0x1D51E,0x1D504))],["Bold Old English",rng(0x1D586,0x1D56C)],
+ ["Double-struck",fix(DS_FIX,both(rng(0x1D552,0x1D538),dig(0x1D7D8)))],["Sans bold",both(rng(0x1D5EE,0x1D5D4),dig(0x1D7EC))],["Sans italic",rng(0x1D622,0x1D608)],
+ ["Monospace",both(rng(0x1D68A,0x1D670),dig(0x1D7F6))],["Bubbles",both(rng(0x24D0,0x24B6),c=>c==="0"?"⓪":/[1-9]/.test(c)?String.fromCodePoint(0x2460+ +c-1):c)],
+ ["Black bubbles",c=>{const o=c.toUpperCase().codePointAt(0);return o>=65&&o<=90?String.fromCodePoint(0x1F150+o-65):c;}],
+ ["Squares",c=>{const o=c.toUpperCase().codePointAt(0);return o>=65&&o<=90?String.fromCodePoint(0x1F130+o-65):c;}],
+ ["Black squares",c=>{const o=c.toUpperCase().codePointAt(0);return o>=65&&o<=90?String.fromCodePoint(0x1F170+o-65):c;}],
+ ["Small caps",c=>{const o=c.toLowerCase().codePointAt(0);return o>=97&&o<=122?SC[o-97]:c;}],
+ ["Wide",c=>{const o=c.codePointAt(0);return o>=33&&o<=126?String.fromCodePoint(0xFF01+o-33):c===" "?"　":c;}],
+];
+const WHOLE=[["Upside down",t=>[...t.toLowerCase()].map(c=>UD[c]||c).reverse().join("")],["Strike through",t=>[...t].map(c=>c+"̶").join("")],["Underline",t=>[...t].map(c=>c+"̲").join("")],
+ ["Hearts",t=>"♥ "+t+" ♥"],["Stars",t=>"★彡 "+t+" 彡★"],["Sparkles",t=>"✨ "+t+" ✨"],["Wings",t=>"꧁ "+t+" ꧂"]];
+function draw(){const t=$("t").value||"freenetsave";const out=S.map(([n,f])=>[n,[...t].map(f).join("")]).concat(WHOLE.map(([n,f])=>[n,f(t)]));
+ $("list").innerHTML=out.map((o,i)=>'<div class="fr"><span class="nm">'+o[0]+'</span><span class="tx" id="x'+i+'"></span><button type="button" class="btn line" data-i="'+i+'">Copy</button></div>').join("");
+ out.forEach((o,i)=>$("x"+i).textContent=o[1]);$("list").onclick=e=>{const b=e.target.closest("button");if(b)copyText(out[b.dataset.i][1]);};}
+$("t").addEventListener("input",draw);draw();
+
+</script>
+</body>
+</html>
