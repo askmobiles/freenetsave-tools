@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Screen Recorder: record your screen online, free, no download</title>
+<meta name="description" content="Free online screen recorder. Record your screen, a window or a browser tab with sound and your microphone, right in Chrome, Edge or Firefox. No download, no watermark, nothing uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/screen-recorder/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.chk{display:flex;flex-wrap:wrap;gap:6px 18px;margin:4px 0 8px}.chk label{display:flex;gap:8px;align-items:center;font-weight:500;margin:0}.chk input{width:auto}#rec{margin-top:12px;font-weight:700;color:#b91c1c;display:flex;align-items:center;gap:8px}.dot{width:12px;height:12px;border-radius:50%;background:#dc2626;animation:bl 1s infinite}@keyframes bl{50%{opacity:.2}}#vid{width:100%;max-height:60vh;background:#000;border-radius:10px;margin-top:12px}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Screen Recorder", "url": "https://tools.freenetsave.com/screen-recorder/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free online screen recorder. Record your screen, a window or a browser tab with sound and your microphone, right in Chrome, Edge or Firefox. No download, no watermark, nothing uploaded."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is there a time limit or watermark?", "acceptedAnswer": {"@type": "Answer", "text": "No watermark and no time limit set by us. Very long recordings use a lot of memory, so save long videos in parts."}}, {"@type": "Question", "name": "Is my video uploaded?", "acceptedAnswer": {"@type": "Answer", "text": "No. The recording is made and kept in your browser on your device until you save it."}}, {"@type": "Question", "name": "Why is there no sound from the screen?", "acceptedAnswer": {"@type": "Answer", "text": "Sound can be recorded from a browser tab in Chrome and Edge (tick \"Share tab audio\"), and from the whole screen on Windows. Mac and Firefox often do not allow screen sound; your microphone still works."}}, {"@type": "Question", "name": "What format is the video?", "acceptedAnswer": {"@type": "Answer", "text": "Newer Chrome and Edge save MP4. Other browsers save WebM, which plays in Chrome, Firefox and VLC. A free converter can change WebM to MP4 if needed."}}, {"@type": "Question", "name": "Does it work on a phone?", "acceptedAnswer": {"@type": "Answer", "text": "No. Phones and tablets do not let websites record the screen. iPhone and Android both have a screen recorder built in, in the quick settings or Control Centre."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Screen Recorder</h1>
+    <p class="sub">Record your screen, a window or a tab. The video stays on your device.</p>
+  </div>
+  <div class="card">
+    <div class="chk"><label><input type="checkbox" id="mic" checked> Record my microphone</label><label><input type="checkbox" id="sys" checked> Record sound from the screen or tab</label></div>
+    <div class="btnrow"><button class="btn" type="button" id="start">⏺ Start recording</button><button class="btn line" type="button" id="stop" disabled>⏹ Stop</button></div>
+    <p class="status" id="st"></p>
+    <div id="rec" hidden><span class="dot"></span> Recording <b id="tm">0:00</b></div>
+    <div id="res" hidden>
+      <video id="vid" controls playsinline></video>
+      <div class="btnrow"><button class="btn" type="button" id="dl">⬇ Save video</button><button class="btn line" type="button" id="again">⏺ Record again</button></div>
+      <p class="lead" id="sz"></p>
+    </div>
+    <p class="bad" id="no" hidden>This browser cannot record the screen. Please use Chrome, Edge or Firefox on a computer. Phones and tablets do not allow websites to record the screen; use the phone's built-in screen recorder instead.</p>
+  </div>
+  <p class="note">🔒 Your recording stays on your device. Nothing is sent or saved by us.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Choose whether to record your microphone and the sound from the screen.</li><li>Tap <b>Start recording</b>. Your browser asks what to share: the whole screen, one window or one tab. Pick one and tap Share.</li><li>Tap <b>Stop</b> (or the browser's "Stop sharing" button) when you are done. Watch the video, then tap <b>Save video</b>.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Is there a time limit or watermark?</summary><p>No watermark and no time limit set by us. Very long recordings use a lot of memory, so save long videos in parts.</p></details><details><summary>Is my video uploaded?</summary><p>No. The recording is made and kept in your browser on your device until you save it.</p></details><details><summary>Why is there no sound from the screen?</summary><p>Sound can be recorded from a browser tab in Chrome and Edge (tick "Share tab audio"), and from the whole screen on Windows. Mac and Firefox often do not allow screen sound; your microphone still works.</p></details><details><summary>What format is the video?</summary><p>Newer Chrome and Edge save MP4. Other browsers save WebM, which plays in Chrome, Firefox and VLC. A free converter can change WebM to MP4 if needed.</p></details><details><summary>Does it work on a phone?</summary><p>No. Phones and tablets do not let websites record the screen. iPhone and Android both have a screen recorder built in, in the quick settings or Control Centre.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/timer/">Timer and stopwatch</a></li><li><a href="https://tools.freenetsave.com/screen-test/">Screen test</a></li><li><a href="https://tools.freenetsave.com/online-notepad/">Online notepad</a></li><li><a href="https://tools.freenetsave.com/image-to-text/">Image to text</a></li><li><a href="https://tools.freenetsave.com/typing-test/">Typing test</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+let rec=null,chunks=[],streams=[],t0=0,tick=null,blob=null,mime="";
+if(!navigator.mediaDevices||!navigator.mediaDevices.getDisplayMedia||!window.MediaRecorder){$("no").hidden=false;$("start").disabled=true;}
+function pickMime(){for(const m of ["video/mp4;codecs=avc1,mp4a.40.2","video/mp4","video/webm;codecs=vp9,opus","video/webm;codecs=vp8,opus","video/webm"])if(MediaRecorder.isTypeSupported(m))return m;return "";}
+function stopAll(){streams.forEach(s=>s.getTracks().forEach(t=>t.stop()));streams=[];clearInterval(tick);$("rec").hidden=true;$("start").disabled=false;$("stop").disabled=true;}
+async function start(){$("st").textContent="";$("res").hidden=true;chunks=[];
+ try{const scr=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:$("sys").checked});streams.push(scr);
+  const tracks=[...scr.getVideoTracks()];let ac=null,dst=null;const auds=[];
+  if(scr.getAudioTracks().length)auds.push(new MediaStream(scr.getAudioTracks()));
+  if($("mic").checked){try{const m=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});streams.push(m);auds.push(m);}catch(e){$("st").textContent="Microphone not allowed, so recording without it.";}}
+  if(auds.length===1)tracks.push(auds[0].getAudioTracks()[0]);
+  else if(auds.length>1){ac=new AudioContext();dst=ac.createMediaStreamDestination();auds.forEach(s=>ac.createMediaStreamSource(s).connect(dst));tracks.push(dst.stream.getAudioTracks()[0]);}
+  mime=pickMime();rec=new MediaRecorder(new MediaStream(tracks),mime?{mimeType:mime,videoBitsPerSecond:5e6}:{});
+  rec.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+  rec.onstop=()=>{stopAll();if(ac)ac.close();blob=new Blob(chunks,{type:(mime||"video/webm").split(";")[0]});$("vid").src=URL.createObjectURL(blob);$("res").hidden=false;$("sz").textContent="Video size: "+fmtSize(blob.size)+" · format: "+(blob.type.includes("mp4")?"MP4":"WebM");$("st").textContent="Done. Watch it below and tap Save video.";};
+  scr.getVideoTracks()[0].addEventListener("ended",()=>{if(rec&&rec.state==="recording")rec.stop();});
+  rec.start(1000);t0=Date.now();$("rec").hidden=false;$("start").disabled=true;$("stop").disabled=false;
+  tick=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$("tm").textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");},500);}
+ catch(e){stopAll();$("st").textContent="Recording did not start. You may have pressed Cancel, or the browser blocked it.";}}
+$("start").addEventListener("click",start);
+$("stop").addEventListener("click",()=>{if(rec&&rec.state==="recording")rec.stop();});
+$("again").addEventListener("click",start);
+$("dl").addEventListener("click",()=>{if(!blob)return;const d=new Date(),p=n=>String(n).padStart(2,"0");saveFile(blob,"screen-recording-"+d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"-"+p(d.getHours())+p(d.getMinutes())+"."+(blob.type.includes("mp4")?"mp4":"webm"));});
+
+</script>
+</body>
+</html>

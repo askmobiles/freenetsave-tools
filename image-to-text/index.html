@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image to Text (OCR): copy text from a photo or screenshot, free</title>
+<meta name="description" content="Free image to text converter (OCR). Get the text out of a photo, screenshot or scanned page in English, French, Spanish, Tamil, Hindi, Arabic or Chinese. Runs on your device; nothing is uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/image-to-text/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+textarea.tt{min-height:240px;font-size:16px}#prev{margin:12px 0;text-align:center}#prev img{max-width:100%;max-height:340px;border-radius:10px;border:1px solid #dde5f2}a.btn{text-decoration:none;text-align:center}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Image to Text (OCR)", "url": "https://tools.freenetsave.com/image-to-text/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free image to text converter (OCR). Get the text out of a photo, screenshot or scanned page in English, French, Spanish, Tamil, Hindi, Arabic or Chinese. Runs on your device; nothing is uploaded."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is my picture uploaded?", "acceptedAnswer": {"@type": "Answer", "text": "No. The text is read by a program that runs inside your browser. The picture never leaves your device."}}, {"@type": "Question", "name": "Why is the first time slow?", "acceptedAnswer": {"@type": "Answer", "text": "The first time, your browser downloads the reader and the language (about 5 to 8 MB). It is kept in your browser, so the next time is much faster."}}, {"@type": "Question", "name": "How can I get better results?", "acceptedAnswer": {"@type": "Answer", "text": "Use a sharp, well-lit picture taken straight on, with dark text on a light background. Crop out anything that is not text. Printed text works much better than handwriting."}}, {"@type": "Question", "name": "Can it read Tamil?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Choose Tamil as the language. Printed Tamil works well; handwriting is hard for any reader."}}, {"@type": "Question", "name": "Does it work with PDFs?", "acceptedAnswer": {"@type": "Answer", "text": "This page reads pictures. For a PDF that already has text in it, use PDF to text. For a scanned PDF, save the page as a picture first with PDF to JPG."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Image to Text (OCR)</h1>
+    <p class="sub">Pick a photo, screenshot or scan. The text is read on your device.</p>
+  </div>
+  <div class="card">
+    <div class="opts2"><div class="field"><label for="lang">Language of the text</label><select id="lang"><option value="eng">English</option><option value="fra">French</option><option value="spa">Spanish</option><option value="tam">Tamil</option><option value="hin">Hindi</option><option value="ara">Arabic</option><option value="chi_sim">Chinese (simplified)</option></select></div>
+    <div class="field"><label for="lang2">Also has (optional)</label><select id="lang2"><option value="">Nothing else</option><option value="eng">English</option><option value="fra">French</option><option value="spa">Spanish</option><option value="tam">Tamil</option><option value="hin">Hindi</option><option value="ara">Arabic</option><option value="chi_sim">Chinese (simplified)</option></select></div></div>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a picture"><b>Choose a picture</b><span>or drop it here · or paste a screenshot with Ctrl+V</span><span class="pick">Choose a picture</span><input type="file" accept="image/*"></div>
+    <div id="prev" hidden><img id="img" alt="Your picture"></div>
+    <p class="status" id="st"></p>
+    <div class="bar" id="bar" hidden><i id="bi"></i></div>
+    <label for="out" style="margin-top:12px">Text found</label>
+    <textarea id="out" class="tt" placeholder="The text will appear here."></textarea>
+    <div class="btnrow"><button class="btn" type="button" id="copy">📋 Copy text</button><button class="btn line" type="button" id="dl">⬇ Download .txt</button><a class="btn line" id="tr" href="https://tools.freenetsave.com/translator/">🌐 Translate it</a></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Choose the language of the text. If the picture mixes two languages, pick the second one too.</li><li>Tap <b>Choose a picture</b>, drop a file on the box, or paste a screenshot with Ctrl+V.</li><li>Wait a few seconds while the text is read. Then fix any mistakes, copy it or download it.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Is my picture uploaded?</summary><p>No. The text is read by a program that runs inside your browser. The picture never leaves your device.</p></details><details><summary>Why is the first time slow?</summary><p>The first time, your browser downloads the reader and the language (about 5 to 8 MB). It is kept in your browser, so the next time is much faster.</p></details><details><summary>How can I get better results?</summary><p>Use a sharp, well-lit picture taken straight on, with dark text on a light background. Crop out anything that is not text. Printed text works much better than handwriting.</p></details><details><summary>Can it read Tamil?</summary><p>Yes. Choose Tamil as the language. Printed Tamil works well; handwriting is hard for any reader.</p></details><details><summary>Does it work with PDFs?</summary><p>This page reads pictures. For a PDF that already has text in it, use PDF to text. For a scanned PDF, save the page as a picture first with PDF to JPG.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/picture-converter/">Picture converter</a></li><li><a href="https://tools.freenetsave.com/heic-to-jpg/">HEIC to JPG</a></li><li><a href="https://tools.freenetsave.com/webp-to-jpg/">WebP to JPG</a></li><li><a href="https://freenetsave.com/make-picture-smaller/">Make picture smaller</a></li><li><a href="https://freenetsave.com/pictures-to-pdf/">Pictures to PDF</a></li><li><a href="https://tools.freenetsave.com/passport-photo/">Passport photo</a></li><li><a href="https://tools.freenetsave.com/pdf-to-text/">PDF to text</a></li><li><a href="https://tools.freenetsave.com/pdf-to-jpg/">PDF to JPG</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+let worker=null,wlang="";
+function loadLib(){return new Promise((ok,no)=>{if(window.Tesseract)return ok();const s=document.createElement("script");s.src="../assets/lib/tesseract/tesseract.min.js?v=1";s.onload=ok;s.onerror=no;document.head.appendChild(s);});}
+function langs(){const a=$("lang").value,b=$("lang2").value;return b&&b!==a?a+"+"+b:a;}
+async function getWorker(){const L=langs();if(worker&&wlang===L)return worker;if(worker){await worker.terminate();worker=null;}
+ await loadLib();const base=new URL("../assets/lib/tesseract/",location.href).href;
+ worker=await Tesseract.createWorker(L.split("+"),1,{workerPath:base+"worker.min.js",corePath:base+"core/",langPath:base+"lang",cacheMethod:"write",
+  logger:m=>{if(m.status){const p=Math.round((m.progress||0)*100);$("bar").hidden=false;$("bi").style.width=p+"%";$("st").textContent=({"loading tesseract core":"Loading the reader…","loading language traineddata":"Loading the language…","initializing api":"Getting ready…","recognizing text":"Reading the text… "+p+"%"})[m.status]||"Working…";}}});
+ wlang=L;return worker;}
+async function read(f){if(!f||!/^image\//.test(f.type)){$("st").textContent="Please choose a picture file (JPG, PNG, WebP…).";return;}
+ const u=URL.createObjectURL(f);$("img").src=u;$("prev").hidden=false;$("out").value="";
+ try{const w=await getWorker();const r=await w.recognize(f);const t=r.data.text.replace(/\n{3,}/g,"\n\n").trim();$("out").value=t;
+  $("st").textContent=t?"Done. Check the text, because reading is never perfect.":"No text was found. Try a clearer, straighter picture.";}
+ catch(e){$("st").textContent="Sorry, the picture could not be read on this device.";}
+ $("bar").hidden=true;}
+setupDrop($("drop"),fs=>read(fs[0]));
+document.addEventListener("paste",e=>{const it=[...(e.clipboardData||{}).items||[]].find(i=>i.type.startsWith("image/"));if(it){e.preventDefault();read(it.getAsFile());}});
+$("copy").addEventListener("click",()=>copyText($("out").value));
+$("dl").addEventListener("click",()=>saveFile(new Blob([$("out").value.replace(/\n/g,"\r\n")],{type:"text/plain"}),"text.txt"));
+
+</script>
+</body>
+</html>

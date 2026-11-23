@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebP to JPG Converter: free online, no upload</title>
+<meta name="description" content="Convert WebP pictures to JPG or PNG for free in your browser. Convert many at once and save them. Nothing is uploaded and no sign-up is needed.">
+<link rel="canonical" href="https://tools.freenetsave.com/webp-to-jpg/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "WebP to JPG Converter", "url": "https://tools.freenetsave.com/webp-to-jpg/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Convert WebP pictures to JPG or PNG for free in your browser. Convert many at once and save them. Nothing is uploaded and no sign-up is needed."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a WebP file?", "acceptedAnswer": {"@type": "Answer", "text": "WebP is a picture format made for websites. It is small, but some older programs, printers and upload forms do not accept it."}}, {"@type": "Question", "name": "JPG or PNG?", "acceptedAnswer": {"@type": "Answer", "text": "Choose JPG for photos. Choose PNG if the picture has see-through parts (like a logo) that you want to keep see-through."}}, {"@type": "Question", "name": "Are my pictures uploaded?", "acceptedAnswer": {"@type": "Answer", "text": "No. Everything happens in your browser. Nothing is sent or saved."}}, {"@type": "Question", "name": "Can I convert other formats?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. This tool also opens PNG, GIF, BMP and AVIF pictures (where your browser supports them). The Picture converter can also make WebP files."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>WebP to JPG Converter</h1>
+    <p class="sub">Change WebP pictures to JPG or PNG so they open in any app.</p>
+  </div>
+  <div class="card">
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose pictures"><b>Choose WebP pictures</b><span>or drop them here · you can pick many at once</span><span class="pick">Choose pictures</span><input type="file" accept=".webp,image/webp,image/*" multiple></div>
+    <div class="opts2"><div class="field"><label for="fmt">Change to</label><select id="fmt"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option></select></div>
+    <div class="field"><label for="q">Quality</label><select id="q"><option value="0.92">High</option><option value="0.8">Medium</option><option value="0.6">Small file</option></select></div></div>
+    <ul class="flist" id="list"></ul>
+    <p class="status" id="st"></p>
+    <button class="btn line" type="button" id="all" hidden>⬇ Save all</button>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Tap <b>Choose WebP pictures</b> and pick one or more files, or drop them on the box.</li><li>Choose JPG or PNG and the quality.</li><li>Tap ⬇ to save each picture, or <b>Save all</b>.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>What is a WebP file?</summary><p>WebP is a picture format made for websites. It is small, but some older programs, printers and upload forms do not accept it.</p></details><details><summary>JPG or PNG?</summary><p>Choose JPG for photos. Choose PNG if the picture has see-through parts (like a logo) that you want to keep see-through.</p></details><details><summary>Are my pictures uploaded?</summary><p>No. Everything happens in your browser. Nothing is sent or saved.</p></details><details><summary>Can I convert other formats?</summary><p>Yes. This tool also opens PNG, GIF, BMP and AVIF pictures (where your browser supports them). The Picture converter can also make WebP files.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/picture-converter/">Picture converter</a></li><li><a href="https://tools.freenetsave.com/heic-to-jpg/">HEIC to JPG</a></li><li><a href="https://tools.freenetsave.com/image-to-text/">Image to text</a></li><li><a href="https://freenetsave.com/make-picture-smaller/">Make picture smaller</a></li><li><a href="https://freenetsave.com/pictures-to-pdf/">Pictures to PDF</a></li><li><a href="https://tools.freenetsave.com/passport-photo/">Passport photo</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+const EXT={"image/jpeg":"jpg","image/png":"png"};let HEIC=null;
+function loadHeic(){if(HEIC)return HEIC;HEIC=new Promise((ok,no)=>{const s=document.createElement("script");s.src="../assets/lib/heic-to.js?v=1";s.onload=()=>ok(window.HeicTo);s.onerror=no;document.head.appendChild(s);});return HEIC;}
+function isHeic(f){return /\.(heic|heif)$/i.test(f.name)||/hei[cf]/i.test(f.type);}
+function draw(src,t,q){return new Promise(res=>{const u=typeof src==="string"?src:URL.createObjectURL(src),im=new Image();
+ im.onload=()=>{const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext("2d");if(t==="image/jpeg"){x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);}x.drawImage(im,0,0);URL.revokeObjectURL(u);c.toBlob(b=>res(b),t,q);};
+ im.onerror=()=>{URL.revokeObjectURL(u);res(null);};im.src=u;});}
+async function conv(f){const t=$("fmt").value,q=+$("q").value;
+ if(isHeic(f)){const b=await draw(f,t,q);if(b)return b;try{$("st").textContent="Opening iPhone photo…";const H=await loadHeic();const png=await (H.heicTo||H)({blob:f,type:"image/png"});return await draw(png,t,q);}catch(e){return null;}}
+ return draw(f,t,q);}
+async function go(files){$("st").textContent="Working…";let ok=0;
+ for(const f of files){const b=await conv(f),li=document.createElement("li");
+  if(!b){li.innerHTML='<div class="thumb">!</div><div class="nm"><b></b><span>This picture could not be opened</span></div>';li.querySelector("b").textContent=f.name;}
+  else{ok++;const name=baseName(f.name)+"."+EXT[$("fmt").value],u=URL.createObjectURL(b);
+   li.innerHTML='<div class="thumb"></div><div class="nm"><b></b><span></span></div><button type="button" aria-label="Download">⬇</button>';li.querySelector(".thumb").style.backgroundImage="url("+u+")";
+   li.querySelector("b").textContent=name;li.querySelector("span").textContent=fmtSize(f.size)+" → "+fmtSize(b.size);li.querySelector("button").addEventListener("click",()=>saveFile(b,name));if(files.length===1)saveFile(b,name);}
+  $("list").appendChild(li);}
+ $("st").textContent=ok?ok+(ok===1?" picture is":" pictures are")+" ready. Tap ⬇ to save.":"";
+ if(ok>1)$("all").hidden=false;}
+$("all").addEventListener("click",()=>{document.querySelectorAll("#list li button").forEach((b,i)=>setTimeout(()=>b.click(),i*400));});
+setupDrop($("drop"),go);
+
+</script>
+</body>
+</html>

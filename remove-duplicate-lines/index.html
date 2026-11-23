@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remove Duplicate Lines: free online tool (also sort and remove empty lines)</title>
+<meta name="description" content="Free tool to remove duplicate lines from a list. Paste your text, keep the first copy of each line, and optionally ignore case, trim spaces, remove empty lines or sort A to Z.">
+<link rel="canonical" href="https://tools.freenetsave.com/remove-duplicate-lines/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+textarea.tt{min-height:220px;font-family:ui-monospace,Consolas,monospace;font-size:15px}.chk{display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 0}.chk label{display:flex;gap:8px;align-items:center;font-weight:500;margin:0}.chk input{width:auto}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Remove Duplicate Lines", "url": "https://tools.freenetsave.com/remove-duplicate-lines/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free tool to remove duplicate lines from a list. Paste your text, keep the first copy of each line, and optionally ignore case, trim spaces, remove empty lines or sort A to Z."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which copy is kept?", "acceptedAnswer": {"@type": "Answer", "text": "The first time a line appears is kept, in its original place. Later copies are removed."}}, {"@type": "Question", "name": "What does \"ignore upper and lower case\" do?", "acceptedAnswer": {"@type": "Answer", "text": "It treats \"Apple\", \"APPLE\" and \"apple\" as the same line, and keeps the first one."}}, {"@type": "Question", "name": "Can I find which lines were repeated?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Tick \"Show only the lines that were repeated\" to see just those lines, once each."}}, {"@type": "Question", "name": "Is my list sent anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. Everything happens in your browser. Nothing is uploaded or saved."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Remove Duplicate Lines</h1>
+    <p class="sub">Paste a list. Each line is kept once.</p>
+  </div>
+  <div class="card">
+    <label for="inp">Your list (one item per line)</label>
+    <textarea id="inp" class="tt" placeholder="Paste your lines here…"></textarea>
+    <div class="chk">
+      <label><input type="checkbox" id="ci" checked> Ignore upper and lower case</label>
+      <label><input type="checkbox" id="tr" checked> Ignore spaces at the start and end</label>
+      <label><input type="checkbox" id="em" checked> Remove empty lines</label>
+      <label><input type="checkbox" id="so"> Sort A to Z</label>
+      <label><input type="checkbox" id="sh"> Show only the lines that were repeated</label>
+    </div>
+    <div class="result"><div class="box main"><span>Lines kept</span><b id="kept">0</b></div><div class="box"><span>Duplicates removed</span><b id="gone">0</b></div><div class="box"><span>Lines in</span><b id="tot">0</b></div></div>
+    <label for="out" style="margin-top:12px">Result</label>
+    <textarea id="out" class="tt" readonly></textarea>
+    <div class="btnrow"><button class="btn" type="button" id="copy">📋 Copy result</button><button class="btn line" type="button" id="dl">⬇ Download .txt</button><button class="btn line" type="button" id="clr">✖ Clear</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Paste your list in the top box, one item on each line.</li><li>Choose the options you want, for example ignore upper and lower case.</li><li>Copy the result or download it as a text file.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Which copy is kept?</summary><p>The first time a line appears is kept, in its original place. Later copies are removed.</p></details><details><summary>What does &quot;ignore upper and lower case&quot; do?</summary><p>It treats "Apple", "APPLE" and "apple" as the same line, and keeps the first one.</p></details><details><summary>Can I find which lines were repeated?</summary><p>Yes. Tick "Show only the lines that were repeated" to see just those lines, once each.</p></details><details><summary>Is my list sent anywhere?</summary><p>No. Everything happens in your browser. Nothing is uploaded or saved.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/word-counter/">Word counter</a></li><li><a href="https://tools.freenetsave.com/online-notepad/">Online notepad</a></li><li><a href="https://tools.freenetsave.com/case-converter/">Case converter</a></li><li><a href="https://tools.freenetsave.com/compare-text/">Compare two texts</a></li><li><a href="https://tools.freenetsave.com/image-to-text/">Image to text</a></li><li><a href="https://tools.freenetsave.com/translator/">Translator</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+function run(){let L=$("inp").value.split(/\r?\n/);if(!$("inp").value)L=[];const ci=$("ci").checked,tr=$("tr").checked,em=$("em").checked,so=$("so").checked,sh=$("sh").checked;
+ const seen=new Map(),out=[];let n=0;
+ for(let l of L){let v=tr?l.trim():l;if(em&&!v.trim())continue;n++;const k=ci?v.toLocaleLowerCase():v;if(seen.has(k)){seen.get(k).c++;continue;}const o={v,c:1};seen.set(k,o);out.push(o);}
+ let res=sh?out.filter(o=>o.c>1):out;res=res.map(o=>o.v);if(so)res.sort((a,b)=>a.localeCompare(b,undefined,{sensitivity:"base",numeric:true}));
+ $("out").value=res.join("\n");$("kept").textContent=res.length.toLocaleString();$("gone").textContent=(n-out.length).toLocaleString();$("tot").textContent=n.toLocaleString();}
+["inp","ci","tr","em","so","sh"].forEach(i=>$(i).addEventListener(i==="inp"?"input":"change",run));
+$("copy").addEventListener("click",()=>copyText($("out").value));
+$("dl").addEventListener("click",()=>saveFile(new Blob([$("out").value.replace(/\n/g,"\r\n")],{type:"text/plain"}),"list.txt"));
+$("clr").addEventListener("click",()=>{$("inp").value="";run();});run();
+
+</script>
+</body>
+</html>

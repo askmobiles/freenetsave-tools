@@ -31,7 +31,7 @@
     <div class="field"><label for="q">Quality</label><select id="q"><option value="0.92">High</option><option value="0.8">Medium</option><option value="0.6">Small file</option></select></div></div>
     <ul class="flist" id="list"></ul>
     <p class="status" id="st"></p>
-    <p class="lead">Location, date and camera details stored inside the photo are not copied into the new picture. iPhone HEIC photos open in Safari on iPhone, iPad and Mac.</p>
+    <p class="lead">Location, date and camera details stored inside the photo are not copied into the new picture. iPhone HEIC photos work too, in any browser.</p>
   </div>
   <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
 </div>
@@ -42,8 +42,10 @@ function conv(f){return new Promise(res=>{const u=URL.createObjectURL(f),im=new 
   im.onload=()=>{const c=document.createElement("canvas");c.width=im.naturalWidth;c.height=im.naturalHeight;const x=c.getContext("2d"),t=$("fmt").value;
     if(t==="image/jpeg"){x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);}x.drawImage(im,0,0);URL.revokeObjectURL(u);c.toBlob(b=>res(b),t,+$("q").value);};
   im.onerror=()=>{URL.revokeObjectURL(u);res(null);};im.src=u;});}
+let HEIC=null;function heic(f){$("st").textContent="Opening iPhone photo…";if(!HEIC)HEIC=new Promise((ok,no)=>{const s=document.createElement("script");s.src="../assets/lib/heic-to.js?v=1";s.onload=()=>ok(window.HeicTo);s.onerror=no;document.head.appendChild(s);});
+ return HEIC.then(H=>(H.heicTo||H)({blob:f,type:"image/png"})).then(p=>conv(new File([p],"x.png",{type:"image/png"}))).catch(()=>null);}
 async function go(files){$("st").textContent="Working…";let ok=0;
-  for(const f of files){const b=await conv(f),li=document.createElement("li");
+  for(const f of files){const b=(await conv(f))||(/\.(heic|heif)$/i.test(f.name)||/hei[cf]/i.test(f.type)?await heic(f):null),li=document.createElement("li");
     if(!b){li.innerHTML='<div class="thumb">!</div><div class="nm"><b></b><span>This browser cannot open this kind of picture</span></div>';li.querySelector("b").textContent=f.name;}
     else{ok++;const name=baseName(f.name)+"."+EXT[b.type||$("fmt").value],u=URL.createObjectURL(b);
       li.innerHTML='<div class="thumb"></div><div class="nm"><b></b><span></span></div><button type="button" aria-label="Download">⬇</button>';li.querySelector(".thumb").style.backgroundImage="url("+u+")";

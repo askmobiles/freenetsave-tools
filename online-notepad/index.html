@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Online Notepad: free, no sign-up, saves on your device</title>
+<meta name="description" content="Free online notepad. Write notes in your browser; they are kept on your own device, not on a server. Several notes, word count, download as a text file. No account.">
+<link rel="canonical" href="https://tools.freenetsave.com/online-notepad/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.np-top{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.np-top select{flex:1;min-width:180px}.np-top .btn{width:auto}textarea.np{min-height:420px;font-size:17px;line-height:1.55}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Online Notepad", "url": "https://tools.freenetsave.com/online-notepad/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free online notepad. Write notes in your browser; they are kept on your own device, not on a server. Several notes, word count, download as a text file. No account."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where are my notes saved?", "acceptedAnswer": {"@type": "Answer", "text": "Only in this browser on this device. They are never sent to us or to anyone. If you clear your browser data, use another browser or use a private window, the notes will not be there, so download anything important."}}, {"@type": "Question", "name": "Do I need an account?", "acceptedAnswer": {"@type": "Answer", "text": "No. There is no sign-up and no login."}}, {"@type": "Question", "name": "Can I open my notes on another device?", "acceptedAnswer": {"@type": "Answer", "text": "Not automatically, because nothing is stored online. Download the note as a .txt file and open it on the other device."}}, {"@type": "Question", "name": "Is there a limit?", "acceptedAnswer": {"@type": "Answer", "text": "Browsers usually allow a few megabytes, which is millions of characters of text."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Online Notepad</h1>
+    <p class="sub">Write notes in your browser. They stay on this device only.</p>
+  </div>
+  <div class="card">
+    <div class="np-top">
+      <select id="pick" aria-label="Choose a note"></select>
+      <button class="btn ghost" type="button" id="new">➕ New note</button>
+      <button class="btn ghost" type="button" id="del">🗑 Delete note</button>
+    </div>
+    <textarea id="txt" class="np" placeholder="Start writing…" aria-label="Your note" spellcheck="true"></textarea>
+    <p class="lead" id="info"></p>
+    <div class="btnrow">
+      <button class="btn" type="button" id="dl">⬇ Download as .txt</button>
+      <button class="btn line" type="button" id="copy">📋 Copy</button>
+      <button class="btn line" type="button" id="open">📂 Open a .txt file</button>
+      <input type="file" id="file" accept=".txt,.md,.csv,text/plain" hidden>
+    </div>
+  </div>
+  <p class="note">🔒 Notes are kept only in this browser on this device. Nothing is sent to us.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Type or paste in the box. Your note is kept in this browser on this device as you type.</li><li>Tap <b>New note</b> to start another one. Pick a note from the list to switch.</li><li>Tap <b>Download as .txt</b> to keep a copy as a file, or <b>Open a .txt file</b> to edit one you have.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Where are my notes saved?</summary><p>Only in this browser on this device. They are never sent to us or to anyone. If you clear your browser data, use another browser or use a private window, the notes will not be there, so download anything important.</p></details><details><summary>Do I need an account?</summary><p>No. There is no sign-up and no login.</p></details><details><summary>Can I open my notes on another device?</summary><p>Not automatically, because nothing is stored online. Download the note as a .txt file and open it on the other device.</p></details><details><summary>Is there a limit?</summary><p>Browsers usually allow a few megabytes, which is millions of characters of text.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/word-counter/">Word counter</a></li><li><a href="https://tools.freenetsave.com/remove-duplicate-lines/">Remove duplicate lines</a></li><li><a href="https://tools.freenetsave.com/case-converter/">Case converter</a></li><li><a href="https://tools.freenetsave.com/compare-text/">Compare two texts</a></li><li><a href="https://tools.freenetsave.com/image-to-text/">Image to text</a></li><li><a href="https://tools.freenetsave.com/translator/">Translator</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+const K="fns_notepad";let S;
+function load(){try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S||!S.notes||!S.notes.length)S={cur:0,notes:[{t:""}]};}
+function save(){try{localStorage.setItem(K,JSON.stringify(S));$("info").textContent=stats()+" · saved on this device";}catch(e){$("info").textContent=stats()+" · this browser cannot save notes (private mode?) — download to keep it";}}
+function stats(){const t=$("txt").value,w=(t.match(/\S+/g)||[]).length;return w.toLocaleString()+" words · "+[...t].length.toLocaleString()+" characters";}
+function name(n,i){const f=(n.t.trim().split("\n")[0]||"").slice(0,30);return (i+1)+". "+(f||"Empty note");}
+function fill(){$("pick").innerHTML="";S.notes.forEach((n,i)=>{const o=document.createElement("option");o.value=i;o.textContent=name(n,i);$("pick").appendChild(o);});$("pick").value=S.cur;$("txt").value=S.notes[S.cur].t;save();}
+load();fill();
+let tm;$("txt").addEventListener("input",()=>{S.notes[S.cur].t=$("txt").value;clearTimeout(tm);tm=setTimeout(()=>{save();const o=$("pick").options[S.cur];if(o)o.textContent=name(S.notes[S.cur],S.cur);},300);});
+$("pick").addEventListener("change",()=>{S.cur=+$("pick").value;fill();});
+$("new").addEventListener("click",()=>{S.notes.push({t:""});S.cur=S.notes.length-1;fill();$("txt").focus();});
+$("del").addEventListener("click",()=>{if($("txt").value.trim()&&!confirm("Delete this note from this device?"))return;S.notes.splice(S.cur,1);if(!S.notes.length)S.notes=[{t:""}];S.cur=Math.max(0,S.cur-1);fill();});
+$("dl").addEventListener("click",()=>{const t=$("txt").value;const f=(t.trim().split("\n")[0]||"note").replace(/[^\w\- ]+/g,"").trim().slice(0,40)||"note";saveFile(new Blob([t.replace(/\n/g,"\r\n")],{type:"text/plain"}),f+".txt");});
+$("copy").addEventListener("click",()=>copyText($("txt").value));
+$("open").addEventListener("click",()=>$("file").click());
+$("file").addEventListener("change",async()=>{const f=$("file").files[0];if(!f)return;const t=await f.text();S.notes.push({t});S.cur=S.notes.length-1;fill();$("file").value="";});
+
+</script>
+</body>
+</html>

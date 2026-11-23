@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Converter: UPPER, lower, Title and Sentence case (free)</title>
+<meta name="description" content="Free case converter. Change text to UPPER CASE, lower case, Title Case, Sentence case, camelCase, snake_case and more. Paste, tap a button, copy. Nothing is saved.">
+<link rel="canonical" href="https://tools.freenetsave.com/case-converter/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+textarea.tt{min-height:240px;font-size:16px}.cases{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:12px 0}.cases .btn{width:100%}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Case Converter", "url": "https://tools.freenetsave.com/case-converter/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free case converter. Change text to UPPER CASE, lower case, Title Case, Sentence case, camelCase, snake_case and more. Paste, tap a button, copy. Nothing is saved."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is the difference between Title Case and Capitalize Each Word?", "acceptedAnswer": {"@type": "Answer", "text": "Title Case keeps small words like \"and\", \"of\" and \"the\" in lower case, the way book and article titles are written. Capitalize Each Word makes every word start with a capital."}}, {"@type": "Question", "name": "What is Sentence case?", "acceptedAnswer": {"@type": "Answer", "text": "Only the first letter of each sentence is a capital, like normal writing. Names will need to be fixed by hand afterwards."}}, {"@type": "Question", "name": "What are camelCase and snake_case for?", "acceptedAnswer": {"@type": "Answer", "text": "They are ways of joining words without spaces, used in computer code, file names and spreadsheets."}}, {"@type": "Question", "name": "Is my text saved?", "acceptedAnswer": {"@type": "Answer", "text": "No. It stays in your browser and is gone when you close the page."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Case Converter</h1>
+    <p class="sub">Paste your text and choose a case.</p>
+  </div>
+  <div class="card">
+    <textarea id="txt" class="tt" placeholder="Paste or type your text here…" aria-label="Your text"></textarea>
+    <div class="cases">
+      <button class="btn ghost" data-c="up">UPPER CASE</button>
+      <button class="btn ghost" data-c="low">lower case</button>
+      <button class="btn ghost" data-c="title">Title Case</button>
+      <button class="btn ghost" data-c="sent">Sentence case</button>
+      <button class="btn ghost" data-c="cap">Capitalize Each Word</button>
+      <button class="btn ghost" data-c="inv">iNVERT cASE</button>
+      <button class="btn ghost" data-c="camel">camelCase</button>
+      <button class="btn ghost" data-c="pascal">PascalCase</button>
+      <button class="btn ghost" data-c="snake">snake_case</button>
+      <button class="btn ghost" data-c="kebab">kebab-case</button>
+      <button class="btn ghost" data-c="const">CONSTANT_CASE</button>
+      <button class="btn ghost" data-c="space">Remove extra spaces</button>
+    </div>
+    <p class="lead" id="info"></p>
+    <div class="btnrow"><button class="btn" type="button" id="copy">📋 Copy text</button><button class="btn line" type="button" id="undo">↩ Undo</button><button class="btn line" type="button" id="clr">✖ Clear</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Paste or type your text in the box.</li><li>Tap the case you want. The text changes right away.</li><li>Tap <b>Copy text</b>. If you change your mind, tap <b>Undo</b>.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>What is the difference between Title Case and Capitalize Each Word?</summary><p>Title Case keeps small words like "and", "of" and "the" in lower case, the way book and article titles are written. Capitalize Each Word makes every word start with a capital.</p></details><details><summary>What is Sentence case?</summary><p>Only the first letter of each sentence is a capital, like normal writing. Names will need to be fixed by hand afterwards.</p></details><details><summary>What are camelCase and snake_case for?</summary><p>They are ways of joining words without spaces, used in computer code, file names and spreadsheets.</p></details><details><summary>Is my text saved?</summary><p>No. It stays in your browser and is gone when you close the page.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/word-counter/">Word counter</a></li><li><a href="https://tools.freenetsave.com/online-notepad/">Online notepad</a></li><li><a href="https://tools.freenetsave.com/remove-duplicate-lines/">Remove duplicate lines</a></li><li><a href="https://tools.freenetsave.com/compare-text/">Compare two texts</a></li><li><a href="https://tools.freenetsave.com/image-to-text/">Image to text</a></li><li><a href="https://tools.freenetsave.com/translator/">Translator</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+const SMALL=new Set("a an and as at but by for from in into nor of on or over per the to up via vs with".split(" "));
+const words=t=>t.replace(/([a-z0-9])([A-Z])/g,"$1 $2").split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+const cap=w=>w.charAt(0).toLocaleUpperCase()+w.slice(1).toLocaleLowerCase();
+const F={up:t=>t.toLocaleUpperCase(),low:t=>t.toLocaleLowerCase(),
+ cap:t=>t.toLocaleLowerCase().replace(/(^|[\s\-("'“‘])(\p{L})/gu,(m,a,b)=>a+b.toLocaleUpperCase()),
+ title:t=>t.split("\n").map(line=>{const p=line.toLocaleLowerCase().split(/(\s+)/);let first=true;const last=p.length-1-[...p].reverse().findIndex(x=>x.trim());return p.map((w,i)=>{if(!w.trim())return w;const r=(first||i===last||!SMALL.has(w.replace(/[^\p{L}]/gu,"")))?w.replace(/\p{L}/u,c=>c.toLocaleUpperCase()):w;first=false;return r;}).join("");}).join("\n"),
+ sent:t=>t.toLocaleLowerCase().replace(/(^\s*|[.!?]\s+|\n\s*)(\p{L})/gu,(m,a,b)=>a+b.toLocaleUpperCase()).replace(/\bi\b/g,"I"),
+ inv:t=>[...t].map(c=>c===c.toLocaleUpperCase()?c.toLocaleLowerCase():c.toLocaleUpperCase()).join(""),
+ camel:t=>words(t).map((w,i)=>i?cap(w):w.toLocaleLowerCase()).join(""),
+ pascal:t=>words(t).map(cap).join(""),
+ snake:t=>words(t).map(w=>w.toLocaleLowerCase()).join("_"),
+ kebab:t=>words(t).map(w=>w.toLocaleLowerCase()).join("-"),
+ const:t=>words(t).map(w=>w.toLocaleUpperCase()).join("_"),
+ space:t=>t.split("\n").map(l=>l.replace(/[ \t]+/g," ").trim()).join("\n").replace(/\n{3,}/g,"\n\n")};
+let prev=null;
+function info(){const t=$("txt").value;$("info").textContent=(t.match(/\S+/g)||[]).length+" words · "+[...t].length+" characters";}
+document.querySelectorAll("[data-c]").forEach(b=>b.addEventListener("click",()=>{prev=$("txt").value;$("txt").value=F[b.dataset.c](prev);info();}));
+$("undo").addEventListener("click",()=>{if(prev!==null){$("txt").value=prev;prev=null;info();}});
+$("copy").addEventListener("click",()=>copyText($("txt").value));
+$("clr").addEventListener("click",()=>{prev=$("txt").value;$("txt").value="";info();});
+$("txt").addEventListener("input",info);info();
+
+</script>
+</body>
+</html>

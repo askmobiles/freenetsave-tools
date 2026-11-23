@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compare Two Texts: find the differences online (free)</title>
+<meta name="description" content="Free text compare tool. Paste two versions of a text and see which lines and words were added, removed or changed, highlighted in colour. Nothing is uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/compare-text/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.two{grid-template-columns:1fr}}textarea.tt{min-height:220px;font-family:ui-monospace,Consolas,monospace;font-size:14.5px}.chk{display:flex;flex-wrap:wrap;gap:6px 18px;margin:12px 0}.chk label{display:flex;gap:8px;align-items:center;font-weight:500;margin:0}.chk input{width:auto}.diff{margin-top:14px;border:1px solid #dde5f2;border-radius:12px;overflow:auto;max-height:70vh;font-family:ui-monospace,Consolas,monospace;font-size:14px;background:#fff}.ln{display:grid;grid-template-columns:44px 44px 1fr;border-bottom:1px solid #f1f4f9}.ln i{font-style:normal;color:#8a97ad;text-align:right;padding:3px 8px;background:#f8fafd;user-select:none}.ln span{padding:3px 10px;white-space:pre-wrap;overflow-wrap:anywhere}.ln.rm{background:#fff1f1}.ln.ad{background:#effbf3}del{background:#fecaca;text-decoration:line-through;border-radius:3px}ins{background:#bbf7d0;text-decoration:none;border-radius:3px}.diff p{padding:12px;margin:0}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Compare Two Texts", "url": "https://tools.freenetsave.com/compare-text/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free text compare tool. Paste two versions of a text and see which lines and words were added, removed or changed, highlighted in colour. Nothing is uploaded."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How does it decide what changed?", "acceptedAnswer": {"@type": "Answer", "text": "It lines up the two texts line by line, finds the longest set of lines they share, and marks everything else as added or removed. Inside a changed line, it does the same with words."}}, {"@type": "Question", "name": "Can I ignore small differences?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Tick \"Ignore extra spaces\" or \"Ignore upper and lower case\"."}}, {"@type": "Question", "name": "Is there a size limit?", "acceptedAnswer": {"@type": "Answer", "text": "It works well for documents up to a few thousand lines. For very long files, compare them in parts."}}, {"@type": "Question", "name": "Are my texts uploaded?", "acceptedAnswer": {"@type": "Answer", "text": "No. The comparison happens in your browser. Nothing is sent or saved."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Compare Two Texts</h1>
+    <p class="sub">Paste the old and new versions to see what changed.</p>
+  </div>
+  <div class="card">
+    <div class="two">
+      <div><label for="a">Old version</label><textarea id="a" class="tt" placeholder="Paste the first text…"></textarea></div>
+      <div><label for="b">New version</label><textarea id="b" class="tt" placeholder="Paste the second text…"></textarea></div>
+    </div>
+    <div class="chk"><label><input type="checkbox" id="ci"> Ignore upper and lower case</label><label><input type="checkbox" id="ws" checked> Ignore extra spaces</label></div>
+    <div class="btnrow"><button class="btn" type="button" id="go">Compare</button><button class="btn line" type="button" id="sw">⇄ Swap</button></div>
+    <div class="result" id="sum" hidden><div class="box main"><span>Changes</span><b id="nch">0</b></div><div class="box"><span>Lines added</span><b id="nad">0</b></div><div class="box"><span>Lines removed</span><b id="nrm">0</b></div></div>
+    <div id="out" class="diff" hidden></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you enter is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Paste the first (old) text on the left and the second (new) text on the right.</li><li>Tap <b>Compare</b>.</li><li>Red lines were removed and green lines were added. Inside a changed line, the exact words that changed are highlighted.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>How does it decide what changed?</summary><p>It lines up the two texts line by line, finds the longest set of lines they share, and marks everything else as added or removed. Inside a changed line, it does the same with words.</p></details><details><summary>Can I ignore small differences?</summary><p>Yes. Tick "Ignore extra spaces" or "Ignore upper and lower case".</p></details><details><summary>Is there a size limit?</summary><p>It works well for documents up to a few thousand lines. For very long files, compare them in parts.</p></details><details><summary>Are my texts uploaded?</summary><p>No. The comparison happens in your browser. Nothing is sent or saved.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/word-counter/">Word counter</a></li><li><a href="https://tools.freenetsave.com/online-notepad/">Online notepad</a></li><li><a href="https://tools.freenetsave.com/remove-duplicate-lines/">Remove duplicate lines</a></li><li><a href="https://tools.freenetsave.com/case-converter/">Case converter</a></li><li><a href="https://tools.freenetsave.com/image-to-text/">Image to text</a></li><li><a href="https://tools.freenetsave.com/translator/">Translator</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function lcs(A,B,eq){const n=A.length,m=B.length;if(n*m>2.5e7)return null;const W=m+1,T=new Uint32Array((n+1)*W);
+ for(let i=n-1;i>=0;i--)for(let j=m-1;j>=0;j--)T[i*W+j]=eq(A[i],B[j])?T[(i+1)*W+j+1]+1:Math.max(T[(i+1)*W+j],T[i*W+j+1]);
+ const r=[];let i=0,j=0;while(i<n&&j<m){if(eq(A[i],B[j])){r.push(["=",A[i],B[j]]);i++;j++;}else if(T[(i+1)*W+j]>=T[i*W+j+1])r.push(["-",A[i++]]);else r.push(["+",B[j++]]);}
+ while(i<n)r.push(["-",A[i++]]);while(j<m)r.push(["+",B[j++]]);return r;}
+function norm(s){if($("ws").checked)s=s.replace(/\s+/g," ").trim();if($("ci").checked)s=s.toLocaleLowerCase();return s;}
+function wordDiff(x,y){const A=x.split(/(\s+)/),B=y.split(/(\s+)/);const d=lcs(A,B,(p,q)=>norm(p)===norm(q));if(!d)return[esc(x),esc(y)];
+ let o="",n="";for(const [k,p,q] of d){if(k==="=")(o+=esc(p),n+=esc(q));else if(k==="-")o+="<del>"+esc(p)+"</del>";else n+="<ins>"+esc(p)+"</ins>";}return[o,n];}
+function go(){const A=$("a").value.split(/\r?\n/),B=$("b").value.split(/\r?\n/);const d=lcs(A,B,(p,q)=>norm(p)===norm(q));
+ if(!d){$("out").hidden=false;$("out").innerHTML='<p class="bad">These texts are too long to compare here. Try comparing them in smaller parts.</p>';return;}
+ let h="",ad=0,rm=0,ch=0,ln1=0,ln2=0;
+ for(let k=0;k<d.length;k++){const r=d[k];
+  if(r[0]==="="){ln1++;ln2++;h+='<div class="ln same"><i>'+ln1+'</i><i>'+ln2+'</i><span>'+(esc(r[1])||"&nbsp;")+'</span></div>';continue;}
+  // pair a run of removed lines with following added lines as changed lines
+  const rem=[],add=[];while(k<d.length&&d[k][0]==="-")rem.push(d[k++][1]);while(k<d.length&&d[k][0]==="+")add.push(d[k++][1]);k--;
+  const p=Math.min(rem.length,add.length);ch+=Math.max(rem.length,add.length);
+  for(let t=0;t<p;t++){const [o,n]=wordDiff(rem[t],add[t]);ln1++;ln2++;h+='<div class="ln rm"><i>'+ln1+'</i><i></i><span>'+(o||"&nbsp;")+'</span></div><div class="ln ad"><i></i><i>'+ln2+'</i><span>'+(n||"&nbsp;")+'</span></div>';}
+  for(let t=p;t<rem.length;t++){ln1++;rm++;h+='<div class="ln rm"><i>'+ln1+'</i><i></i><span><del>'+(esc(rem[t])||"&nbsp;")+'</del></span></div>';}
+  for(let t=p;t<add.length;t++){ln2++;ad++;h+='<div class="ln ad"><i></i><i>'+ln2+'</i><span><ins>'+(esc(add[t])||"&nbsp;")+'</ins></span></div>';}}
+ $("sum").hidden=false;$("out").hidden=false;$("nch").textContent=ch;$("nad").textContent=ad;$("nrm").textContent=rm;
+ $("out").innerHTML=ch?h:'<p class="ok">✔ The two texts are the same.</p>'+h;}
+$("go").addEventListener("click",go);
+$("sw").addEventListener("click",()=>{const t=$("a").value;$("a").value=$("b").value;$("b").value=t;if(!$("out").hidden)go();});
+["ci","ws"].forEach(i=>$(i).addEventListener("change",()=>{if(!$("out").hidden)go();}));
+
+</script>
+</body>
+</html>
