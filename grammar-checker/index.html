@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Grammar Checker: check spelling and grammar online (Canadian English)</title>
+<meta name="description" content="Free grammar and spelling checker. Paste your text to find mistakes and fix them with one tap. Canadian, American, British, Indian and Australian English. Your text never leaves your device.">
+<link rel="canonical" href="https://tools.freenetsave.com/grammar-checker/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.lead{color:var(--muted);font-size:15px;margin:0 0 12px}
+
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+
+.gc-view{border:1px solid #dde5f2;border-radius:12px;padding:12px 14px;margin:10px 0;background:#fbfdff;font-size:17px;line-height:1.8;white-space:pre-wrap;word-wrap:break-word}
+.gc-view mark{background:none;border-bottom:3px solid #ef4444;cursor:pointer;padding:0 1px;color:inherit}
+.gc-view mark.sp{border-color:#f59e0b}.gc-view mark.st{border-color:#3b82f6}
+.gc-view mark.on{background:#fee2e2}
+.gc-i{border:1px solid #dde5f2;border-left:5px solid #ef4444;border-radius:12px;padding:10px 12px;margin:8px 0;background:#fff}
+.gc-i.sp{border-left-color:#f59e0b}.gc-i.st{border-left-color:#3b82f6}.gc-i.on{box-shadow:0 0 0 3px #bfdbfe}
+.gc-i small{display:block;color:#5b6b85;font-weight:700;font-size:12.5px;text-transform:none}
+.gc-i p{margin:3px 0 6px}.gc-i q{font-weight:700;quotes:none;background:#fee2e2;border-radius:4px;padding:0 4px}
+.gc-s{display:inline-block;margin:3px 6px 0 0;background:#eef4ff;color:#1d4ed8;border:1.5px solid #bfd3fb;border-radius:999px;padding:5px 12px;font:inherit;font-weight:700;cursor:pointer}
+.gc-s:hover{background:#dbe7ff}.gc-x{background:none;border:none;color:#5b6b85;font:inherit;font-size:14px;cursor:pointer;text-decoration:underline}
+.gc-ok{background:#ecfdf3;border:1px solid #bbf7d0;border-radius:12px;padding:10px 14px;color:#166534;font-weight:700}
+
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Grammar Checker", "url": "https://tools.freenetsave.com/grammar-checker/", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any (runs in the browser)", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "CAD"}, "description": "Free grammar and spelling checker. Paste your text to find mistakes and fix them with one tap. Canadian, American, British, Indian and Australian English. Your text never leaves your device."}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is my text sent anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The checker runs inside your browser on your own device. Your text is never uploaded or saved, so it is safe for school work, job applications and private messages."}}, {"@type": "Question", "name": "Why does it take a moment the first time?", "acceptedAnswer": {"@type": "Answer", "text": "The checker downloads once (about 8 MB). After that your browser keeps it, so it opens quickly next time."}}, {"@type": "Question", "name": "Does it check Canadian spelling?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Choose Canadian English to accept spellings like colour, centre and cheque. You can also choose American, British, Indian or Australian English."}}, {"@type": "Question", "name": "Will it catch every mistake?", "acceptedAnswer": {"@type": "Answer", "text": "No checker is perfect. It finds common grammar, spelling and style mistakes, but always read your text again before you send it."}}, {"@type": "Question", "name": "Does it work for other languages?", "acceptedAnswer": {"@type": "Answer", "text": "For now it checks English only."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>Grammar Checker</h1>
+    <p class="sub">Find and fix grammar and spelling mistakes. Your text stays on your device.</p>
+  </div>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px"><label for="txt" style="font-weight:700">Your text</label><label style="display:flex;align-items:center;gap:8px;font-weight:650;font-size:15px">English <select id="dia" style="width:auto;padding:6px 10px;border-radius:10px"><option value="3">Canadian</option><option value="0">American</option><option value="1">British</option><option value="4">Indian</option><option value="2">Australian</option></select></label></div>
+    <textarea id="txt" rows="9" spellcheck="false" placeholder="Type or paste your text here. Mistakes are found as you type." style="width:100%;font:inherit;font-size:17px;line-height:1.6;padding:12px;border:1.5px solid #cfd9ea;border-radius:12px;resize:vertical"></textarea>
+    <p class="lead" id="stat" aria-live="polite">Loading the checker (about 8 MB, only the first time)…</p>
+    <div class="gc-view" id="view" hidden></div>
+    <div class="btnrow"><button class="btn" type="button" id="fixall" disabled>✓ Fix all</button><button class="btn ghost" type="button" id="copy">📋 Copy text</button><button class="btn line" type="button" id="clear">Clear</button></div>
+    <div id="list"></div>
+    <p class="lead" id="counts" style="font-size:14px"></p>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Your text is not sent or saved. Grammar checking uses the open-source Harper checker (Apache 2.0 licence).</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Type or paste your text into the box.</li><li>Choose your English: Canadian, American, British, Indian or Australian.</li><li>Mistakes are underlined: red for grammar, orange for spelling, blue for style.</li><li>Tap a suggestion to fix it, or tap <b>Fix all</b>. Tap <b>Ignore</b> if your text is already right.</li><li>Tap <b>Copy text</b> and paste it where you need it.</li></ol>
+    <h2>Common questions</h2>
+    <details><summary>Is my text sent anywhere?</summary><p>No. The checker runs inside your browser on your own device. Your text is never uploaded or saved, so it is safe for school work, job applications and private messages.</p></details><details><summary>Why does it take a moment the first time?</summary><p>The checker downloads once (about 8 MB). After that your browser keeps it, so it opens quickly next time.</p></details><details><summary>Does it check Canadian spelling?</summary><p>Yes. Choose Canadian English to accept spellings like colour, centre and cheque. You can also choose American, British, Indian or Australian English.</p></details><details><summary>Will it catch every mistake?</summary><p>No checker is perfect. It finds common grammar, spelling and style mistakes, but always read your text again before you send it.</p></details><details><summary>Does it work for other languages?</summary><p>For now it checks English only.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://freenetsave.com/word-counter/">Word counter</a></li><li><a href="https://tools.freenetsave.com/case-converter/">Case converter</a></li><li><a href="https://tools.freenetsave.com/compare-text/">Compare two texts</a></li><li><a href="https://tools.freenetsave.com/resume-builder/">Resume builder</a></li><li><a href="https://tools.freenetsave.com/fancy-text/">Fancy text</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script>
+
+const $=id=>document.getElementById(id);
+let linter=null,H=null,lints=[],ign=new Set(),timer=null,busy=false,again=false;
+const cps=s=>Array.from(s);
+// extra checks for common mistakes Harper may miss (indexes are in characters)
+const EXTRA=[
+ [/\bI (are|is)\b/g,"Use “am” with “I”.",m=>"I am"],
+ [/\b(he|she|it) (don't|dont)\b/gi,"Use “doesn't” with he, she or it.",m=>m[1]+" doesn't"],
+ [/\b(they|we|you) was\b/gi,"Use “were” with they, we or you.",m=>m[1]+" were"],
+ [/\b(he|she|it) (have)\b/gi,"Use “has” with he, she or it.",m=>m[1]+" has"],
+ [/\b(could|should|would|must|might) of\b/gi,"Use “have”, not “of”.",m=>m[1]+" have"],
+ [/\b(their|they're) (is|are|was|were)\b/gi,"Use \u201cthere\u201d here (\u201cthere is\u201d, \u201cthere are\u201d).",m=>(m[1][0]==="T"?"There":"there")+" "+m[2]],
+ [/\b(went|gone|go|going|over|sit|stay|live|lives|lived) their\b(?=[\s.,!?]*($|[.,!?]))/gi,"Use \u201cthere\u201d for a place.",m=>m[1]+" there"],
+ [/\balot\b/gi,"“A lot” is two words.",m=>(m[0][0]==="A"?"A":"a")+" lot"],
+ [/\b(\w+) \1\b/gi,"This word is repeated.",m=>m[1]]
+];
+function extra(text){const out=[];for(const [re,msg,fix] of EXTRA){re.lastIndex=0;let m;while((m=re.exec(text))){
+ if(re===EXTRA[EXTRA.length-1][0]&&/^(that|had|is|very|bye|no|so|ha)$/i.test(m[1]))continue;
+ const s=cps(text.slice(0,m.index)).length,e=s+cps(m[0]).length;out.push({s,e,msg,kind:"Grammar",sugs:[{k:0,t:fix(m)}],own:1});}}return out;}
+function cls(k){return /Spelling|Typo/.test(k)?"sp":/Style|Readability|Enhancement|Redundancy|Formatting|Regionalism/.test(k)?"st":"";}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function key(l,a){return a.slice(l.s,l.e).join("")+"|"+l.msg;}
+async function run(){if(!linter)return;if(busy){again=true;return;}busy=true;
+ const text=$("txt").value;let arr=cps(text);let res=[];
+ try{const raw=await linter.lint(text,{language:"plaintext"});
+  res=raw.map(l=>{const sp=l.span();const o={s:sp.start,e:sp.end,msg:l.message().replace(/`([^`]*)`/g,'\u201c$1\u201d'),kind:l.lint_kind(),pretty:l.lint_kind_pretty(),sugs:l.suggestions().map(g=>({k:g.kind(),t:g.get_replacement_text()}))};return o;});
+ }catch(e){console.warn(e);}
+ for(const x of extra(text)){if(!res.some(r=>r.s<x.e&&x.s<r.e))res.push(x);}
+ res.sort((a,b)=>a.s-b.s);lints=res.filter(l=>!ign.has(key(l,arr)));draw(text);busy=false;if(again){again=false;run();}}
+function draw(text){const a=cps(text);
+ const w=text.trim()?text.trim().split(/\s+/).length:0,sn=(text.match(/[.!?]+(\s|$)/g)||[]).length||(w?1:0);
+ $("counts").textContent=w+" words · "+a.length+" characters · "+sn+" sentences";
+ if(!text.trim()){$("view").hidden=true;$("list").innerHTML="";$("stat").textContent="Type or paste your text above.";$("fixall").disabled=true;return;}
+ let h="",p=0;lints.forEach((l,i)=>{if(l.s<p)return;h+=esc(a.slice(p,l.s).join(""))+'<mark class="'+cls(l.kind)+'" data-i="'+i+'">'+esc(a.slice(l.s,l.e).join("")||" ")+'</mark>';p=l.e;});
+ h+=esc(a.slice(p).join(""));$("view").innerHTML=h;$("view").hidden=!lints.length;
+ $("stat").textContent=lints.length?lints.length+(lints.length===1?" thing to check":" things to check")+". Tap a fix to change your text.":"";
+ $("fixall").disabled=!lints.some(l=>l.sugs.length);
+ $("list").innerHTML=lints.length?lints.map((l,i)=>{const bad=a.slice(l.s,l.e).join("");
+  return '<div class="gc-i '+cls(l.kind)+'" id="gi'+i+'"><small>'+esc(l.pretty||l.kind)+'</small><p>'+(bad.trim()?'<q>'+esc(bad)+'</q> ':'')+esc(l.msg)+'</p>'+
+  l.sugs.slice(0,4).map((g,j)=>'<button type="button" class="gc-s" data-i="'+i+'" data-j="'+j+'">'+(g.k===1?"Remove":esc(g.k===2?bad+g.t:g.t)||"Remove")+'</button>').join("")+
+  ' <button type="button" class="gc-x" data-ig="'+i+'">Ignore</button></div>';}).join(""):'<div class="gc-ok">✓ No mistakes found. Nice writing!</div>';}
+function apply(text,l,g){const a=cps(text);const bad=a.slice(l.s,l.e).join("");
+ const rep=g.k===1?"":g.k===2?bad+g.t:g.t;return a.slice(0,l.s).join("")+rep+a.slice(l.e).join("");}
+$("list").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+ if(b.dataset.ig!==undefined){const l=lints[+b.dataset.ig];ign.add(key(l,cps($("txt").value)));run();return;}
+ const l=lints[+b.dataset.i],g=l.sugs[+b.dataset.j];$("txt").value=apply($("txt").value,l,g);run();});
+$("view").addEventListener("click",e=>{const m=e.target.closest("mark");if(!m)return;const i=m.dataset.i;
+ document.querySelectorAll(".gc-i.on,.gc-view mark.on").forEach(x=>x.classList.remove("on"));m.classList.add("on");const c=$("gi"+i);if(c){c.classList.add("on");c.scrollIntoView({behavior:"smooth",block:"center"});}});
+$("fixall").onclick=()=>{let t=$("txt").value;[...lints].filter(l=>l.sugs.length).sort((x,y)=>y.s-x.s).forEach(l=>{t=apply(t,l,l.sugs[0]);});$("txt").value=t;run();};
+$("copy").onclick=()=>navigator.clipboard.writeText($("txt").value).then(()=>{$("copy").textContent="✓ Copied";setTimeout(()=>$("copy").textContent="📋 Copy text",1500)});
+$("clear").onclick=()=>{$("txt").value="";ign.clear();run();$("txt").focus();};
+$("txt").addEventListener("input",()=>{clearTimeout(timer);timer=setTimeout(run,450);});
+$("dia").addEventListener("change",async()=>{if(linter){await linter.setDialect(+$("dia").value);run();}try{localStorage.setItem("fns_dia",$("dia").value)}catch(e){}});
+try{const d=localStorage.getItem("fns_dia");if(d)$("dia").value=d;}catch(e){}
+(async()=>{try{H=await import("../assets/lib/harper/index.js");const B=await import("../assets/lib/harper/slimBinary.js");
+ linter=new H.LocalLinter({binary:B.slimBinary,dialect:+$("dia").value});await linter.setup();
+ $("stat").textContent="Ready. Type or paste your text above.";run();}
+ catch(e){console.error(e);$("stat").textContent="The checker could not load. Please refresh the page, or try a newer browser.";}})();
+
+</script>
+</body>
+</html>
