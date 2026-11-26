@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Free AI Background Remover: remove a photo background on your device</title>
-<meta name="description" content="Free AI background remover. Cut out a person, product or pet and get a clear (transparent) PNG or a white background. Runs on your own device with open-source AI. Nothing is uploaded.">
+<meta name="description" content="Free AI background remover for photos of people. Get a clear (transparent) PNG or a white or coloured background. Runs on your own device with open-source AI. Nothing is uploaded.">
 <link rel="canonical" href="https://tools.freenetsave.com/background-remover/">
 <link rel="stylesheet" href="../assets/style.css?v=9">
 <style>
@@ -31,20 +31,19 @@
 .checker{background-image:linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
 @media (max-width:640px){.pair{grid-template-columns:1fr}}
 </style>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AI Background Remover","url":"https://tools.freenetsave.com/background-remover/","applicationCategory":"MultimediaApplication","operatingSystem":"Any (runs in the browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Free AI background remover that runs on your own device. Nothing is uploaded."},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my photo uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The AI runs inside your browser. Your photo never leaves your device and we do not save anything."}},{"@type":"Question","name":"Can this harm my device?","acceptedAnswer":{"@type":"Answer","text":"No. It runs inside the browser's safety box like any web page. It cannot open your other files. At worst the device gets warm or slow for a moment; closing the tab stops it."}},{"@type":"Question","name":"Which devices work?","acceptedAnswer":{"@type":"Answer","text":"Computers and newer phones with a recent Chrome, Edge, Safari or Firefox. The Products and objects mode needs a computer or phone with graphics speed-up (WebGPU), such as recent Chrome or Edge."}}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AI Background Remover","url":"https://tools.freenetsave.com/background-remover/","applicationCategory":"MultimediaApplication","operatingSystem":"Any (runs in the browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Free AI background remover that runs on your own device. Nothing is uploaded."},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my photo uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The AI runs inside your browser. Your photo never leaves your device and we do not save anything."}},{"@type":"Question","name":"Can this harm my device?","acceptedAnswer":{"@type":"Answer","text":"No. It runs inside the browser's safety box like any web page. It cannot open your other files. At worst the device gets warm or slow for a moment; closing the tab stops it."}},{"@type":"Question","name":"Which devices work?","acceptedAnswer":{"@type":"Answer","text":"Computers and newer phones with a recent Chrome, Edge, Safari or Firefox."}}]}]}</script>
 </head>
 <body>
 <div class="wrap">
   <div class="hide-embed">
     <h1>AI Background Remover</h1>
-    <p class="sub">Cut out a person or a product and get a clear or white background. The AI runs on your device.</p>
+    <p class="sub">Cut out a person from a photo and get a clear, white or coloured background. The AI runs on your device.</p>
   </div>
-  <div class="ainote">🔒 <b>Runs on your device. Nothing is uploaded.</b> This tool uses open-source AI inside your browser. Your photo never leaves your device and we save nothing.<br><b>First use:</b> downloads the AI once (about 25 MB, or about 115 MB for Products and objects). Use Wi-Fi if you can. It can't harm your device. If it is slow, just close the tab.</div>
+  <div class="ainote">🔒 <b>Runs on your device. Nothing is uploaded.</b> This tool uses open-source AI inside your browser. Your photo never leaves your device and we save nothing.<br><b>First use:</b> downloads the AI once (about 26 MB). Use Wi-Fi if you can. It can't harm your device. If it is slow, just close the tab.</div>
   <div class="card">
     <p class="dev" id="dev">Checking your device…</p>
     <div class="opts2">
-      <div class="field"><label for="mode">What is in the photo?</label><select id="mode"><option value="people">People (fast, about 25 MB)</option><option value="any">Products and objects (best, about 115 MB)</option></select></div>
-      <div class="field"><label for="bg">New background</label><select id="bg"><option value="none">Clear (transparent PNG)</option><option value="#ffffff">White</option><option value="custom">A colour I choose</option></select><input type="color" id="col" value="#1d4ed8" hidden style="margin-top:8px;height:42px;width:100%"></div>
+            <div class="field"><label for="bg">New background</label><select id="bg"><option value="none">Clear (transparent PNG)</option><option value="#ffffff">White</option><option value="custom">A colour I choose</option></select><input type="color" id="col" value="#1d4ed8" hidden style="margin-top:8px;height:42px;width:100%"></div>
     </div>
     <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a photo"><b>Choose a photo</b><span>or drop it here · or paste with Ctrl+V</span><span class="pick">Choose a photo</span><input type="file" accept="image/*"></div>
     <p class="status" id="st"></p>
@@ -58,45 +57,38 @@
   <p class="note">🔒 This tool runs on your device. Nothing you choose is sent or saved.</p>
   <div class="guide">
     <h2>How to use it</h2>
-    <ol><li>Pick <b>People</b> for photos of people, or <b>Products and objects</b> for things like a phone, shoes or food.</li><li>Choose the new background: clear, white or any colour.</li><li>Tap <b>Choose a photo</b>. Wait while the AI works, then tap <b>Download</b>.</li></ol>
+    <ol><li>Use a photo of one or more people. It works best when the person stands out from the background.</li><li>Choose the new background: clear, white or any colour.</li><li>Tap <b>Choose a photo</b>. Wait while the AI works, then tap <b>Download</b>.</li></ol>
     <h2>Which devices work?</h2>
-    <ul><li><b>Computers</b> (Windows, Mac, Chromebook) with a recent Chrome, Edge, Firefox or Safari work best.</li><li><b>Phones and tablets:</b> newer iPhones and Android phones work. Older phones may be slow.</li><li><b>Products and objects</b> needs graphics speed-up (WebGPU), found in recent Chrome and Edge and newer Safari. If your device doesn't have it, this page tells you and you can still use People mode.</li></ul>
+    <ul><li><b>Computers</b> (Windows, Mac, Chromebook) with a recent Chrome, Edge, Firefox or Safari work best.</li><li><b>Phones and tablets:</b> newer iPhones and Android phones work. Older phones may be slow.</li><li>A normal photo takes about 2–10 seconds on a computer, a little longer on a phone.</li></ul>
     <h2>Common questions</h2>
     <details><summary>Is my photo uploaded?</summary><p>No. The AI runs inside your browser. Your photo never leaves your device and we do not save anything.</p></details>
     <details><summary>Can this harm my device or let someone hack it?</summary><p>No. It runs inside the browser's safety box like any web page and can only see the one photo you pick. The program files come from this website and from jsDelivr, a large open-source code site, locked to exact versions. The AI model comes from Hugging Face, locked to one exact version that cannot be changed. At worst your device gets warm or slow for a moment. Closing the tab stops everything.</p></details>
     <details><summary>Why is the first time slow?</summary><p>The first time, your browser downloads the AI. It is kept in your browser, so the next time starts much faster.</p></details>
-    <details><summary>Which AI does it use?</summary><p>People mode uses MODNet (Apache 2.0 licence). Products and objects uses BiRefNet lite (MIT licence). Both are open source and run with Transformers.js.</p></details>
-    <details><summary>The edges are not perfect. What can I do?</summary><p>Use a photo where the subject stands out from the background, with good light. For things that are not people, choose Products and objects.</p></details>
+    <details><summary>Which AI does it use?</summary><p>MODNet, an open-source AI made for cutting out people (Apache 2.0 licence), running with Transformers.js.</p></details>
+    <details><summary>The edges are not perfect. What can I do?</summary><p>Use a photo with good light where the person stands out from the background. This tool is made for people; products and objects are coming later.</p></details>
     <h2>More free tools</h2>
     <ul class="rel"><li><a href="https://tools.freenetsave.com/ai/">All AI tools</a></li><li><a href="https://tools.freenetsave.com/blur-faces/">Blur faces</a></li><li><a href="https://tools.freenetsave.com/passport-photo/">Passport photo</a></li><li><a href="https://freenetsave.com/make-picture-smaller/">Make picture smaller</a></li><li><a href="https://tools.freenetsave.com/picture-converter/">Picture converter</a></li><li><a href="https://tools.freenetsave.com/watermark-picture/">Watermark photos</a></li></ul>
   </div>
 </div>
 <script src="../assets/embed.js?v=14"></script>
 <script type="module">
-import { deviceInfo, deviceNote, loadAI, progressTracker, mb } from "../assets/ai-common.js?v=1";
+import { deviceInfo, deviceNote, loadAI, progressTracker, mb } from "../assets/ai-common.js?v=2";
 const MODELS = {
-  people: { id: "Xenova/modnet", rev: "fa2fa546052fba4c08921230a26cc69a333fca12", name: "People" },
-  any: { id: "onnx-community/BiRefNet_lite-ONNX", rev: "de15b22ba131738a16dff04aab8bdf8dc32e3ac1", name: "Products and objects", gpuOnly: true }
+  people: { id: "Xenova/modnet", rev: "fa2fa546052fba4c08921230a26cc69a333fca12", name: "People" }
 };
 const $ = (id) => document.getElementById(id);
 let info = null, pipes = {}, cut = null, lastFile = null;
-(async () => { info = await deviceInfo(); deviceNote($("dev"), info);
-  if (!info.webgpu) { const o = $("mode").querySelector('option[value="any"]'); o.disabled = true; o.textContent += " — needs graphics speed-up"; } })();
+(async () => { info = await deviceInfo(); deviceNote($("dev"), info, { slowHint: "" }); })();
 $("bg").addEventListener("change", () => { $("col").hidden = $("bg").value !== "custom"; draw(); });
 $("col").addEventListener("input", draw);
-$("mode").addEventListener("change", () => { if (lastFile) run(lastFile); });
 
 async function getPipe(mode) {
   if (pipes[mode]) return pipes[mode];
   const M = MODELS[mode], TF = await loadAI();
   $("bar").hidden = false; $("bi").style.width = "0%";
   const prog = progressTracker((p, total) => { $("bi").style.width = p + "%"; $("st").textContent = "Downloading the AI (only the first time)… " + p + "%" + (total ? " of " + mb(total) : ""); });
-  const opts = { revision: M.rev, progress_callback: prog };
-  if (M.gpuOnly) { opts.device = "webgpu"; opts.dtype = "fp16"; }
-  else if (info && info.webgpu) { opts.device = "webgpu"; opts.dtype = "fp32"; }
-  else { opts.device = "wasm"; opts.dtype = "fp32"; }
-  try { pipes[mode] = await TF.pipeline("background-removal", M.id, opts); }
-  catch (e) { if (opts.device === "webgpu" && !M.gpuOnly) { opts.device = "wasm"; pipes[mode] = await TF.pipeline("background-removal", M.id, opts); } else throw e; }
+  /* MODNet runs on the processor (wasm). Tested: it is fast there, and the graphics path gave wrong results. */
+  pipes[mode] = await TF.pipeline("background-removal", M.id, { revision: M.rev, progress_callback: prog, device: "wasm", dtype: "fp32" });
   return pipes[mode];
 }
 
@@ -106,7 +98,7 @@ async function run(f) {
   const url = URL.createObjectURL(f); $("src").src = url; $("pair").hidden = false; $("btns").hidden = true;
   const c = $("out"); c.width = c.height = 1;
   try {
-    const mode = $("mode").value, pipe = await getPipe(mode);
+    const mode = "people", pipe = await getPipe(mode);
     $("bar").hidden = false; $("bi").style.width = "100%"; $("st").textContent = "Removing the background… this can take a few seconds.";
     await new Promise(r => setTimeout(r, 30));
     const bmp = await createImageBitmap(f); const k = Math.min(1, 2048 / Math.max(bmp.width, bmp.height));
@@ -119,7 +111,7 @@ async function run(f) {
     $("btns").hidden = false;
   } catch (e) {
     console.error(e);
-    $("st").textContent = "Sorry, this device could not run the AI. Try People mode, a smaller photo, or a computer.";
+    $("st").textContent = "Sorry, this device could not run the AI. Try a smaller photo or a computer.";
   }
   $("bar").hidden = true;
 }

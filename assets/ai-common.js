@@ -18,11 +18,10 @@ export function deviceNote(el, info, opts = {}) {
     return false;
   }
   const low = info.memory && info.memory < 4;
-  const fast = info.webgpu;
   el.className = "dev " + (low ? "warn" : "ok");
   el.innerHTML = low
     ? "⚠️ This device has little memory. The tool may be slow or may stop. A computer or a newer phone works best."
-    : (fast ? "✅ Your device can run this well (graphics speed-up is on)." : "✅ Your device can run this. " + (opts.slowHint || "It may take a little longer without graphics speed-up."));
+    : "✅ Your device can run this." + (opts.slowHint ? " " + opts.slowHint : "");
   return true;
 }
 

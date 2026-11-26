@@ -74,11 +74,14 @@ function devCheck(){var d=$("dev"),c=document.createElement("canvas"),gl=null;tr
  if(!window.WebAssembly||!gl){d.className="dev bad";d.textContent="⚠️ This browser can't run the face finder. Please use a recent Chrome, Edge, Safari or Firefox.";return false;}
  d.className="dev ok";d.textContent="✅ Your device can run this.";return true;}
 var ok=devCheck();
-function getFD(){if(fd)return Promise.resolve(fd);
- fd=new FaceDetection({locateFile:function(f){return base+f;}});
- fd.onResults(function(r){if(pending){pending(r);pending=null;}});
- return Promise.resolve(fd);}
-function detect(source){return new Promise(function(res){pending=res;fd.setOptions({model:$("range").value,minDetectionConfidence:0.45});fd.send({image:source});});}
+var fdModel="";
+function getFD(){var want=$("range").value;if(fd&&fdModel===want)return Promise.resolve(fd);
+ var old=fd;fd=null;var p=old?old.close().catch(function(){}):Promise.resolve();
+ return p.then(function(){var f=new FaceDetection({locateFile:function(n){return base+n;}});
+  f.setOptions({model:want,minDetectionConfidence:0.45});
+  f.onResults(function(r){if(pending){pending(r);pending=null;}});
+  return f.initialize().then(function(){fd=f;fdModel=want;return fd;});});}
+function detect(source){return new Promise(function(res){pending=res;fd.send({image:source});});}
 function load(f){if(!f||!/^image\//.test(f.type)){$("st").textContent="Please choose a picture file (JPG, PNG, WebP…).";return;}
  if(!ok)return;
  var u=URL.createObjectURL(f),im=new Image();im.onload=function(){img=im;find();};im.src=u;}
