@@ -35,13 +35,28 @@
 </div>
 <script src="../assets/embed.js?v=14"></script>
 <script>
-const S=window.speechSynthesis;let V=[],q=[],on=false;
-function voices(){V=S?S.getVoices():[];const keep=$("vo").value;$("vo").innerHTML=V.map((v,i)=>'<option value="'+i+'">'+v.name+' ('+v.lang+')</option>').join("")||'<option>Default voice</option>';if(keep)$("vo").value=keep;else{const d=V.findIndex(v=>/^en/i.test(v.lang)&&v.default);if(d>=0)$("vo").value=d;}}
+const S=window.speechSynthesis;let V=[],q=[],on=false,cur=null,ka=null;
+/* Voices are kept by name (not by list position), because Chrome adds its Google voices a moment later and the list order changes. */
+function voices(){V=S?S.getVoices():[];const keep=$("vo").value;$("vo").innerHTML=V.map(v=>'<option value="'+v.name.replace(/"/g,"&quot;")+'">'+v.name+' ('+v.lang+')'+(v.localService?'':' · online')+'</option>').join("")||'<option value="">Default voice</option>';
+ if(keep&&V.some(v=>v.name===keep))$("vo").value=keep;else{const d=V.find(v=>/^en/i.test(v.lang)&&v.default)||V.find(v=>/^en/i.test(v.lang));if(d)$("vo").value=d.name;}}
 if(!S){$("err").textContent="This browser cannot read text aloud. Try Chrome, Edge or Safari.";}else{voices();S.onvoiceschanged=voices;}
-function next(){if(!on)return;const t=q.shift();if(!t){on=false;$("st").textContent="Finished.";return;}const u=new SpeechSynthesisUtterance(t),v=V[+$("vo").value];if(v){u.voice=v;u.lang=v.lang;}u.rate=+$("sp").value;u.onend=next;u.onerror=()=>{on=false;};$("st").textContent="Reading… "+q.length+" part"+(q.length===1?"":"s")+" left";S.speak(u);}
-$("play").addEventListener("click",()=>{if(!S)return;$("err").textContent="";if(S.paused){S.resume();$("st").textContent="Reading…";return;}const t=$("tx").value.trim();if(!t){$("err").textContent="Please type or paste some text first.";return;}S.cancel();q=t.match(/[^.!?\n]+[.!?\n]*/g)||[t];q=q.map(s=>s.trim()).filter(Boolean);on=true;next();});
+function pick(){return V.find(v=>v.name===$("vo").value)||null;}
+/* Google voices in Chrome stop on long pieces, so text is cut into short parts (under about 180 letters). */
+function parts(t){const out=[];(t.match(/[^.!?\n]+[.!?\n]*/g)||[t]).forEach(s=>{s=s.trim();while(s.length>180){let k=s.lastIndexOf(", ",180);if(k<60)k=s.lastIndexOf(" ",180);if(k<60)k=180;out.push(s.slice(0,k+1).trim());s=s.slice(k+1).trim();}if(s)out.push(s);});return out;}
+function stopKA(){if(ka){clearInterval(ka);ka=null;}}
+function next(){if(!on)return;const t=q.shift();if(!t){on=false;stopKA();$("st").textContent="Finished.";return;}
+ const u=new SpeechSynthesisUtterance(t),v=pick();if(v){u.voice=v;u.lang=v.lang;}u.rate=+$("sp").value;cur=u;
+ u.onend=()=>{if(cur===u)next();};
+ u.onerror=e=>{if(!on||e.error==="interrupted"||e.error==="canceled")return;on=false;stopKA();
+  const vv=pick();$("err").textContent=(vv&&!vv.localService)?"This online voice (“"+vv.name+"”) did not work. It needs a good internet connection and works only in Chrome. Please choose a Microsoft voice, which works on your device without internet.":"Sorry, this voice could not read the text. Please choose another voice.";$("st").textContent="";};
+ $("st").textContent="Reading… "+q.length+" part"+(q.length===1?"":"s")+" left";S.speak(u);}
+$("play").addEventListener("click",()=>{if(!S)return;$("err").textContent="";if(S.paused&&on){S.resume();$("st").textContent="Reading…";return;}const t=$("tx").value.trim();if(!t){$("err").textContent="Please type or paste some text first.";return;}
+ S.cancel();stopKA();q=parts(t);on=true;
+ /* Chrome keep-alive: long reading can freeze; a gentle pause/resume every 10 seconds keeps it going. */
+ const v=pick();if(v&&!v.localService)ka=setInterval(()=>{if(S.speaking&&!S.paused){S.pause();S.resume();}},10000);
+ setTimeout(next,120);});
 $("pause").addEventListener("click",()=>{if(S&&S.speaking){S.pause();$("st").textContent="Paused. Press Read aloud to carry on.";}});
-$("stop").addEventListener("click",()=>{if(S){on=false;q=[];S.cancel();$("st").textContent="";}});$("sp").addEventListener("input",()=>$("spv").textContent=(+$("sp").value).toFixed(1));window.addEventListener("pagehide",()=>{if(S)S.cancel();});
+$("stop").addEventListener("click",()=>{if(S){on=false;q=[];stopKA();S.cancel();$("st").textContent="";}});$("sp").addEventListener("input",()=>$("spv").textContent=(+$("sp").value).toFixed(1));window.addEventListener("pagehide",()=>{if(S)S.cancel();});
 </script>
 </body>
 </html>
