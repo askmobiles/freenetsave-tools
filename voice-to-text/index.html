@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free AI Voice to Text: transcribe audio on your device (Whisper)</title>
+<meta name="description" content="Free AI voice to text. Record or upload a voice note, meeting or video sound and get typed text and subtitles. Uses the open-source Whisper AI on your own device. Nothing is uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/voice-to-text/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.btn.rec{background:#dc2626}
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.ainote{background:#f0f7ff;border:1.5px solid #bfd6ff;border-radius:14px;padding:12px 16px;margin:0 0 14px;font-size:15px;line-height:1.5;color:#1e3a8a}
+.ainote b{color:#172033}
+.dev{border-radius:10px;padding:9px 12px;font-size:15px;margin:0 0 12px}
+.dev.ok{background:#ecfdf3;color:#166534}.dev.warn{background:#fff7e6;color:#8a5300}.dev.bad{background:#fdecec;color:#991b1b}
+textarea.tt{min-height:240px;font-size:16px}
+.or{text-align:center;color:var(--muted);margin:10px 0;font-size:14px}
+audio{width:100%;margin-top:10px}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AI Voice to Text","url":"https://tools.freenetsave.com/voice-to-text/","applicationCategory":"MultimediaApplication","operatingSystem":"Any (runs in the browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Free AI voice to text with Whisper, running on your own device. Nothing is uploaded."},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my recording uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The Whisper AI runs inside your browser. Your audio never leaves your device and we do not save anything."}},{"@type":"Question","name":"Which languages work?","acceptedAnswer":{"@type":"Answer","text":"English works best. French, Spanish, Hindi, Arabic, Chinese and Tamil also work, but less accurately. Always check the text."}},{"@type":"Question","name":"How long can the audio be?","acceptedAnswer":{"@type":"Answer","text":"Any length, but long audio takes time on your device. On a computer, one minute of speech usually takes under a minute. Under 10 minutes works best."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>AI Voice to Text</h1>
+    <p class="sub">Record your voice or choose an audio or video file. Whisper AI types it out on your device.</p>
+  </div>
+  <div class="ainote">🔒 <b>Runs on your device. Nothing is uploaded.</b> This tool uses the open-source Whisper AI inside your browser. Your voice never leaves your device and we save nothing.<br><b>First use:</b> downloads the AI once (about 80 MB). Use Wi-Fi if you can. It can't harm your device. If it is slow, just close the tab.</div>
+  <div class="card">
+    <p class="dev" id="dev">Checking your device…</p>
+    <div class="field"><label for="lang">Language spoken</label><select id="lang"><option value="english">English</option><option value="">Find it for me</option><option value="french">French</option><option value="spanish">Spanish</option><option value="tamil">Tamil</option><option value="hindi">Hindi</option><option value="punjabi">Punjabi</option><option value="urdu">Urdu</option><option value="arabic">Arabic</option><option value="chinese">Chinese</option><option value="portuguese">Portuguese</option><option value="tagalog">Tagalog</option></select></div>
+    <div class="btnrow"><button class="btn rec" type="button" id="recb">🎙️ Start recording</button></div>
+    <p class="or">or</p>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose an audio or video file"><b>Choose an audio or video file</b><span>MP3, M4A, WAV, voice notes, MP4… or drop it here</span><span class="pick">Choose a file</span><input type="file" accept="audio/*,video/*,.m4a,.mp3,.wav,.ogg,.opus,.aac,.webm,.mp4,.mov"></div>
+    <audio id="player" controls hidden></audio>
+    <p class="status" id="st"></p>
+    <div class="bar" id="bar" hidden><i id="bi"></i></div>
+    <label for="out" style="margin-top:12px">Text</label>
+    <textarea id="out" class="tt" placeholder="The text will appear here."></textarea>
+    <div class="btnrow"><button class="btn" type="button" id="copy">📋 Copy text</button><button class="btn line" type="button" id="dl">⬇ Download .txt</button><button class="btn line" type="button" id="srt" disabled>⬇ Subtitles (.srt)</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you record or choose is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Choose the language that is spoken.</li><li>Tap <b>Start recording</b> and speak, then tap <b>Stop</b>. Or choose an audio or video file.</li><li>Wait while the AI listens. Check the text, then copy or download it. You can also download subtitles for a video.</li></ol>
+    <h2>Which devices work?</h2>
+    <ul><li><b>Computers</b> (Windows, Mac, Chromebook) with a recent Chrome, Edge, Firefox or Safari work best.</li><li><b>Phones and tablets:</b> newer iPhones and Android phones work, but long recordings are slow. Keep it under 2–3 minutes on a phone.</li><li>Recording needs your permission to use the microphone. The sound stays on your device.</li></ul>
+    <h2>Common questions</h2>
+    <details><summary>Is my recording uploaded?</summary><p>No. The Whisper AI runs inside your browser. Your audio never leaves your device and we do not save anything.</p></details>
+    <details><summary>Can this harm my device or let someone hack it?</summary><p>No. It runs inside the browser's safety box like any web page. It can only hear the microphone while you are recording, and only after you allow it. The program files come from this website and from jsDelivr, a large open-source code site, locked to exact versions. The AI model comes from Hugging Face, locked to one exact version that cannot be changed. Closing the tab stops everything.</p></details>
+    <details><summary>Which languages work?</summary><p>English works best. French, Spanish, Hindi, Arabic, Chinese and Tamil also work, but less accurately, especially Tamil. Always read the text and fix mistakes.</p></details>
+    <details><summary>How long can the audio be?</summary><p>Any length, but long audio takes time on your device. On a computer, one minute of speech usually takes under a minute. Under 10 minutes works best.</p></details>
+    <details><summary>Which AI does it use?</summary><p>Whisper base, made open source by OpenAI (MIT licence), running with Transformers.js.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/ai/">All AI tools</a></li><li><a href="https://tools.freenetsave.com/text-to-speech/">Text to speech</a></li><li><a href="https://tools.freenetsave.com/image-to-text/">Image to text</a></li><li><a href="https://tools.freenetsave.com/translator/">Translator</a></li><li><a href="https://tools.freenetsave.com/word-counter/">Word counter</a></li><li><a href="https://tools.freenetsave.com/screen-recorder/">Screen recorder</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script type="module">
+import { deviceInfo, deviceNote, loadAI, progressTracker, mb } from "../assets/ai-common.js?v=1";
+const MODEL = "onnx-community/whisper-base", REV = "27a07b4b52b3a4c5886134bb4320e93e1a4bbc7c";
+const $ = (id) => document.getElementById(id);
+let info = null, asr = null, chunks = [], rec = null, recChunks = [], busy = false;
+(async () => { info = await deviceInfo(); deviceNote($("dev"), info, { slowHint: "Long audio may take a while." }); })();
+
+async function getASR() {
+  if (asr) return asr;
+  const TF = await loadAI();
+  $("bar").hidden = false;
+  const prog = progressTracker((p, total) => { $("bi").style.width = p + "%"; $("st").textContent = "Downloading the AI (only the first time)… " + p + "%" + (total ? " of " + mb(total) : ""); });
+  asr = await TF.pipeline("automatic-speech-recognition", MODEL, { revision: REV, dtype: "q8", device: "wasm", progress_callback: prog });
+  return asr;
+}
+async function toPCM(blob) {
+  const buf = await blob.arrayBuffer();
+  const AC = window.AudioContext || window.webkitAudioContext;
+  const ac = new AC();
+  const dec = await new Promise((ok, no) => { const p = ac.decodeAudioData(buf, ok, no); if (p && p.then) p.then(ok, no); });
+  ac.close && ac.close();
+  const len = Math.ceil(dec.duration * 16000);
+  const off = new OfflineAudioContext(1, len, 16000);
+  const src = off.createBufferSource(); src.buffer = dec; src.connect(off.destination); src.start();
+  const r = await off.startRendering();
+  return { pcm: r.getChannelData(0), seconds: dec.duration };
+}
+async function run(blob) {
+  if (busy) return; busy = true; chunks = []; $("srt").disabled = true;
+  $("player").src = URL.createObjectURL(blob); $("player").hidden = false; $("out").value = "";
+  try {
+    $("st").textContent = "Reading the sound…";
+    const { pcm, seconds } = await toPCM(blob);
+    const pipe = await getASR();
+    const mins = Math.max(1, Math.round(seconds / 60));
+    $("bar").hidden = false; $("bi").style.width = "100%";
+    $("st").textContent = "Listening and typing… (" + mins + " min of audio" + (seconds > 180 ? ", this will take a while" : "") + ")";
+    await new Promise(r => setTimeout(r, 30));
+    const opts = { task: "transcribe", chunk_length_s: 30, stride_length_s: 5, return_timestamps: true };
+    const lang = $("lang").value; if (lang) opts.language = lang;
+    const res = await pipe(pcm, opts);
+    chunks = res.chunks || [];
+    $("out").value = (chunks.length ? chunks.map(c => c.text.trim()).join(" ") : (res.text || "")).replace(/\s+/g, " ").trim();
+    $("st").textContent = $("out").value ? "Done. Read it through and fix any mistakes." : "No speech was found. Try a clearer recording.";
+    $("srt").disabled = !chunks.length;
+  } catch (e) {
+    console.error(e);
+    $("st").textContent = "Sorry, this file could not be read on this device. Try MP3, M4A or WAV, a shorter clip, or a computer.";
+  }
+  $("bar").hidden = true; busy = false;
+}
+$("recb").addEventListener("click", async () => {
+  if (rec && rec.state === "recording") { rec.stop(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recChunks = []; rec = new MediaRecorder(stream);
+    rec.ondataavailable = e => e.data.size && recChunks.push(e.data);
+    rec.onstop = () => { stream.getTracks().forEach(t => t.stop()); $("recb").textContent = "🎙️ Start recording"; $("recb").classList.add("rec"); run(new Blob(recChunks, { type: rec.mimeType || "audio/webm" })); };
+    rec.start(); $("recb").textContent = "⏹ Stop recording"; $("recb").classList.remove("rec"); $("st").textContent = "Recording… speak now. Tap Stop when you finish.";
+  } catch (e) { $("st").textContent = "The microphone could not be used. Allow microphone access, or choose a file instead."; }
+});
+function ts(s) { s = Math.max(0, s || 0); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = Math.floor(s % 60), ms = Math.round((s % 1) * 1000); const p = (n, l = 2) => String(n).padStart(l, "0"); return p(h) + ":" + p(m) + ":" + p(x) + "," + p(ms, 3); }
+$("srt").addEventListener("click", () => {
+  const t = chunks.map((c, i) => (i + 1) + "\r\n" + ts(c.timestamp[0]) + " --> " + ts(c.timestamp[1] ?? (c.timestamp[0] + 3)) + "\r\n" + c.text.trim() + "\r\n").join("\r\n");
+  saveFile(new Blob([t], { type: "text/plain" }), "subtitles.srt");
+});
+$("copy").addEventListener("click", () => copyText($("out").value));
+$("dl").addEventListener("click", () => saveFile(new Blob([$("out").value], { type: "text/plain" }), "voice-to-text.txt"));
+setupDrop($("drop"), fs => fs[0] && run(fs[0]));
+</script>
+</body>
+</html>

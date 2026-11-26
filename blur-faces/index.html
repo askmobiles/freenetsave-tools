@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free AI Face Blur: blur faces in a photo on your device</title>
+<meta name="description" content="Free AI face blur. Find every face in a photo and blur or cover it before you share it. Runs on your own device with open-source AI (MediaPipe). Nothing is uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/blur-faces/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.ainote{background:#f0f7ff;border:1.5px solid #bfd6ff;border-radius:14px;padding:12px 16px;margin:0 0 14px;font-size:15px;line-height:1.5;color:#1e3a8a}
+.ainote b{color:#172033}
+.dev{border-radius:10px;padding:9px 12px;font-size:15px;margin:0 0 12px}
+.dev.ok{background:#ecfdf3;color:#166534}.dev.warn{background:#fff7e6;color:#8a5300}.dev.bad{background:#fdecec;color:#991b1b}
+#out{max-width:100%;max-height:520px;border-radius:10px;border:1px solid #dde5f2;display:block;margin:12px auto 0;cursor:crosshair}
+.hint{font-size:14px;color:var(--muted);text-align:center;margin:6px 0 0}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AI Face Blur","url":"https://tools.freenetsave.com/blur-faces/","applicationCategory":"MultimediaApplication","operatingSystem":"Any (runs in the browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Free AI face blur that runs on your own device. Nothing is uploaded."},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my photo uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The face finder runs inside your browser. Your photo never leaves your device and we do not save anything."}},{"@type":"Question","name":"What if a face is missed?","acceptedAnswer":{"@type":"Answer","text":"Tap or click on the face in the result to add a blur there yourself. Tap a blurred face to remove its blur."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>AI Face Blur</h1>
+    <p class="sub">Hide faces in a photo before you share it. The AI finds the faces on your device.</p>
+  </div>
+  <div class="ainote">🔒 <b>Runs on your device. Nothing is uploaded.</b> This tool uses open-source AI (Google MediaPipe) inside your browser. Your photo never leaves your device and we save nothing.<br><b>First use:</b> downloads about 7 MB once. It can't harm your device. If it is slow, just close the tab.</div>
+  <div class="card">
+    <p class="dev" id="dev">Checking your device…</p>
+    <div class="opts2">
+      <div class="field"><label for="style">How to hide faces</label><select id="style"><option value="blur">Blur</option><option value="pixel">Pixels (mosaic)</option><option value="box">Black box</option><option value="emoji">Smiley 🙂</option></select></div>
+      <div class="field"><label for="range">Faces in the photo</label><select id="range"><option value="full">Groups and faces far away</option><option value="short">One or two close-up faces</option></select></div>
+    </div>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a photo"><b>Choose a photo</b><span>or drop it here · or paste with Ctrl+V</span><span class="pick">Choose a photo</span><input type="file" accept="image/*"></div>
+    <p class="status" id="st"></p>
+    <canvas id="out" hidden></canvas>
+    <p class="hint" id="hint" hidden>Missed a face? Tap it to add a blur. Tap a blurred face to remove it.</p>
+    <div class="btnrow" id="btns" hidden><button class="btn" type="button" id="dl">⬇ Download</button><button class="btn line" type="button" id="again">Try another photo</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you choose is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Choose how to hide the faces: blur, pixels, a black box or a smiley.</li><li>Tap <b>Choose a photo</b>. The AI finds the faces and hides them.</li><li>Tap any missed face to hide it too, or tap a hidden face to show it again. Then tap <b>Download</b>.</li></ol>
+    <h2>Which devices work?</h2>
+    <ul><li>Almost every computer, phone and tablet with a recent Chrome, Edge, Safari or Firefox. This is the lightest of our AI tools.</li><li>It needs graphics support (WebGL), which nearly every browser has.</li></ul>
+    <h2>Common questions</h2>
+    <details><summary>Is my photo uploaded?</summary><p>No. The face finder runs inside your browser. Your photo never leaves your device and we do not save anything.</p></details>
+    <details><summary>Can this harm my device or let someone hack it?</summary><p>No. It runs inside the browser's safety box like any web page and can only see the one photo you pick. All program and AI files come from this website. Closing the tab stops everything.</p></details>
+    <details><summary>Is the blur safe to share?</summary><p>Yes. The downloaded picture is a new image with the faces covered. The original faces are not hidden inside it. For the strongest privacy, choose Black box.</p></details>
+    <details><summary>Does it recognise who people are?</summary><p>No. It only finds where faces are. It does not know or remember who anyone is.</p></details>
+    <details><summary>Which AI does it use?</summary><p>Google MediaPipe Face Detection (Apache 2.0 licence), hosted on this website.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/ai/">All AI tools</a></li><li><a href="https://tools.freenetsave.com/background-remover/">Background remover</a></li><li><a href="https://tools.freenetsave.com/watermark-picture/">Watermark photos</a></li><li><a href="https://freenetsave.com/make-picture-smaller/">Make picture smaller</a></li><li><a href="https://tools.freenetsave.com/picture-converter/">Picture converter</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script src="../assets/lib/facedetect/face_detection.js?v=1"></script>
+<script>
+(function(){
+var base=new URL("../assets/lib/facedetect/",location.href).href, fd=null, img=null, boxes=[], pending=null;
+function devCheck(){var d=$("dev"),c=document.createElement("canvas"),gl=null;try{gl=c.getContext("webgl2")||c.getContext("webgl");}catch(e){}
+ if(!window.WebAssembly||!gl){d.className="dev bad";d.textContent="⚠️ This browser can't run the face finder. Please use a recent Chrome, Edge, Safari or Firefox.";return false;}
+ d.className="dev ok";d.textContent="✅ Your device can run this.";return true;}
+var ok=devCheck();
+function getFD(){if(fd)return Promise.resolve(fd);
+ fd=new FaceDetection({locateFile:function(f){return base+f;}});
+ fd.onResults(function(r){if(pending){pending(r);pending=null;}});
+ return Promise.resolve(fd);}
+function detect(source){return new Promise(function(res){pending=res;fd.setOptions({model:$("range").value,minDetectionConfidence:0.45});fd.send({image:source});});}
+function load(f){if(!f||!/^image\//.test(f.type)){$("st").textContent="Please choose a picture file (JPG, PNG, WebP…).";return;}
+ if(!ok)return;
+ var u=URL.createObjectURL(f),im=new Image();im.onload=function(){img=im;find();};im.src=u;}
+function find(){$("st").textContent="Loading the face finder… (first time about 7 MB)";$("btns").hidden=true;
+ getFD().then(function(){
+  var k=Math.min(1,2000/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+  $("st").textContent="Finding faces…";return detect(c);
+ }).then(function(r){
+  boxes=(r.detections||[]).map(function(d){var b=d.boundingBox,w=b.width*img.width,h=b.height*img.height;var pad=0.25;
+   return {x:b.xCenter*img.width-w*(0.5+pad/2),y:b.yCenter*img.height-h*(0.5+pad),w:w*(1+pad),h:h*(1+pad*1.5),on:true};});
+  draw();$("out").hidden=false;$("hint").hidden=false;$("btns").hidden=false;
+  $("st").textContent=boxes.length?("Found "+boxes.length+(boxes.length===1?" face":" faces")+". Check the photo before sharing."):"No faces found. Tap a face to hide it yourself, or try “Groups and faces far away”.";
+ }).catch(function(e){console.error(e);$("st").textContent="Sorry, the face finder could not run on this device.";});}
+function hide(x,b){var s=$("style").value,X=Math.max(0,b.x),Y=Math.max(0,b.y),W=Math.min(img.width-X,b.w),H=Math.min(img.height-Y,b.h);if(W<=0||H<=0)return;
+ x.save();x.beginPath();x.ellipse(X+W/2,Y+H/2,W/2,H/2,0,0,Math.PI*2);if(s!=="box")x.clip();
+ if(s==="blur"){var r=Math.max(8,Math.round(Math.max(W,H)/8));x.filter="blur("+r+"px)";x.drawImage(img,X-r,Y-r,W+2*r,H+2*r,X-r,Y-r,W+2*r,H+2*r);x.filter="none";
+   if(typeof x.filter==="undefined"||x.filter!=="none"){} }
+ else if(s==="pixel"){var n=Math.max(6,Math.round(Math.max(W,H)/10)),t=document.createElement("canvas");t.width=Math.max(1,Math.round(W/n));t.height=Math.max(1,Math.round(H/n));var tx=t.getContext("2d");tx.drawImage(img,X,Y,W,H,0,0,t.width,t.height);x.imageSmoothingEnabled=false;x.drawImage(t,0,0,t.width,t.height,X,Y,W,H);}
+ else if(s==="box"){x.fillStyle="#000";x.fillRect(X,Y,W,H);}
+ else{x.fillStyle="#facc15";x.fill();x.font=Math.round(Math.min(W,H)*0.9)+"px serif";x.textAlign="center";x.textBaseline="middle";x.fillText("🙂",X+W/2,Y+H/2+Math.min(W,H)*0.05);}
+ x.restore();}
+function draw(){if(!img)return;var c=$("out"),x=c.getContext("2d");c.width=img.width;c.height=img.height;x.drawImage(img,0,0);
+ var blurOK=("filter" in x);
+ boxes.forEach(function(b){if(!b.on)return;if($("style").value==="blur"&&!blurOK){var keep=$("style").value;$("style").value="pixel";hide(x,b);$("style").value=keep;}else hide(x,b);});}
+$("out").addEventListener("click",function(e){if(!img)return;var r=this.getBoundingClientRect(),px=(e.clientX-r.left)*img.width/r.width,py=(e.clientY-r.top)*img.height/r.height;
+ var hit=boxes.find(function(b){return px>=b.x&&px<=b.x+b.w&&py>=b.y&&py<=b.y+b.h;});
+ if(hit)hit.on=!hit.on;else{var s=Math.max(img.width,img.height)*0.09;boxes.push({x:px-s/2,y:py-s*0.6,w:s,h:s*1.2,on:true});}
+ draw();});
+$("style").addEventListener("change",draw);
+$("range").addEventListener("change",function(){if(img)find();});
+$("dl").addEventListener("click",function(){$("out").toBlob(function(b){saveFile(b,"faces-hidden.jpg");},"image/jpeg",0.92);});
+$("again").addEventListener("click",function(){$("drop").querySelector("input").click();});
+setupDrop($("drop"),function(fs){load(fs[0]);});
+document.addEventListener("paste",function(e){var it=[].slice.call((e.clipboardData||{}).items||[]).find(function(i){return i.type.indexOf("image/")===0;});if(it){e.preventDefault();load(it.getAsFile());}});
+})();
+</script>
+</body>
+</html>
