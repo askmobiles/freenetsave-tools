@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free AI Object Finder: name the things in a photo (for kids and learners)</title>
+<meta name="description" content="Free AI object finder. Take or choose a photo and the AI draws boxes around the things it sees and names them: dog, cup, car, chair and 80 more. It can read the names aloud. Runs on your own device. Nothing is uploaded.">
+<link rel="canonical" href="https://tools.freenetsave.com/object-finder/">
+<link rel="stylesheet" href="../assets/style.css?v=9">
+<style>
+[hidden]{display:none !important}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btnrow .btn{width:auto;flex:1;min-width:130px}
+.btn.line{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.guide{max-width:1240px;margin:26px auto 0;padding:0 4px;color:#25324a;font-size:16.5px;line-height:1.6}
+.guide h2{font-size:22px;margin:26px 0 10px;color:#172033}
+.guide ol,.guide ul{padding-left:22px;margin:0 0 10px}
+.guide li{margin:4px 0}
+.guide details{background:#fff;border:1px solid #dde5f2;border-radius:12px;padding:12px 16px;margin:8px 0}
+.guide summary{font-weight:700;cursor:pointer}
+.guide .rel{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0}
+.guide .rel a{display:inline-block;background:#eef4ff;color:#1d4ed8;border-radius:999px;padding:7px 14px;text-decoration:none;font-weight:650;font-size:15px}
+.embedded .guide{display:none}
+.ainote{background:#f0f7ff;border:1.5px solid #bfd6ff;border-radius:14px;padding:12px 16px;margin:0 0 14px;font-size:15px;line-height:1.5;color:#1e3a8a}
+.ainote b{color:#172033}
+.dev{border-radius:10px;padding:9px 12px;font-size:15px;margin:0 0 12px}
+.dev.ok{background:#ecfdf3;color:#166534}.dev.warn{background:#fff7e6;color:#8a5300}.dev.bad{background:#fdecec;color:#991b1b}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.pair figure{margin:0;text-align:center}.pair figcaption{font-size:14px;color:var(--muted);margin-top:4px}
+.pair img,.pair canvas{max-width:100%;max-height:360px;border-radius:10px;border:1px solid #dde5f2}
+.checker{background-image:linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+.pair{grid-template-columns:1fr 2fr}
+.pair #out{max-height:560px;touch-action:none;cursor:crosshair}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:#f3f6fb;border:1px solid #dde5f2;border-radius:12px;padding:10px 12px;margin-top:12px}
+.tools .tb{border:1.5px solid #c9d5ea;background:#fff;color:#172033;border-radius:10px;padding:8px 12px;font-weight:700;font-size:15px;cursor:pointer}
+.tools .tb.on{background:#2563eb;border-color:#2563eb;color:#fff}
+.tools label{margin:0;font-weight:700;font-size:15px}
+.tools input[type=range]{width:140px}
+.tools .tip{flex-basis:100%;font-size:14px;color:var(--muted);margin:0}
+@media (max-width:640px){.pair{grid-template-columns:1fr}}
+.pair{grid-template-columns:1fr !important}
+#out{max-width:100%;max-height:620px;border-radius:12px;border:1px solid #dde5f2}
+.found{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;list-style:none;padding:0}
+.found li{background:#eef4ff;border:1.5px solid #c9d8f5;border-radius:999px;padding:7px 14px;font-weight:700;font-size:16px;color:#172033;cursor:pointer}
+.found li.on{background:#2563eb;border-color:#2563eb;color:#fff}
+.found li i{font-style:normal;margin-right:4px}
+.opts2 input[type=range]{width:100%}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"AI Object Finder","url":"https://tools.freenetsave.com/object-finder/","applicationCategory":"EducationalApplication","operatingSystem":"Any (runs in the browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"CAD"},"description":"Free AI object finder that names the things in a photo. Runs on your own device. Nothing is uploaded."},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is my photo uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. The AI runs inside your browser. Your photo never leaves your device and we do not save anything."}},{"@type":"Question","name":"What can it find?","acceptedAnswer":{"@type":"Answer","text":"80 kinds of everyday things, such as people, animals, food, furniture, vehicles, sports balls and kitchen items."}},{"@type":"Question","name":"Is it safe for kids?","acceptedAnswer":{"@type":"Answer","text":"Yes. There is no sign-up, no chat and no upload. The photo stays on the device."}}]}]}</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="hide-embed">
+    <h1>AI Object Finder</h1>
+    <p class="sub">Take or choose a photo. The AI draws a box around each thing it sees and names it, like dog, cup, car or chair. Tap a name to hear it. Great for young learners and English practice.</p>
+  </div>
+  <div class="ainote">🔒 <b>Runs on your device. Nothing is uploaded.</b> This tool uses open-source AI inside your browser. Your photo never leaves your device and we save nothing.<br><b>First use:</b> downloads the AI once (about 10 MB for Quick, 43 MB for More accurate). It can't harm your device. If it is slow, just close the tab.</div>
+  <div class="card">
+    <p class="dev" id="dev">Checking your device…</p>
+    <div class="opts2">
+      <div class="field"><label for="mode">AI</label><select id="mode"><option value="quick">Quick (about 10 MB, best for phones)</option><option value="best">More accurate (about 43 MB)</option></select></div>
+      <div class="field"><label for="thr">How sure must the AI be? <span id="thrv">70%</span></label><input type="range" id="thr" min="30" max="95" step="5" value="70"></div>
+    </div>
+    <div class="drop" id="drop" tabindex="0" role="button" aria-label="Take or choose a photo"><b>Take or choose a photo</b><span>or drop it here · or paste with Ctrl+V</span><span class="pick">Take or choose a photo</span><input type="file" accept="image/*"></div>
+    <p class="status" id="st"></p>
+    <div class="bar" id="bar" hidden><i id="bi"></i></div>
+    <div class="pair" id="pair" hidden><figure><canvas id="out"></canvas></figure></div>
+    <ul class="found" id="found" hidden></ul>
+    <div class="btnrow" id="btns" hidden><button class="btn" type="button" id="say">🔊 Read all names</button><button class="btn line" type="button" id="dl">⬇ Download picture</button><button class="btn line" type="button" id="again">Try another photo</button></div>
+  </div>
+  <p class="note">🔒 This tool runs on your device. Nothing you choose is sent or saved.</p>
+  <div class="guide">
+    <h2>How to use it</h2>
+    <ol><li>Tap <b>Take or choose a photo</b>. On a phone you can use the camera.</li><li>Wait a few seconds. Each thing the AI finds gets a coloured box and a name.</li><li>Tap a name to hear it and to show only that thing. Tap <b>Read all names</b> to hear them all.</li><li>Move <b>How sure must the AI be?</b> lower to find more things, or higher to show only sure ones.</li></ol>
+    <h2>Ideas for learning</h2>
+    <ul><li><b>Word hunt:</b> take a photo of a room and learn the English names of everything in it.</li><li><b>Counting:</b> how many chairs, cups or people did it find? Was it right?</li><li><b>Guess first:</b> say what you think is in the photo, then check with the AI.</li><li><b>Is the AI right?</b> Talk about mistakes. AI can be wrong, which is a good lesson too.</li></ul>
+    <h2>Which devices work?</h2>
+    <ul><li><b>Computers</b> with a recent Chrome, Edge, Firefox or Safari work best.</li><li><b>Phones and tablets:</b> newer iPhones and Android phones work. Use Quick on older phones.</li><li>A photo takes about 1–10 seconds after the first download.</li></ul>
+    <h2>Common questions</h2>
+    <details><summary>Is my photo uploaded?</summary><p>No. The AI runs inside your browser. Your photo never leaves your device and we do not save anything.</p></details>
+    <details><summary>What can it find?</summary><p>80 kinds of everyday things: people, animals (dog, cat, bird, horse, cow, sheep, elephant, bear, zebra, giraffe), food (banana, apple, orange, broccoli, carrot, pizza, cake…), vehicles, furniture, kitchen items, sports balls and more. It cannot name things outside this list.</p></details>
+    <details><summary>Can this harm my device or let someone hack it?</summary><p>No. It runs inside the browser's safety box like any web page and can only see the one photo you pick. The program files come from this website and from jsDelivr, locked to exact versions. The AI model comes from Hugging Face, locked to one exact version. At worst your device gets warm or slow for a moment. Closing the tab stops everything.</p></details>
+    <details><summary>Which AI does it use?</summary><p>Quick: YOLOS-tiny. More accurate: DETR (ResNet-50). Both are open-source object finders (Apache 2.0 licence) that run with Transformers.js on your device.</p></details>
+    <h2>More free tools</h2>
+    <ul class="rel"><li><a href="https://tools.freenetsave.com/ai/">All AI tools</a></li><li><a href="https://tools.freenetsave.com/background-remover/">Background remover</a></li><li><a href="https://tools.freenetsave.com/image-to-text/">Image to text</a></li><li><a href="https://tools.freenetsave.com/flashcards/">Flashcard maker</a></li><li><a href="https://learn.freenetsave.com/english/">English practice</a></li></ul>
+  </div>
+</div>
+<script src="../assets/embed.js?v=14"></script>
+<script type="module">
+import { deviceInfo, deviceNote, loadAI, progressTracker, mb } from "../assets/ai-common.js?v=2";
+const MODELS = {
+  quick: { id: "Xenova/yolos-tiny", rev: "4c9a10a995f309a4183e74e0f5e9963418e7462d", dtype: "q8" },
+  best: { id: "Xenova/detr-resnet-50", rev: "8be7ab59ff663484ee9ba2e8d8f267330d5ad03e", dtype: "q8" }
+};
+const EMO = {person:"🧍",bicycle:"🚲",car:"🚗",motorcycle:"🏍️",airplane:"✈️",bus:"🚌",train:"🚆",truck:"🚚",boat:"⛵","traffic light":"🚦","fire hydrant":"🧯","stop sign":"🛑","parking meter":"🅿️",bench:"🪑",bird:"🐦",cat:"🐈",dog:"🐕",horse:"🐎",sheep:"🐑",cow:"🐄",elephant:"🐘",bear:"🐻",zebra:"🦓",giraffe:"🦒",backpack:"🎒",umbrella:"☂️",handbag:"👜",tie:"👔",suitcase:"🧳",frisbee:"🥏",skis:"🎿",snowboard:"🏂","sports ball":"⚽",kite:"🪁","baseball bat":"🏏","baseball glove":"🧤",skateboard:"🛹",surfboard:"🏄","tennis racket":"🎾",bottle:"🍾","wine glass":"🍷",cup:"☕",fork:"🍴",knife:"🔪",spoon:"🥄",bowl:"🥣",banana:"🍌",apple:"🍎",sandwich:"🥪",orange:"🍊",broccoli:"🥦",carrot:"🥕","hot dog":"🌭",pizza:"🍕",donut:"🍩",cake:"🎂",chair:"🪑",couch:"🛋️","potted plant":"🪴",bed:"🛏️","dining table":"🍽️",toilet:"🚽",tv:"📺",laptop:"💻",mouse:"🖱️",remote:"📱",keyboard:"⌨️","cell phone":"📱",microwave:"📦",oven:"🍳",toaster:"🍞",sink:"🚰",refrigerator:"🧊",book:"📕",clock:"🕰️",vase:"🏺",scissors:"✂️","teddy bear":"🧸","hair drier":"💨",toothbrush:"🪥"};
+const COLS = ["#2563eb","#f97316","#16a34a","#db2777","#7c3aed","#0891b2","#ca8a04","#dc2626","#4f46e5","#059669"];
+const $ = (id) => document.getElementById(id);
+let info = null, pipes = {}, lastFile = null, img = null, dets = [], only = null;
+(async () => { info = await deviceInfo(); deviceNote($("dev"), info, { slowHint: "" }); })();
+$("thr").addEventListener("input", () => { $("thrv").textContent = $("thr").value + "%"; if (img) render(); });
+$("mode").addEventListener("change", () => { if (lastFile) run(lastFile); });
+async function getPipe(mode) {
+  if (pipes[mode]) return pipes[mode];
+  const M = MODELS[mode], TF = await loadAI();
+  $("bar").hidden = false; $("bi").style.width = "0%";
+  const prog = progressTracker((p, total) => { $("bi").style.width = p + "%"; $("st").textContent = "Downloading the AI (only the first time)… " + p + "%" + (total ? " of " + mb(total) : ""); });
+  pipes[mode] = await TF.pipeline("object-detection", M.id, { revision: M.rev, progress_callback: prog, device: "wasm", dtype: M.dtype });
+  return pipes[mode];
+}
+async function run(f) {
+  if (!f || !/^image\//.test(f.type)) { $("st").textContent = "Please choose a picture file (JPG, PNG, WebP…)."; return; }
+  lastFile = f; only = null; $("btns").hidden = true; $("found").hidden = true;
+  try {
+    const bmp = await createImageBitmap(f), k = Math.min(1, 1280 / Math.max(bmp.width, bmp.height));
+    const cv = document.createElement("canvas"); cv.width = Math.round(bmp.width * k); cv.height = Math.round(bmp.height * k);
+    cv.getContext("2d").drawImage(bmp, 0, 0, cv.width, cv.height); img = cv;
+    $("pair").hidden = false; const o = $("out"); o.width = cv.width; o.height = cv.height; o.getContext("2d").drawImage(cv, 0, 0);
+    const pipe = await getPipe($("mode").value);
+    $("bar").hidden = false; $("bi").style.width = "100%"; $("st").textContent = "Looking for things in your photo…";
+    await new Promise(r => setTimeout(r, 30));
+    dets = await pipe(cv, { threshold: 0.3, percentage: false });
+    render(); $("btns").hidden = false;
+  } catch (e) {
+    console.error(e); $("st").textContent = "Sorry, this device could not run the AI. Try Quick, a smaller photo or a computer.";
+  }
+  $("bar").hidden = true;
+}
+function shown() { const t = +$("thr").value / 100; return dets.filter(d => d.score >= t); }
+function render() {
+  const o = $("out"), c = o.getContext("2d"), D = shown();
+  c.drawImage(img, 0, 0);
+  const lw = Math.max(2, Math.round(img.width / 300)), fs = Math.max(14, Math.round(img.width / 40));
+  const labels = [...new Set(D.map(d => d.label))], col = l => COLS[labels.indexOf(l) % COLS.length];
+  D.forEach(d => {
+    if (only && d.label !== only) return;
+    const b = d.box, w = b.xmax - b.xmin, h = b.ymax - b.ymin, cl = col(d.label);
+    c.lineWidth = lw; c.strokeStyle = cl; c.strokeRect(b.xmin, b.ymin, w, h);
+    const t = (EMO[d.label] || "") + " " + d.label; c.font = "700 " + fs + "px system-ui,sans-serif";
+    const tw = c.measureText(t).width + 12, ty = b.ymin > fs + 8 ? b.ymin - fs - 8 : b.ymin;
+    c.fillStyle = cl; c.fillRect(b.xmin, ty, tw, fs + 8); c.fillStyle = "#fff"; c.fillText(t, b.xmin + 6, ty + fs);
+  });
+  const cnt = {}; D.forEach(d => cnt[d.label] = (cnt[d.label] || 0) + 1);
+  const ul = $("found"); ul.innerHTML = "";
+  Object.keys(cnt).sort((a, b) => cnt[b] - cnt[a]).forEach(l => {
+    const li = document.createElement("li"); li.innerHTML = "<i>" + (EMO[l] || "🔹") + "</i>" + (cnt[l] > 1 ? cnt[l] + " × " : "") + l;
+    if (only === l) li.className = "on";
+    li.onclick = () => { only = only === l ? null : l; speak((cnt[l] > 1 ? cnt[l] + " " + plural(l) : "a " + l)); render(); };
+    ul.appendChild(li);
+  });
+  ul.hidden = !D.length;
+  $("st").textContent = D.length ? "Found " + D.length + (D.length === 1 ? " thing" : " things") + ". Tap a name to hear it and show only that." : "Nothing found. Try moving \"How sure\" lower, or a photo with clearer, bigger things.";
+}
+function plural(l) { return /s$/.test(l) ? l : l === "person" ? "people" : /(sh|ch|x)$/.test(l) ? l + "es" : l + "s"; }
+function speak(t) { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = "en-CA"; u.rate = 0.9; speechSynthesis.speak(u); } catch (e) {} }
+$("say").addEventListener("click", () => { const cnt = {}; shown().forEach(d => cnt[d.label] = (cnt[d.label] || 0) + 1); const ks = Object.keys(cnt); if (ks.length) speak("I can see " + ks.map(l => cnt[l] > 1 ? cnt[l] + " " + plural(l) : "a " + l).join(", ") + "."); });
+$("dl").addEventListener("click", () => { $("out").toBlob(b => saveFile(b, "objects-found.jpg"), "image/jpeg", 0.92); });
+$("again").addEventListener("click", () => $("drop").querySelector("input").click());
+setupDrop($("drop"), fs => run(fs[0]));
+document.addEventListener("paste", e => { const it = [...((e.clipboardData || {}).items || [])].find(i => i.type.startsWith("image/")); if (it) { e.preventDefault(); run(it.getAsFile()); } });
+</script>
+</body>
+</html>
